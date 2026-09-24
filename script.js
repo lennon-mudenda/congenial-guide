@@ -263,6 +263,53 @@ $("next").onclick = () => {
   }
 };
 $("submit").onclick = () => finish(false);
+function donutSVG(correct, incorrect, unanswered, total) {
+  let r = 52,
+    sw = 16,
+    cx = 64,
+    cy = 64,
+    c = 2 * Math.PI * r,
+    gap = 3;
+  let segs = [
+    { v: correct, color: "#3d6b4f", label: "Correct" },
+    { v: incorrect, color: "#8b2f2f", label: "Incorrect" },
+    { v: unanswered, color: "#8a94a3", label: "Unanswered" },
+  ].filter((s) => s.v > 0);
+  let offset = 0;
+  let circles = segs
+    .map((s) => {
+      let dash = Math.max((s.v / total) * c - gap, 0);
+      let el =
+        '<circle cx="' + cx + '" cy="' + cy + '" r="' + r +
+        '" fill="none" stroke="' + s.color + '" stroke-width="' + sw +
+        '" stroke-linecap="round" stroke-dasharray="' + dash + " " + (c - dash) +
+        '" stroke-dashoffset="' + -offset + '" transform="rotate(-90 ' + cx + " " + cy + ')"/>';
+      offset += (s.v / total) * c;
+      return el;
+    })
+    .join("");
+  let pct = Math.round((correct / total) * 100);
+  let legend = segs
+    .map(
+      (s) =>
+        '<div class="donutLegendRow"><i style="background:' + s.color + '"></i>' +
+        s.label + " " + s.v + "</div>",
+    )
+    .join("");
+  return (
+    '<div class="donutWrap"><svg viewBox="0 0 128 128" width="150" height="150" role="img" aria-label="' +
+    correct + " correct, " + incorrect + " incorrect, " + unanswered +
+    " unanswered, out of " + total + '">' +
+    '<circle cx="' + cx + '" cy="' + cy + '" r="' + r +
+    '" fill="none" stroke="#e5e9ec" stroke-width="' + sw + '"/>' +
+    circles +
+    '<text x="' + cx + '" y="' + (cy - 2) +
+    '" text-anchor="middle" font-size="24" font-weight="800" fill="#18212b">' + pct + "%</text>" +
+    '<text x="' + cx + '" y="' + (cy + 18) +
+    '" text-anchor="middle" font-size="11" fill="#65788a">' + correct + " / " + total + "</text>" +
+    "</svg><div class=\"donutLegend\">" + legend + "</div></div>"
+  );
+}
 function finish(auto) {
   if (!auto) {
     let n = answers.filter((x) => x === null).length;
@@ -280,25 +327,27 @@ function finish(auto) {
     if (ok) topics[x.topic].c++;
   });
   $("resultTitle").textContent = auto ? "Time expired — Results" : "Results";
-  $("score").textContent =
-    score +
-    " / " +
-    totalQuestions +
-    " (" +
-    Math.round((score / totalQuestions) * 100) +
-    "%)";
-  $("breakdown").innerHTML = "<h3>Topic breakdown</h3>";
-  Object.entries(topics).forEach(
-    ([k, v]) =>
-      ($("breakdown").innerHTML +=
-        '<div class="row"><span>' +
-        esc(k) +
-        "</span><strong>" +
-        v.c +
-        "/" +
-        v.t +
-        "</strong></div>"),
-  );
+  let incorrect = answers.filter((a, i) => a !== null && a !== exam.questions[i].answer).length;
+  let unanswered = totalQuestions - score - incorrect;
+  $("score").innerHTML = donutSVG(score, incorrect, unanswered, totalQuestions);
+  $("breakdown").innerHTML =
+    "<h3>Topic breakdown</h3>" +
+    Object.entries(topics)
+      .map(([k, v]) => {
+        let pct = v.t ? Math.round((v.c / v.t) * 100) : 0;
+        return (
+          '<div class="topicBar"><div class="topicBarLabel"><span>' +
+          esc(k) +
+          "</span><strong>" +
+          v.c +
+          "/" +
+          v.t +
+          '</strong></div><div class="topicBarTrack"><div class="topicBarFill" style="width:' +
+          pct +
+          '%"></div></div></div>'
+        );
+      })
+      .join("");
   $("review").innerHTML = "<h3>Question review</h3>";
   exam.questions.forEach((x, i) => {
     let a = answers[i],
