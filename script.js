@@ -109,7 +109,6 @@ function clock() {
 function render() {
   let x = exam.questions[current];
   $("num").textContent = "Question " + (current + 1) + " of " + totalQuestions;
-  $("topic").textContent = x.topic;
   $("q").innerHTML = renderRich(x.question);
   $("progress").style.width = ((current + 1) / totalQuestions) * 100 + "%";
   $("opts").innerHTML = "";
@@ -295,7 +294,7 @@ $("next").onclick = () => {
     openReview(false);
   }
 };
-$("review").onclick = () => openReview(false);
+$("reviewBtn").onclick = () => openReview(false);
 $("markBtn").onclick = () => {
   marked[current] = !marked[current];
   render();
