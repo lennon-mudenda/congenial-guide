@@ -13,16 +13,18 @@
                 <h1>Swift Certified User</h1>
                 <p>Practice Exams</p>
             </div>
-            <div id="timer">65:00</div>
+            <div id="timer" class="hidden"></div>
         </header>
         <main>
             <section id="start" class="card">
                 <h2>Choose an exam</h2>
-                <p>60 questions • 65 seconds each • 65 minutes total</p>
+                <p id="introMeta">Loading exam data…</p>
                 <div id="buttons"></div>
                 <p class="note">
                     Hard mode emphasizes tracing, optionals, state ownership,
-                    collections, type relationships and debugging.
+                    collections, type relationships and debugging. Practice
+                    mode gives instant feedback and has no timer; Timed Exam
+                    matches real test conditions.
                 </p>
             </section>
             <section id="exam" class="hidden">
@@ -35,6 +37,7 @@
                         <small id="topic"></small>
                         <h2 id="q"></h2>
                         <div id="opts"></div>
+                        <div id="explain" class="hidden"></div>
                         <div class="nav">
                             <button id="prev">Previous</button
                             ><button id="next">Next</button
@@ -51,6 +54,7 @@
                 <h2 id="resultTitle"></h2>
                 <div id="score"></div>
                 <div id="breakdown"></div>
+                <div id="review"></div>
                 <button onclick="location.reload()">Back to Exams</button>
             </section>
         </main>
