@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Swift Certified User — Practice Exams</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <header>
+            <div>
+                <h1>Swift Certified User</h1>
+                <p>Practice Exams</p>
+            </div>
+            <div id="timer">65:00</div>
+        </header>
+        <main>
+            <section id="start" class="card">
+                <h2>Choose an exam</h2>
+                <p>60 questions • 65 seconds each • 65 minutes total</p>
+                <div id="buttons"></div>
+                <p class="note">
+                    Hard mode emphasizes tracing, optionals, state ownership,
+                    collections, type relationships and debugging.
+                </p>
+            </section>
+            <section id="exam" class="hidden">
+                <div class="card bar">
+                    <strong id="title"></strong><span id="num"></span>
+                    <div class="progress"><i id="progress"></i></div>
+                </div>
+                <div class="layout">
+                    <article class="card">
+                        <small id="topic"></small>
+                        <h2 id="q"></h2>
+                        <div id="opts"></div>
+                        <div class="nav">
+                            <button id="prev">Previous</button
+                            ><button id="next">Next</button
+                            ><button id="submit">Submit Exam</button>
+                        </div>
+                    </article>
+                    <aside class="card">
+                        <h3>Questions</h3>
+                        <div id="palette"></div>
+                    </aside>
+                </div>
+            </section>
+            <section id="result" class="card hidden">
+                <h2 id="resultTitle"></h2>
+                <div id="score"></div>
+                <div id="breakdown"></div>
+                <button onclick="location.reload()">Back to Exams</button>
+            </section>
+        </main>
+        <script src="script.js"></script>
+    </body>
+</html>
