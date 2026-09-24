@@ -1,0 +1,602 @@
+[
+  {
+    "category": "SwiftUI",
+    "topic": "State Management",
+    "topicId": "state-management",
+    "difficulty": "core",
+    "question": "What is the purpose of the `@State` property wrapper in SwiftUI?",
+    "options": [
+      "It shares state across every view in the app automatically.",
+      "It marks a property as constant and immutable.",
+      "It lets a view own and manage small pieces of local, mutable state, causing the view to re-render when the value changes.",
+      "It is used only for reference types conforming to ObservableObject."
+    ],
+    "answer": 2,
+    "explanation": "@State is designed for simple, view-local mutable value-type state; SwiftUI watches it and re-renders the view whenever it changes."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Bindings",
+    "topicId": "bindings",
+    "difficulty": "core",
+    "question": "A child view declares `@Binding var isOn: Bool`. What must the parent do to pass a value to it?",
+    "options": [
+      "Pass a binding using `$` syntax, e.g. `ChildView(isOn: $isOnState)`, where `isOnState` is a `@State` property in the parent.",
+      "Pass the raw Bool value directly, e.g. `ChildView(isOn: isOnState)`.",
+      "Wrap the value in an `ObservableObject` before passing it.",
+      "Nothing; `@Binding` properties are set automatically by the environment."
+    ],
+    "answer": 0,
+    "explanation": "@Binding represents a two-way connection to a value owned elsewhere; the parent must project its @State property with `$` to create that binding."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State Management",
+    "topicId": "state-management",
+    "difficulty": "core",
+    "question": "A SwiftUI view creates and owns an instance of a class conforming to `ObservableObject` that should persist across the view's re-renders (for example, when its parent redraws). Which property wrapper should it use to declare that instance?",
+    "options": [
+      "@EnvironmentObject",
+      "@Environment",
+      "@StateObject",
+      "@ObservedObject"
+    ],
+    "answer": 2,
+    "explanation": "@StateObject is designed for objects a view creates and owns; it ensures the same instance survives across re-renders instead of being recreated each time the view's body runs."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Views & Composition",
+    "topicId": "views-composition",
+    "difficulty": "core",
+    "question": "What problem can occur with the following code?\n\nstruct DetailView: View {\n    @ObservedObject var viewModel = ViewModel()\n    var body: some View { Text(viewModel.title) }\n}",
+    "options": [
+      "The view will fail to compile because @ObservedObject requires an initializer parameter.",
+      "The view's Text will never update.",
+      "There is no problem; @ObservedObject and @StateObject behave identically when the object is created inline.",
+      "Whenever the parent view re-renders DetailView, a new ViewModel instance may be created, discarding the previous state."
+    ],
+    "answer": 3,
+    "explanation": "@ObservedObject does not take ownership of the instance's lifecycle; when DetailView's initializer reruns during a parent re-render, a fresh ViewModel() can be created, losing prior state. @StateObject exists to prevent this."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Environment",
+    "topicId": "environment",
+    "difficulty": "core",
+    "question": "What happens at runtime if a view declares `@EnvironmentObject var settings: Settings` but no ancestor view has called `.environmentObject(Settings())`?",
+    "options": [
+      "The app crashes at runtime because the required environment object was never injected.",
+      "The property defaults to nil silently.",
+      "SwiftUI automatically creates a default Settings() instance.",
+      "A compile-time error is raised."
+    ],
+    "answer": 0,
+    "explanation": "@EnvironmentObject is a non-optional dependency that must be supplied by an ancestor view; if it is missing, SwiftUI triggers a runtime fatal error when the view is resolved."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State Management",
+    "topicId": "state-management",
+    "difficulty": "core",
+    "question": "Which property wrapper is used to read a system-provided contextual value, such as `\\.colorScheme` or `\\.dismiss`, rather than a custom observable object?",
+    "options": [
+      "@EnvironmentObject",
+      "@Environment",
+      "@StateObject",
+      "@Published"
+    ],
+    "answer": 1,
+    "explanation": "@Environment reads values from the environment's key-path-based value system, which includes system-provided values like color scheme, size class, and dismiss actions."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Modifiers & Layout",
+    "topicId": "modifiers-layout",
+    "difficulty": "core",
+    "question": "What is the visible effect of the modifier order in the following code?\n\nText(\"Hi\")\n    .padding()\n    .background(Color.yellow)",
+    "options": [
+      "The yellow background only fills the original text bounds, excluding the padding.",
+      "Modifier order has no visual effect in SwiftUI.",
+      "The yellow background fills the area including the padding, because padding is applied before background.",
+      "This code fails to compile because `.background` must come before `.padding`."
+    ],
+    "answer": 2,
+    "explanation": "Each modifier wraps the view in a new layer; because `.padding()` is applied first, `.background` sees the already-padded view and fills that larger area with yellow."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Lists & ForEach",
+    "topicId": "lists-foreach",
+    "difficulty": "core",
+    "question": "Why does the following code fail to compile?\n\nstruct Fruit {\n    var name: String\n}\nlet fruits = [Fruit(name: \"Apple\"), Fruit(name: \"Pear\")]\n\nList(fruits) { fruit in\n    Text(fruit.name)\n}",
+    "options": [
+      "List cannot display structs, only classes.",
+      "Text cannot accept a String argument.",
+      "List requires the array to be wrapped in a `ForEach` before being used.",
+      "Fruit does not conform to Identifiable (and no `id:` parameter was supplied to List), so SwiftUI cannot uniquely identify each row."
+    ],
+    "answer": 3,
+    "explanation": "List's data-driven initializer needs a stable identity for each row, either via Identifiable conformance or an explicit `id:` key path; Fruit has neither."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State Management",
+    "topicId": "state-management",
+    "difficulty": "core",
+    "question": "Given `struct Fruit { var name: String }`, which change lets `List(fruits) { fruit in Text(fruit.name) }` compile without making Fruit conform to Identifiable?",
+    "options": [
+      "Use `List(fruits, id: \\.name) { fruit in Text(fruit.name) }` to tell SwiftUI which property uniquely identifies each row.",
+      "Add `@State` to the `fruits` array declaration.",
+      "Replace `List` with `VStack`.",
+      "Wrap `Fruit` in an `ObservableObject`."
+    ],
+    "answer": 0,
+    "explanation": "Supplying an explicit `id:` key path gives List a way to identify each row without requiring Identifiable conformance, as long as the chosen property is unique and Hashable."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Navigation",
+    "topicId": "navigation",
+    "difficulty": "core",
+    "question": "In current SwiftUI (iOS 16+), which container is recommended for building a push-based navigation flow with `NavigationLink`?",
+    "options": [
+      "NavigationView",
+      "NavigationStack",
+      "TabView",
+      "List"
+    ],
+    "answer": 1,
+    "explanation": "NavigationStack replaced the now-deprecated NavigationView as the modern container for managing a push/pop navigation hierarchy in SwiftUI."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State Management",
+    "topicId": "state-management",
+    "difficulty": "core",
+    "question": "A value needs to be displayed and modified by two sibling views that do not have a parent-child relationship allowing a direct binding. What is the SwiftUI-idiomatic way to share this mutable state?",
+    "options": [
+      "Give each sibling its own @State property and rely on SwiftUI to synchronize them automatically.",
+      "Use global variables outside of any view.",
+      "Lift the state up to a common ancestor view (or a shared ObservableObject) and pass bindings/references down to both siblings.",
+      "Mark the value @Published without placing it in any ObservableObject."
+    ],
+    "answer": 2,
+    "explanation": "SwiftUI's state ownership model expects a single source of truth; sharing state between unrelated siblings means hoisting it to a common ancestor or a shared observable object referenced by both."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State Management",
+    "topicId": "state-management",
+    "difficulty": "core",
+    "question": "What is required for a SwiftUI view to automatically refresh when a property on a class instance changes?",
+    "options": [
+      "The class must be a struct, since only value types trigger view updates.",
+      "Any property change on any class automatically triggers a SwiftUI view refresh.",
+      "The property must be marked @State inside the class.",
+      "The class must conform to ObservableObject, the property must be marked @Published, and the view must observe the instance via @StateObject, @ObservedObject, or @EnvironmentObject."
+    ],
+    "answer": 3,
+    "explanation": "SwiftUI only knows to refresh a view when a @Published property on an observed ObservableObject changes; plain class properties are invisible to SwiftUI's dependency tracking."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State Management",
+    "topicId": "state-management",
+    "difficulty": "core",
+    "question": "What is true about the following code?\n\nclass CounterModel: ObservableObject {\n    @Published var count = 0\n    func increment() {\n        count += 1\n    }\n}",
+    "options": [
+      "Every time increment() is called, `objectWillChange` is sent before `count` updates, causing any SwiftUI view observing this instance to re-render.",
+      "increment() must manually call objectWillChange.send() or the view will never update.",
+      "count changes are only visible after the app relaunches.",
+      "@Published only works on Int properties."
+    ],
+    "answer": 0,
+    "explanation": "@Published automatically synthesizes the objectWillChange notification before the property's value changes, so observing views refresh without any manual notification code."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Views & Composition",
+    "topicId": "views-composition",
+    "difficulty": "core",
+    "question": "Why are SwiftUI views typically declared as structs rather than classes?",
+    "options": [
+      "Classes cannot conform to protocols in Swift.",
+      "Views are lightweight, cheap-to-recreate value types; SwiftUI recreates view structs frequently to reflect state changes, and value semantics avoid unintended shared mutable state.",
+      "Structs automatically get Identifiable conformance needed for View.",
+      "SwiftUI requires reference types internally, and struct is just an alias for class here."
+    ],
+    "answer": 1,
+    "explanation": "SwiftUI's rendering model relies on cheaply re-creating view values on every state change; struct value semantics make this efficient and prevent views from accidentally sharing mutable state."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Modifiers & Layout",
+    "topicId": "modifiers-layout",
+    "difficulty": "core",
+    "question": "What does `.frame(maxWidth: .infinity)` do when applied to a view inside an HStack?",
+    "options": [
+      "It sets the view's width to exactly the width of the screen, ignoring its parent container.",
+      "It has no effect unless `.fixedSize()` is also applied.",
+      "It expands the view to take up all available horizontal space offered by its parent.",
+      "It crashes at runtime because `.infinity` is not a valid CGFloat."
+    ],
+    "answer": 2,
+    "explanation": "`.frame(maxWidth: .infinity)` tells the view to grow to fill whatever horizontal space its parent container makes available, rather than sizing to its own content."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State Management",
+    "topicId": "state-management",
+    "difficulty": "core",
+    "question": "Inside a view presented via `.sheet`, which is the modern (iOS 15+) way to programmatically dismiss it?",
+    "options": [
+      "Call `self.presentationMode.dismiss()` directly without any property wrapper.",
+      "Set the `@State` boolean controlling the sheet to `true` from inside the sheet's own view.",
+      "Call `UIApplication.shared.dismissSheet()`.",
+      "Read `@Environment(\\.dismiss) private var dismiss` and call `dismiss()`."
+    ],
+    "answer": 3,
+    "explanation": "The `\\.dismiss` environment action, introduced as the modern replacement for presentationMode, lets a presented view dismiss itself by calling the retrieved dismiss() closure."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Lists & ForEach",
+    "topicId": "lists-foreach",
+    "difficulty": "core",
+    "question": "What problem can arise from the following code when items are removed from the list?\n\nForEach(items.indices, id: \\.self) { index in\n    Text(items[index].name)\n}",
+    "options": [
+      "Because identity is based on array index rather than a stable per-item id, SwiftUI can misattribute view state (like animations or focus) to the wrong item after a removal.",
+      "This code fails to compile because indices cannot be used as an id.",
+      "Nothing; using indices as id is always equivalent to using a stable Identifiable id.",
+      "ForEach cannot accept a range of indices as its data."
+    ],
+    "answer": 0,
+    "explanation": "Using the index as identity means that after a removal, the same index now refers to a different underlying item, which can cause SwiftUI to reuse view state incorrectly across items."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Environment",
+    "topicId": "environment",
+    "difficulty": "core",
+    "question": "An `@EnvironmentObject` is injected at the app's root view. A view pushed several levels deep via NavigationLink also declares the same `@EnvironmentObject`. What happens?",
+    "options": [
+      "The pushed view crashes because environment objects do not propagate across navigation boundaries.",
+      "The pushed view automatically receives the same environment object instance, since environment values propagate down the entire view hierarchy unless explicitly overridden.",
+      "The environment object must be re-injected with `.environmentObject()` at every navigation level.",
+      "The pushed view receives a new, separate instance of the object."
+    ],
+    "answer": 1,
+    "explanation": "Environment values, including environment objects, flow implicitly down the entire view hierarchy, including through NavigationLink destinations, unless a descendant view explicitly overrides them."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "View Lifecycle",
+    "topicId": "view-lifecycle",
+    "difficulty": "core",
+    "question": "Why is it discouraged to perform side effects (like network calls or mutating external state) directly inside a SwiftUI view's `body` property?",
+    "options": [
+      "`body` is only called once per app launch, so side effects there would never update.",
+      "SwiftUI runs `body` on a background thread where UIKit calls are forbidden.",
+      "`body` can be called many times by the SwiftUI rendering system, so side effects there may run repeatedly and unpredictably instead of just once.",
+      "Side effects in `body` are automatically deferred using `.task` regardless of where they are written."
+    ],
+    "answer": 2,
+    "explanation": "SwiftUI may re-evaluate a view's body far more often than expected as part of its rendering pass, so placing side effects there causes them to fire repeatedly and unpredictably rather than at well-defined lifecycle points."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Lists & ForEach",
+    "topicId": "lists-foreach",
+    "difficulty": "core",
+    "question": "What is the minimum requirement for a type to conform to `Identifiable`?",
+    "options": [
+      "It must be a class, not a struct.",
+      "It must implement `Equatable` and `Comparable`.",
+      "It must override `hash(into:)` manually; synthesis is not supported.",
+      "It must have a property named `id` that conforms to `Hashable`."
+    ],
+    "answer": 3,
+    "explanation": "Identifiable's sole requirement is an `id` property whose type conforms to Hashable, which lets collections like List and ForEach uniquely identify each element."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State Management",
+    "topicId": "state-management",
+    "difficulty": "advanced",
+    "question": "A row view is defined like this and used inside a `List`:\n```\nclass Fetcher: ObservableObject {\n    @Published var data = \"empty\"\n}\nstruct RowView: View {\n    @ObservedObject var fetcher = Fetcher()\n    var body: some View { Text(fetcher.data) }\n}\n```\nEvery time the parent view re-renders, `RowView`'s initializer runs again. What is the practical bug here, and how should it be fixed?",
+    "options": [
+      "There is no bug; `@ObservedObject` and `@StateObject` behave identically when the object is created inline",
+      "`Fetcher` will leak memory because `@ObservedObject` retains every instance ever created",
+      "The view will crash at runtime because `@ObservedObject` requires the object to be injected via `.environmentObject()`",
+      "A new `Fetcher` is created on every re-render because `@ObservedObject` doesn't own the object's lifecycle; declare it `@StateObject` instead so SwiftUI creates it once and preserves it across re-renders"
+    ],
+    "answer": 3,
+    "explanation": "`@ObservedObject` does not manage an object's lifetime — it just observes whatever instance it's given. When the initializer runs again on re-render, a brand-new `Fetcher` (and its `data`) is created, silently discarding prior state. `@StateObject` ties the object's lifetime to the view's identity so it is created only once."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Views & Composition",
+    "topicId": "views-composition",
+    "difficulty": "advanced",
+    "question": "```\nstruct DetailView: View {\n    @EnvironmentObject var settings: Settings\n    var body: some View { Text(settings.name) }\n}\nstruct ContentView: View {\n    var body: some View {\n        NavigationLink(\"Go\", destination: DetailView())\n    }\n}\n```\n`Settings` is never provided via `.environmentObject(...)` anywhere in the view hierarchy. What happens when `DetailView` appears?",
+    "options": [
+      "The app crashes at runtime with a message that no `Settings` object was found in the environment",
+      "`settings.name` silently evaluates to an empty string",
+      "SwiftUI creates a default `Settings()` instance automatically",
+      "It fails to compile because `@EnvironmentObject` requires a default value"
+    ],
+    "answer": 0,
+    "explanation": "`@EnvironmentObject` does not create a fallback instance — it must be injected by an ancestor view via `.environmentObject(_:)`. If no matching object is found in the environment when the view appears, SwiftUI triggers a runtime crash."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Lists & ForEach",
+    "topicId": "lists-foreach",
+    "difficulty": "advanced",
+    "question": "```\nstruct Item: Identifiable {\n    var id: UUID { UUID() }\n    var name: String\n}\n```\nThis `Item` is used as the data for a `ForEach` inside a `List`. What problem does this `id` implementation cause?",
+    "options": [
+      "It causes a retain cycle between the `List` and each `Item`",
+      "Every access to `id` returns a new UUID, so SwiftUI can't reliably track element identity across updates, breaking diffing and losing per-row state like selection or animations",
+      "It fails to compile, since `id` must be a stored property for `Identifiable`",
+      "It works correctly, since SwiftUI only reads `id` once per item for the lifetime of the app"
+    ],
+    "answer": 1,
+    "explanation": "`Identifiable`'s `id` is expected to be stable so SwiftUI can match old and new elements between updates. Computing a fresh `UUID()` on every access means the same logical item appears to have a different identity each time the view diffs, breaking animations, causing state to be reattached to the wrong row, or even causing the list to look like it 'reloads' constantly."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "View Lifecycle",
+    "topicId": "view-lifecycle",
+    "difficulty": "advanced",
+    "question": "What is the key behavioral difference between `.task { }` and `.onAppear { }` when running asynchronous work in SwiftUI?",
+    "options": [
+      "They are functionally identical; `.task` is only syntactic sugar for `.onAppear`",
+      "`.task` runs synchronously on the main thread while `.onAppear` always runs on a background thread",
+      "`.task` automatically cancels its async work when the view disappears, tying the task's lifetime to the view; `.onAppear` has no such automatic cancellation for work you start inside it",
+      "`.onAppear` automatically cancels its work when the view disappears, but `.task` does not"
+    ],
+    "answer": 2,
+    "explanation": "`.task` creates a structured `Task` bound to the view's lifetime and automatically cancels it when the view disappears. `.onAppear` is just a synchronous callback; any async work you kick off inside it (e.g. wrapping it in `Task { }` yourself) keeps running unless you manually manage cancellation."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Modifiers & Layout",
+    "topicId": "modifiers-layout",
+    "difficulty": "advanced",
+    "question": "A `ScrollView` displays 10,000 rows. What is the practical difference between backing it with a `VStack` versus a `LazyVStack`?",
+    "options": [
+      "`LazyVStack` eagerly creates all views, while `VStack` creates views lazily on demand",
+      "There is no meaningful performance difference between them",
+      "`LazyVStack` can only be used with fewer than 100 items",
+      "`VStack` eagerly creates all 10,000 child views up front, causing major memory and performance problems, while `LazyVStack` only creates views as they're about to become visible"
+    ],
+    "answer": 3,
+    "explanation": "`VStack` instantiates every one of its child views immediately regardless of whether they're on-screen, which is expensive for large lists. `LazyVStack` defers creation of off-screen rows until they're about to scroll into view, which is essential for large scrollable content."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Views & Composition",
+    "topicId": "views-composition",
+    "difficulty": "advanced",
+    "question": "What does calling `.equatable()` on a view do, and when is it useful?",
+    "options": [
+      "It tells SwiftUI to skip re-rendering the view's body if its properties haven't changed according to `Equatable`, avoiding unnecessary work when a parent re-renders frequently",
+      "It makes the view's type conform to `Identifiable` automatically",
+      "It forces the view to re-render on every parent update, ensuring the layout stays in sync",
+      "It disables animations for that specific view"
+    ],
+    "answer": 0,
+    "explanation": "`.equatable()` requires the view to conform to `Equatable` and lets SwiftUI compare the old and new view values; if they're equal, it skips re-evaluating that view's `body`, which is a targeted optimization for expensive views inside a frequently-updating parent."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Modifiers & Layout",
+    "topicId": "modifiers-layout",
+    "difficulty": "advanced",
+    "question": "A `GeometryReader` is placed as one child inside a `VStack` alongside other views. What layout behavior commonly surprises developers here?",
+    "options": [
+      "`GeometryReader` has no effect on layout and only reports size information",
+      "`GeometryReader` expands to take up all the space offered to it by its parent, which can push or squeeze its siblings in the `VStack` in unexpected ways",
+      "`GeometryReader` always sizes itself to fit its content, like a `HStack`",
+      "`GeometryReader` ignores its parent's layout entirely and always fills the whole screen regardless of nesting"
+    ],
+    "answer": 1,
+    "explanation": "Unlike most views that size themselves to their content, `GeometryReader` greedily accepts all the space its parent offers it. Inside a `VStack`, that often means it consumes far more space than intended, distorting the layout of sibling views."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Lists & ForEach",
+    "topicId": "lists-foreach",
+    "difficulty": "advanced",
+    "question": "```\nstruct EditorView: View {\n    @State private var items = [\"A\", \"B\", \"C\"]\n    var body: some View {\n        List {\n            ForEach(items.indices, id: \\.self) { index in\n                TextField(\"Item\", text: $items[index])\n                    .swipeActions {\n                        Button(\"Delete\") { items.remove(at: index) }\n                    }\n            }\n        }\n    }\n}\n```\nSwiping to delete a row in the middle of the list can cause a crash. Why?",
+    "options": [
+      "`swipeActions` is not compatible with `ForEach`",
+      "`@State` arrays cannot have elements removed at runtime",
+      "When an item is removed, `items.indices` shrinks, but a stale closure can still reference an `index` that is now out of range for `$items[index]`, crashing with an out-of-range error",
+      "`TextField` cannot be bound to an array element under any circumstances"
+    ],
+    "answer": 2,
+    "explanation": "Iterating and binding by integer index ties each row's identity to a position rather than the item itself. When an item is removed, the indices of subsequent rows shift, and any capture of an old index (such as in the delete closure for a row below the deleted one) can point past the new bounds, producing an index-out-of-range crash. Iterating over stable, `Identifiable` values avoids this."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State Management",
+    "topicId": "state-management",
+    "difficulty": "advanced",
+    "question": "Which wiring correctly establishes a shared model as the single source of truth for a SwiftUI app?",
+    "options": [
+      "`@ObservedObject private var store = Store()` at the `App` level, injected via `.environmentObject(store)`",
+      "Creating a new `Store()` instance inside every view that needs it, and syncing them manually with `NotificationCenter`",
+      "`@EnvironmentObject var store = Store()` declared directly at the `App` level",
+      "`@StateObject private var store = Store()` at the `App` level, injected once via `.environmentObject(store)` on the root view"
+    ],
+    "answer": 3,
+    "explanation": "`@StateObject` at the app's root ensures the store is created exactly once and survives for the app's lifetime; `@ObservedObject` at that level would risk the object being recreated if the `App`'s body is re-evaluated. `.environmentObject(store)` then makes it available to any descendant that declares `@EnvironmentObject`."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Views & Composition",
+    "topicId": "views-composition",
+    "difficulty": "advanced",
+    "question": "```\nstruct ProfileView: View {\n    @StateObject private var viewModel: ProfileViewModel\n    init(userID: String) {\n        _viewModel = StateObject(wrappedValue: ProfileViewModel(userID: userID))\n    }\n    var body: some View { Text(viewModel.userID) }\n}\n```\nA parent view recreates `ProfileView(userID:)` with a new `userID` in response to a state change, but the displayed `userID` never updates. Why?",
+    "options": [
+      "`@StateObject` only runs its initial `wrappedValue` expression once per view identity; SwiftUI preserves the original `ProfileViewModel` instance across re-initializations unless the view's identity changes (e.g. via `.id(userID)`)",
+      "`@StateObject` re-runs the initializer on every re-render, so the bug must be elsewhere",
+      "`Text(viewModel.userID)` doesn't observe `@Published` changes",
+      "`init(userID:)` is never called again by SwiftUI once the view has appeared"
+    ],
+    "answer": 0,
+    "explanation": "SwiftUI treats `@StateObject`'s initial value as create-once-per-identity: even though `init(userID:)` runs again with the new argument, SwiftUI discards that new `StateObject` value and keeps the originally created instance as long as the view's identity is unchanged. Forcing a new identity (e.g. `.id(userID)`) is required to make SwiftUI create a fresh instance."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State Management",
+    "topicId": "state-management",
+    "difficulty": "advanced",
+    "question": "```\nclass ViewModel: ObservableObject {\n    @Published var count = 0\n    var cancellable: AnyCancellable?\n    init() {\n        cancellable = timerPublisher.sink { [self] _ in\n            self.count += 1\n        }\n    }\n    deinit { print(\"ViewModel deinit\") }\n}\n```\nThis view model's `deinit` never prints, even after every view referencing it disappears. What is the most likely cause?",
+    "options": [
+      "`deinit` is never called on `ObservableObject` types by SwiftUI",
+      "`[self]` strongly captures `self` in the closure, and that closure is stored on `self.cancellable`, forming a retain cycle that prevents deallocation; it should capture `[weak self]` instead",
+      "`@Published` properties always prevent an `ObservableObject` from ever deallocating",
+      "`AnyCancellable` automatically keeps every subscriber alive forever regardless of capture semantics"
+    ],
+    "answer": 1,
+    "explanation": "Storing the closure in `cancellable`, a property of `self`, while the closure also strongly captures `self` (via `[self]`) creates a reference cycle: `self` keeps the cancellable alive, and the cancellable's closure keeps `self` alive. Using `[weak self]` breaks the cycle."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Environment",
+    "topicId": "environment",
+    "difficulty": "advanced",
+    "question": "Several sibling views each need access to shared user preferences. Which approach best avoids tight coupling between the sibling views themselves?",
+    "options": [
+      "Have one sibling hold a direct reference to the other sibling's view struct and call its methods directly",
+      "Store the preferences in a global mutable variable outside of SwiftUI's property wrappers",
+      "Inject a single shared `ObservableObject` into the environment once (e.g. from a common ancestor), and have each sibling read it via `@EnvironmentObject`, rather than passing references or callbacks directly between siblings",
+      "Give each sibling view its own separate instance of the preferences object and reconcile changes with `NotificationCenter`"
+    ],
+    "answer": 2,
+    "explanation": "Injecting one shared observable model via the environment lets any descendant read and write the same source of truth without needing direct knowledge of, or a reference to, its siblings, keeping the views decoupled from one another."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Lists & ForEach",
+    "topicId": "lists-foreach",
+    "difficulty": "advanced",
+    "question": "What is the risk of iterating like this when a list can be reordered or filtered?\n```\nForEach(items.indices, id: \\.self) { index in\n    RowView(item: items[index])\n}\n```\ncompared to `ForEach(items, id: \\.id) { item in RowView(item: item) }` where `Item` is `Identifiable`?",
+    "options": [
+      "There is no difference; both approaches behave identically for any array",
+      "Index-based `ForEach` cannot compile unless `Item` also conforms to `Identifiable`",
+      "Using `item.id` as identity is slower because it requires hashing every element on every render",
+      "Using the index as identity means SwiftUI tracks rows by position, not by the actual item; reordering or filtering makes SwiftUI think existing rows changed content instead of moved, breaking animations and potentially misattaching per-row view state"
+    ],
+    "answer": 3,
+    "explanation": "SwiftUI's diffing relies on the `id` to determine whether a row is the same logical element across updates. With index-based identity, a reorder looks like every row's content changed in place rather than the rows moving, which produces incorrect transitions/animations and can cause view-local `@State` to appear attached to the wrong data."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Environment",
+    "topicId": "environment",
+    "difficulty": "advanced",
+    "question": "A SwiftUI preview crashes with a message about a missing environment object. What is the most likely cause and fix?",
+    "options": [
+      "The preview's view (or an ancestor in the preview hierarchy) declares `@EnvironmentObject` but the `PreviewProvider` never called `.environmentObject(...)` to supply one",
+      "Previews never support `@EnvironmentObject` under any circumstances",
+      "The view model class needs to be marked `@objc` to work in previews",
+      "Previews automatically inject a default instance, so this error indicates a corrupted Xcode installation"
+    ],
+    "answer": 0,
+    "explanation": "`@EnvironmentObject` requires an object to be injected into the environment before the view reads it, and this requirement applies in previews just as it does at runtime. The fix is to chain `.environmentObject(SomeModel())` onto the preview's content."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "View Lifecycle",
+    "topicId": "view-lifecycle",
+    "difficulty": "advanced",
+    "question": "A view runs a long loop inside `.task { }`. The view disappears midway through, and the loop keeps running to completion anyway even though the task modifier is supposed to cancel it. Why?",
+    "options": [
+      "Cancellation only works if the loop uses `async let` bindings",
+      "Task cancellation in Swift is cooperative: the loop must periodically check `Task.isCancelled` (or call a throwing cancellation check) to actually stop; simply attaching `.task` sets the cancellation flag but doesn't preemptively halt running code",
+      "`.task` only cancels work that uses `URLSession`, not arbitrary loops",
+      "The view must be wrapped in a `NavigationStack` for cancellation to take effect"
+    ],
+    "answer": 1,
+    "explanation": "When a `.task`-attached `Task` is cancelled, Swift only marks it as cancelled — it does not forcibly stop arbitrary running code. Long-running work must explicitly check `Task.isCancelled` (or use a cancellation-aware API that throws `CancellationError`) at appropriate points to actually exit early."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Views & Composition",
+    "topicId": "views-composition",
+    "difficulty": "advanced",
+    "question": "```\nText(item.name)\n    .id(UUID())\n```\nThis modifier is applied inside a view's `body`. What problem does it cause?",
+    "options": [
+      "It causes a compile error because `.id()` requires a `Hashable` type, and `UUID` doesn't conform",
+      "It permanently fixes the view's identity so it never updates again",
+      "A new UUID is generated every time `body` is evaluated, so SwiftUI treats the `Text` as a brand-new view identity on every render, discarding any transient view state or animation continuity it had",
+      "It has no effect because `.id()` only works on `List` rows"
+    ],
+    "answer": 2,
+    "explanation": "`.id(_:)` explicitly overrides a view's identity. Generating a fresh, unstable `UUID()` inside `body` means the identity changes on every single re-render, so SwiftUI never recognizes the view as 'the same' view across updates, defeating state preservation and animations for it."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State Management",
+    "topicId": "state-management",
+    "difficulty": "advanced",
+    "question": "An `ObservableObject`'s `@Published` property is mutated from a background thread (e.g. inside a `URLSession` completion handler), and the UI intermittently fails to update or Xcode logs a purple runtime warning. What is the correct fix?",
+    "options": [
+      "Change `@Published` to `@State` so it can be safely mutated from any thread",
+      "Wrap the property in an `NSLock` and mutate it directly on the background thread; no dispatch is needed",
+      "Nothing needs to change, since `@Published` properties are always thread-safe for UI updates",
+      "Dispatch the mutation back to the main thread (e.g. `DispatchQueue.main.async` or marking the type `@MainActor`), since SwiftUI expects `@Published` changes that drive UI updates to happen on the main thread"
+    ],
+    "answer": 3,
+    "explanation": "SwiftUI's rendering and `@Published`'s `objectWillChange` notifications are expected to happen on the main thread. Mutating from a background thread can cause missed or delayed UI updates and triggers Xcode's 'Publishing changes from background threads is not allowed' warning; the fix is to hop back to the main thread (or isolate the type to `@MainActor`) before mutating."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Environment",
+    "topicId": "environment",
+    "difficulty": "advanced",
+    "question": "What is the main functional difference between `@Environment` and `@EnvironmentObject` in SwiftUI?",
+    "options": [
+      "`@Environment` reads individual values (often system-provided, like `colorScheme` or `dismiss`) from the environment's keyed value table, while `@EnvironmentObject` reads a whole custom `ObservableObject` instance that was explicitly injected",
+      "They are two names for the exact same mechanism with no functional difference",
+      "`@EnvironmentObject` is only for system values, while `@Environment` is for custom observable classes",
+      "`@Environment` requires the value to conform to `ObservableObject`, but `@EnvironmentObject` does not"
+    ],
+    "answer": 0,
+    "explanation": "`@Environment(\\.someKey)` looks up a specific value from SwiftUI's environment value table (many of which are system-provided). `@EnvironmentObject` instead looks for an object of a particular class that conforms to `ObservableObject` and was injected into the environment via `.environmentObject(_:)`."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State Management",
+    "topicId": "state-management",
+    "difficulty": "advanced",
+    "question": "A single, large `AppViewModel: ObservableObject` currently backs every screen in an app, and unrelated screens keep re-rendering whenever any unrelated `@Published` property changes anywhere in it. What is the recommended design fix?",
+    "options": [
+      "Wrap every property access in `.equatable()` at the call site to prevent unrelated updates",
+      "Split the god object into smaller, screen-scoped view models (or `ObservableObject`s) that each own only the state their screen actually needs, sharing only what's genuinely global",
+      "Mark every `@Published` property as `@Published private`, which will stop unrelated views from re-rendering",
+      "Convert `AppViewModel` from a class to a struct so SwiftUI can diff it more efficiently"
+    ],
+    "answer": 1,
+    "explanation": "Any `@Published` change on an `ObservableObject` triggers `objectWillChange` for the whole object, causing every view observing it to re-evaluate its body regardless of which property actually changed. Splitting responsibilities into smaller, focused view models limits each view's dependency surface to only the state relevant to it."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Lists & ForEach",
+    "topicId": "lists-foreach",
+    "difficulty": "advanced",
+    "question": "A row view declares `@State private var isExpanded = false` to track whether it's expanded, and the parent list uses index-based `ForEach` identity as shown here:\n```\nForEach(items.indices, id: \\.self) { i in\n    RowView(item: items[i], isExpandedState: ...)\n}\n```\nAfter the underlying `items` array is filtered (removing some elements), users report that the wrong rows appear expanded. What's the underlying cause?",
+    "options": [
+      "Filtering an array in SwiftUI automatically resets every row's `@State` to its default value",
+      "The bug is unrelated to identity and is instead caused by `RowView` not conforming to `Identifiable`",
+      "Because identity is tied to index rather than to the item itself, when the array is filtered the same index now maps to a different item, but SwiftUI reuses the row's existing `@State` (including `isExpanded`) as if it were the same logical row",
+      "`@State` cannot be used inside a `ForEach` row at all"
+    ],
+    "answer": 2,
+    "explanation": "SwiftUI preserves `@State` for a view based on that view's identity across updates. When identity is derived from index rather than the item's own stable id, a filtered array shifts which item sits at a given index, but the row's local `@State` (like `isExpanded`) stays attached to that index — visually 'sticking' to the wrong item."
+  }
+]

@@ -1,4 +1,6 @@
-let data,
+let manifest,
+  selectedMode = "timed",
+  categoryCache = {},
   exam,
   mode,
   current = 0,
@@ -12,42 +14,123 @@ let data,
   deadline = 0,
   timer;
 const $ = (x) => document.getElementById(x);
-fetch("exams.json")
+fetch("questions/manifest.json")
   .then((r) => r.json())
-  .then((d) => {
-    data = d;
-    $("introMeta").textContent =
-      d.settings.totalQuestions +
-      " questions • " +
-      d.settings.secondsPerQuestion +
-      " seconds each • " +
-      Math.round(d.settings.totalSeconds / 60) +
-      " minutes total (timed mode)";
-    d.exams.forEach((e, i) => {
-      let row = document.createElement("div");
-      row.className = "examRow";
-      let name = document.createElement("span");
-      name.className = "examName";
-      name.textContent = e.title + " — " + d.settings.totalQuestions + " questions";
-      let bp = document.createElement("button");
-      bp.className = "modeBtn practiceBtn";
-      bp.textContent = "Practice";
-      bp.onclick = () => start(i, "practice");
-      let bt = document.createElement("button");
-      bt.className = "modeBtn timedBtn";
-      bt.textContent = "Timed Exam";
-      bt.onclick = () => start(i, "timed");
-      row.append(name, bp, bt);
-      $("buttons").appendChild(row);
-    });
+  .then((m) => {
+    manifest = m;
+    buildLanding();
   })
   .catch(() => {
-    let p = document.createElement("p");
-    p.className = "error";
-    p.innerHTML =
-      "Couldn't load exam data. If this file was opened directly (file://), serve it locally instead — e.g. run <code>python -m http.server</code> in this folder and open the printed address.";
-    $("start").appendChild(p);
+    $("startError").innerHTML =
+      '<p class="error">Couldn\'t load question data. If this file was opened directly (file://), serve it locally instead — e.g. run <code>python -m http.server</code> in this folder and open the printed address.</p>';
   });
+function setMode(m) {
+  selectedMode = m;
+  document
+    .querySelectorAll("#modeToggle .modeOpt")
+    .forEach((b) => b.classList.toggle("active", b.dataset.mode === m));
+  $("modeExplain").textContent =
+    m === "practice"
+      ? "Practice — untimed. You get instant right/wrong feedback and an explanation after every answer."
+      : "Timed exam — a countdown of 65 seconds per question. No feedback until you submit, then a full breakdown.";
+}
+function buildLanding() {
+  // mode toggle
+  $("modeToggle").innerHTML = "";
+  [
+    ["practice", "Practice"],
+    ["timed", "Timed exam"],
+  ].forEach(([m, label]) => {
+    let b = document.createElement("button");
+    b.className = "modeOpt";
+    b.dataset.mode = m;
+    b.textContent = label;
+    b.onclick = () => setMode(m);
+    $("modeToggle").appendChild(b);
+  });
+  setMode(selectedMode);
+  // full exam
+  $("fullExam").innerHTML = "";
+  let fb = document.createElement("button");
+  fb.className = "launchBtn";
+  fb.textContent =
+    "Start full exam — " + manifest.settings.examQuestions + " questions";
+  fb.onclick = startFull;
+  $("fullExam").appendChild(fb);
+  // by category
+  $("byCategory").innerHTML = "";
+  manifest.categories.forEach((c) => {
+    let card = document.createElement("button");
+    card.className = "catCard";
+    card.innerHTML =
+      "<strong>" + esc(c.name) + "</strong><span>" + c.count + " questions</span>";
+    card.onclick = () => startCategory(c.id, c.name);
+    $("byCategory").appendChild(card);
+  });
+  // by topic
+  $("byTopic").innerHTML = "";
+  manifest.categories.forEach((c) => {
+    let d = document.createElement("details");
+    d.className = "topicGroup";
+    let s = document.createElement("summary");
+    s.innerHTML =
+      esc(c.name) + " <span class=\"topicGroupCount\">" + c.topics.length + " topics</span>";
+    d.appendChild(s);
+    let wrap = document.createElement("div");
+    wrap.className = "topicList";
+    c.topics.forEach((t) => {
+      let b = document.createElement("button");
+      b.className = "topicRow";
+      b.innerHTML =
+        "<span>" + esc(t.name) + "</span><span class=\"topicRowCount\">" + t.count + "</span>";
+      b.onclick = () => startTopic(c.id, t.id, c.name + " · " + t.name);
+      wrap.appendChild(b);
+    });
+    d.appendChild(wrap);
+    $("byTopic").appendChild(d);
+  });
+}
+function loadCategory(id) {
+  if (categoryCache[id]) return Promise.resolve(categoryCache[id]);
+  let c = manifest.categories.find((x) => x.id === id);
+  return fetch("questions/" + c.file)
+    .then((r) => r.json())
+    .then((qs) => (categoryCache[id] = qs));
+}
+function loadAll() {
+  return Promise.all(manifest.categories.map((c) => loadCategory(c.id)));
+}
+function assembleFullExam() {
+  let size = manifest.settings.examQuestions,
+    picks = [];
+  manifest.categories.forEach((c) => {
+    let pool = categoryCache[c.id].slice();
+    shuffle(pool);
+    picks.push(...pool.slice(0, Math.round((size * c.weight) / 100)));
+  });
+  if (picks.length > size) {
+    shuffle(picks);
+    picks = picks.slice(0, size);
+  } else if (picks.length < size) {
+    let rest = manifest.categories
+      .flatMap((c) => categoryCache[c.id])
+      .filter((q) => !picks.includes(q));
+    shuffle(rest);
+    picks.push(...rest.slice(0, size - picks.length));
+  }
+  return shuffle(picks);
+}
+function startFull() {
+  loadAll().then(() => startExam(assembleFullExam(), "Full exam"));
+}
+function startCategory(id, name) {
+  loadCategory(id).then((qs) => startExam(qs.slice(), name));
+}
+function startTopic(catId, topicId, label) {
+  loadCategory(catId).then((qs) =>
+    startExam(qs.filter((q) => q.topicId === topicId), label),
+  );
+}
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     let j = Math.floor(Math.random() * (i + 1));
@@ -55,21 +138,21 @@ function shuffle(arr) {
   }
   return arr;
 }
-function prepExam(src) {
-  let qs = JSON.parse(JSON.stringify(src.questions));
+function prepQuestions(src) {
+  let qs = JSON.parse(JSON.stringify(src));
   qs.forEach((q) => {
     let order = shuffle(q.options.map((_, i) => i));
     q.options = order.map((i) => q.options[i]);
     q.answer = order.indexOf(q.answer);
   });
-  shuffle(qs);
-  return Object.assign({}, src, { questions: qs });
+  return shuffle(qs);
 }
-function start(i, m) {
-  exam = prepExam(data.exams[i]);
-  mode = m;
-  totalQuestions = data.settings.totalQuestions;
-  totalSeconds = data.settings.totalSeconds;
+function startExam(qs, title) {
+  if (!qs.length) return;
+  exam = { title: title, questions: prepQuestions(qs) };
+  mode = selectedMode;
+  totalQuestions = exam.questions.length;
+  totalSeconds = manifest.settings.secondsPerQuestion * totalQuestions;
   answers = Array(totalQuestions).fill(null);
   revealed = Array(totalQuestions).fill(false);
   marked = Array(totalQuestions).fill(false);
@@ -79,7 +162,7 @@ function start(i, m) {
   $("reviewPage").classList.add("hidden");
   $("exam").classList.remove("hidden");
   $("title").textContent =
-    exam.title + (mode === "practice" ? " — Practice" : " — Timed Exam");
+    title + (mode === "practice" ? " — Practice" : " — Timed");
   clearInterval(timer);
   window.onbeforeunload = () => "";
   if (mode === "timed") {
@@ -471,9 +554,10 @@ function finish(auto) {
   exam.questions.forEach((x, i) => {
     let ok = answers[i] === x.answer;
     if (ok) score++;
-    topics[x.topic] ??= { c: 0, t: 0 };
-    topics[x.topic].t++;
-    if (ok) topics[x.topic].c++;
+    let key = x.category || x.topic;
+    topics[key] ??= { c: 0, t: 0 };
+    topics[key].t++;
+    if (ok) topics[key].c++;
   });
   $("resultTitle").textContent = auto ? "Time expired — Results" : "Results";
   let incorrect = answers.filter((a, i) => a !== null && a !== exam.questions[i].answer).length;

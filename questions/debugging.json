@@ -1,0 +1,602 @@
+[
+  {
+    "category": "Debugging",
+    "topic": "Crashes",
+    "topicId": "crashes",
+    "difficulty": "core",
+    "question": "What happens when the following code runs?\n\nvar name: String? = nil\nprint(\"Hello, \\(name!)\")",
+    "options": [
+      "It crashes at runtime with a fatal error: unexpectedly found nil while unwrapping an Optional value.",
+      "It prints \"Hello, nil\".",
+      "It prints \"Hello, \" with nothing after the comma.",
+      "It fails to compile."
+    ],
+    "answer": 0,
+    "explanation": "Force-unwrapping (`!`) a nil optional triggers a runtime trap; here name is nil, so the app crashes with the classic \"unexpectedly found nil\" fatal error."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Debugger Console",
+    "topicId": "debugger-console",
+    "difficulty": "core",
+    "question": "What is the bug in the following code?\n\nlet items = [\"a\", \"b\", \"c\"]\nfor i in 0...items.count {\n    print(items[i])\n}",
+    "options": [
+      "The loop should start at 1, not 0.",
+      "The range `0...items.count` is inclusive and goes one past the last valid index, causing an out-of-range crash on the final iteration.",
+      "`items.count` returns one less than the actual number of elements.",
+      "There is no bug; the code runs correctly."
+    ],
+    "answer": 1,
+    "explanation": "With 3 elements, valid indices are 0...2, but the closed range 0...items.count evaluates to 0...3, so accessing items[3] crashes with an index-out-of-range error."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Memory & ARC",
+    "topicId": "memory-arc",
+    "difficulty": "core",
+    "question": "What is the bug in the following code?\n\nclass Parent {\n    var child: Child?\n}\nclass Child {\n    var parent: Parent?\n}\nlet p = Parent()\nlet c = Child()\np.child = c\nc.parent = p",
+    "options": [
+      "This code fails to compile because classes cannot reference each other.",
+      "There is no bug; ARC automatically detects and breaks this cycle.",
+      "Parent and Child hold strong references to each other, creating a retain cycle that prevents both from being deallocated.",
+      "The bug is that `child` and `parent` should be declared as `let`, not `var`."
+    ],
+    "answer": 2,
+    "explanation": "Both properties are strong references by default, so Parent keeps Child alive and Child keeps Parent alive; ARC cannot break such cycles automatically, causing a memory leak. One side should typically be `weak`."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Crashes",
+    "topicId": "crashes",
+    "difficulty": "core",
+    "question": "What happens when the following code runs?\n\nlet a = 10\nlet b = 0\nprint(a / b)",
+    "options": [
+      "It prints `inf`.",
+      "It prints `0`.",
+      "It fails to compile.",
+      "It crashes at runtime with a fatal error: division by zero, because both operands are Ints."
+    ],
+    "answer": 3,
+    "explanation": "Unlike floating-point division, Int division by zero is not defined as infinity; Swift traps at runtime with a fatal error for integer division by zero."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Breakpoints",
+    "topicId": "breakpoints",
+    "difficulty": "core",
+    "question": "In Xcode, what is the primary purpose of setting a breakpoint on a line of code?",
+    "options": [
+      "To pause program execution at that line so you can inspect variable state and step through subsequent code.",
+      "To permanently disable that line of code from executing.",
+      "To automatically fix compiler errors on that line.",
+      "To log a message to the console without pausing execution (that requires a separate feature)."
+    ],
+    "answer": 0,
+    "explanation": "A breakpoint's core purpose is to halt execution at a chosen line, giving you a chance to examine memory, variables, and the call stack before continuing."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Stepping",
+    "topicId": "stepping",
+    "difficulty": "core",
+    "question": "While paused at a line that calls a function, what is the difference between \"Step Over\" and \"Step Into\" in the Xcode debugger?",
+    "options": [
+      "Step Over enters the called function, while Step Into skips it entirely.",
+      "Step Into enters the called function's implementation line by line, while Step Over executes the entire function call in one step and pauses at the next line in the current scope.",
+      "They behave identically for functions but differently for closures.",
+      "Step Into runs the app to completion, while Step Over runs to the next breakpoint."
+    ],
+    "answer": 1,
+    "explanation": "Step Into descends into the callee so you can trace its internals, while Step Over treats the call as a single step and simply resumes at the next line after it returns."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Breakpoints",
+    "topicId": "breakpoints",
+    "difficulty": "core",
+    "question": "What does clicking \"Step Out\" do while paused inside a function during a debug session?",
+    "options": [
+      "It exits the debugger entirely and resumes normal execution to completion.",
+      "It steps into the function's caller line by line from the very beginning.",
+      "It runs the remainder of the current function and pauses immediately after execution returns to its caller.",
+      "It removes the current breakpoint."
+    ],
+    "answer": 2,
+    "explanation": "Step Out finishes executing the current function (running through any remaining lines) and then pauses right after control returns to the calling code."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Breakpoints",
+    "topicId": "breakpoints",
+    "difficulty": "core",
+    "question": "What does the \"Continue\" (Resume) button do in the Xcode debugger after execution has paused at a breakpoint?",
+    "options": [
+      "It steps one line forward and pauses again immediately.",
+      "It restarts the app from the beginning.",
+      "It disables all breakpoints for the rest of the session.",
+      "It resumes normal program execution until the next breakpoint is hit or the program finishes."
+    ],
+    "answer": 3,
+    "explanation": "Continue lets the program run normally again from where it was paused, stopping only when another breakpoint is hit or the program terminates."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Debugger Console",
+    "topicId": "debugger-console",
+    "difficulty": "core",
+    "question": "In the Xcode debugger console, what does typing `po someObject` do?",
+    "options": [
+      "It prints the description of `someObject` by evaluating it with the LLDB `expression` command and calling its debug description.",
+      "It sets a breakpoint on `someObject`'s deinitializer.",
+      "It pauses execution the next time `someObject` changes.",
+      "It permanently overwrites `someObject`'s value with `nil`."
+    ],
+    "answer": 0,
+    "explanation": "`po` (print object) is an LLDB alias that evaluates an expression and prints its human-readable description, commonly used to inspect objects while paused."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Breakpoints",
+    "topicId": "breakpoints",
+    "difficulty": "core",
+    "question": "You want a breakpoint inside a loop to pause execution only when a loop variable `index` equals 42, out of thousands of iterations. What is the most efficient way to achieve this in Xcode?",
+    "options": [
+      "Manually click Continue thousands of times until index reaches 42.",
+      "Right-click the breakpoint and add a condition, such as `index == 42`, so it only pauses when that condition is true.",
+      "Wrap the code in an `if index == 42` statement and set a normal breakpoint inside it, then remove the code afterward.",
+      "Use a symbolic breakpoint instead, since conditional breakpoints do not support integer comparisons."
+    ],
+    "answer": 1,
+    "explanation": "Conditional breakpoints let you specify a boolean expression that Xcode evaluates each time the breakpoint is hit, only pausing when it's true, avoiding manual stepping or temporary code changes."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Breakpoints",
+    "topicId": "breakpoints",
+    "difficulty": "core",
+    "question": "Your app crashes somewhere deep in framework code with an unhandled Swift error or Objective-C exception, but the debugger stops at `main` with no useful stack trace. What should you add to get a precise stack trace at the moment the exception is thrown?",
+    "options": [
+      "A watchpoint on the `main` function.",
+      "A symbolic breakpoint on `viewDidLoad`.",
+      "An Exception Breakpoint (All Exceptions), added via the breakpoint navigator's \"+\" button.",
+      "A regular line breakpoint on the first line of `main.swift`."
+    ],
+    "answer": 2,
+    "explanation": "An Exception Breakpoint pauses execution at the exact moment an exception is thrown, before the stack unwinds, giving you an accurate stack trace instead of the generic crash location."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Breakpoints",
+    "topicId": "breakpoints",
+    "difficulty": "core",
+    "question": "What is a symbolic breakpoint used for in Xcode?",
+    "options": [
+      "Pausing execution only when a specific value in memory changes.",
+      "Automatically breaking whenever any exception is thrown.",
+      "Marking a line of code with a symbol (like a flag emoji) for visual reference only.",
+      "Pausing execution whenever a specified function or method by name is called, even if you don't have its source code or line number (e.g., a system framework method)."
+    ],
+    "answer": 3,
+    "explanation": "Symbolic breakpoints match by function/method name rather than by file and line, which is useful for breaking inside framework or library code you don't have source access to."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Watchpoints",
+    "topicId": "watchpoints",
+    "difficulty": "core",
+    "question": "What does a watchpoint do in the Xcode/LLDB debugger?",
+    "options": [
+      "It pauses execution whenever the value stored at a specific memory location (e.g., a variable) changes, regardless of which line changed it.",
+      "It pauses execution whenever a specific function is called.",
+      "It logs every line of code executed to the console.",
+      "It highlights a variable in the source editor without affecting execution."
+    ],
+    "answer": 0,
+    "explanation": "A watchpoint monitors a memory address and pauses execution the moment its value is written to, which is useful for tracking down unexpected mutations regardless of which code path caused them."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Memory & ARC",
+    "topicId": "memory-arc",
+    "difficulty": "core",
+    "question": "What does the \"Debug View Hierarchy\" feature in Xcode allow you to do?",
+    "options": [
+      "Automatically fix Auto Layout constraint conflicts without developer input.",
+      "Inspect a running app's UI as a 3D exploded view of its view/layer stack, to diagnose layout, overlap, or constraint issues.",
+      "Step through SwiftUI view body execution line by line.",
+      "Rename views across the entire project."
+    ],
+    "answer": 1,
+    "explanation": "Debug View Hierarchy captures the live view tree and renders it as an interactive 3D exploded stack, making overlapping views, incorrect frames, and constraint problems easy to spot."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Crashes",
+    "topicId": "crashes",
+    "difficulty": "core",
+    "question": "What is the most likely cause of the crash \"Fatal error: Index out of range\" in the following code?\n\nfunc lastElement<T>(of array: [T]) -> T {\n    return array[array.count - 1]\n}\nlet result = lastElement(of: [Int]())",
+    "options": [
+      "The generic constraint `<T>` is missing `Equatable`.",
+      "`array.count` returns the wrong value for empty arrays.",
+      "An empty array is passed in, so `array.count - 1` becomes -1, which is not a valid index.",
+      "The function should use `array.count` directly instead of `array.count - 1`."
+    ],
+    "answer": 2,
+    "explanation": "An empty array has count 0, so `array.count - 1` is -1, an invalid index; the function needs a guard for the empty case before subscripting."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Crashes",
+    "topicId": "crashes",
+    "difficulty": "core",
+    "question": "What happens when the following code runs, given `value` is actually a String?\n\nlet value: Any = \"hello\"\nlet number = value as! Int\nprint(number)",
+    "options": [
+      "It prints 0, since failed numeric casts default to zero.",
+      "It prints \"hello\" because Any bypasses type checking.",
+      "It fails to compile because `as!` cannot be used with `Any`.",
+      "It crashes at runtime with a fatal error because the forced downcast `as!` fails when the actual type doesn't match."
+    ],
+    "answer": 3,
+    "explanation": "`as!` forces a downcast and traps at runtime if the value's actual type doesn't match the target type; here a String cannot be cast to Int, so the app crashes."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Breakpoints",
+    "topicId": "breakpoints",
+    "difficulty": "core",
+    "question": "You want to print a variable's value every time a line executes, without pausing the app or adding a permanent `print` statement to your source code. What Xcode feature accomplishes this?",
+    "options": [
+      "A breakpoint with a \"Log Message\" action (and \"Automatically continue after evaluating\" checked), sometimes called a logpoint.",
+      "A watchpoint set to \"log only\" mode.",
+      "A symbolic breakpoint on the `print` function.",
+      "Adding `#if DEBUG print(...) #endif` around the line."
+    ],
+    "answer": 0,
+    "explanation": "Editing a breakpoint to add a \"Log Message\" action and enabling automatic continuation turns it into a logpoint: it logs the message and keeps running, without modifying source code."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Memory & ARC",
+    "topicId": "memory-arc",
+    "difficulty": "core",
+    "question": "In the following code, what happens if `parent` is deallocated while `child` is still alive and something accesses `child.parent`?\n\nclass Child {\n    unowned var parent: Parent\n    init(parent: Parent) { self.parent = parent }\n}",
+    "options": [
+      "`child.parent` safely becomes nil, since `unowned` behaves like a weak optional.",
+      "Accessing `child.parent` after `parent` has been deallocated causes a crash, because `unowned` references assume the referenced object always outlives them and perform no nil check.",
+      "Nothing happens; ARC keeps `parent` alive as long as `child` references it, `unowned` or not.",
+      "This code fails to compile because `unowned` requires an optional type."
+    ],
+    "answer": 1,
+    "explanation": "Unlike `weak`, `unowned` references are non-optional and unchecked; if the referenced object has already been deallocated, accessing it is undefined behavior and typically crashes."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Threading",
+    "topicId": "threading",
+    "difficulty": "core",
+    "question": "An app intermittently crashes or shows UI glitches with a console warning like \"UI API called on a background thread\" after a network call completes. What is the most likely fix?",
+    "options": [
+      "Add a `sleep()` call before updating the UI to give the background thread more time.",
+      "Mark the UI properties as `@escaping`.",
+      "Dispatch the UI-updating code back to the main thread, e.g. using `DispatchQueue.main.async`, before touching any UI state.",
+      "Replace the network call with a synchronous version to avoid threading altogether."
+    ],
+    "answer": 2,
+    "explanation": "UIKit and SwiftUI UI updates must happen on the main thread; network completion handlers typically run on a background queue, so UI-affecting code must be dispatched back to the main thread first."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Crashes",
+    "topicId": "crashes",
+    "difficulty": "core",
+    "question": "The following recursive function crashes with a stack overflow for any positive input. What is the bug?\n\nfunc factorial(_ n: Int) -> Int {\n    return n * factorial(n - 1)\n}",
+    "options": [
+      "The multiplication should be `factorial(n) * n` instead of `n * factorial(n - 1)`.",
+      "`Int` cannot hold factorial results, causing overflow that is misreported as a stack overflow.",
+      "The function needs to be marked `mutating`.",
+      "There is no base case (e.g., `if n <= 1 { return 1 }`), so the recursion never terminates."
+    ],
+    "answer": 3,
+    "explanation": "Without a terminating base case, factorial keeps calling itself with smaller and smaller (eventually negative) values indefinitely, exhausting the call stack and crashing."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Memory & ARC",
+    "topicId": "memory-arc",
+    "difficulty": "advanced",
+    "question": "An app crashes intermittently with `EXC_BAD_ACCESS`, but only occasionally and never at the same spot in the code. What is the most likely underlying cause, and what technique best confirms it?",
+    "options": [
+      "The app has a Swift compiler bug that only Apple can fix",
+      "It's caused by a naming collision between two variables with the same name in different scopes",
+      "`EXC_BAD_ACCESS` always indicates a stack overflow from infinite recursion",
+      "Memory is being accessed after the object that owned it was deallocated (e.g. via an `unowned` or unsafe reference); enabling Zombie Objects or Address Sanitizer will typically turn the vague crash into a clear 'message sent to deallocated instance' error"
+    ],
+    "answer": 3,
+    "explanation": "Intermittent, timing-dependent `EXC_BAD_ACCESS` crashes are the classic signature of use-after-free: something is touching memory that ARC has already deallocated. Zombie Objects (which keep deallocated instances around as 'zombies' that log when messaged) or Address Sanitizer (which detects use-after-free at the point it happens) turn this vague symptom into an actionable, exact crash location."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Crashes",
+    "topicId": "crashes",
+    "difficulty": "advanced",
+    "question": "A force-unwrap of a `nil` optional crashes the app, but the debugger stops with no highlighted line in your own source, showing only system/runtime frames. What is the best next step to pinpoint the exact line?",
+    "options": [
+      "Add an Exception Breakpoint (or a Swift Error breakpoint) so the debugger pauses precisely where the trap occurs, then inspect the backtrace for the first frame belonging to your own module",
+      "Restart Xcode, since the missing line means the project's derived data is corrupted",
+      "Add `print` statements to every optional unwrap in the entire codebase and re-run",
+      "Switch the build configuration to Release, since force-unwrap crashes only show line numbers in Release builds"
+    ],
+    "answer": 0,
+    "explanation": "When a crash occurs inside optimized or runtime code without a directly attributable source line, breaking at the moment of the trap (via an exception breakpoint) and then reading up the call stack for the first frame in your own module lets you find the actual unwrap responsible, rather than relying on the top-level crash symbol alone."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Threading",
+    "topicId": "threading",
+    "difficulty": "advanced",
+    "question": "You suspect an object is being deallocated earlier than expected, causing a delegate callback to silently never fire. What debugging technique directly confirms this?",
+    "options": [
+      "Check the Report navigator for compiler warnings about the object",
+      "Set a breakpoint inside the object's `deinit` method to see exactly when (and whether) it gets deallocated, and inspect the call stack at that point",
+      "Add a `print` statement inside every method of every other class in the app",
+      "Enable Thread Sanitizer, since premature deallocation is always a data race"
+    ],
+    "answer": 1,
+    "explanation": "A breakpoint placed directly in `deinit` will pause execution the moment the object is deallocated, and the call stack at that point shows exactly what triggered the deallocation — confirming (and explaining) that it happened earlier than expected."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Breakpoints",
+    "topicId": "breakpoints",
+    "difficulty": "advanced",
+    "question": "A breakpoint is hit correctly, but the bug you're chasing only manifests on, say, the 50th iteration of a loop, and stepping through the first 49 hits manually is tedious. Which breakpoint feature solves this?",
+    "options": [
+      "Enable 'Automatically continue after evaluating' with no other configuration",
+      "Move the breakpoint to the end of the loop instead of the beginning",
+      "Set an ignore count on the breakpoint so it only actually stops after being hit a specified number of times",
+      "Convert the breakpoint into a symbolic breakpoint"
+    ],
+    "answer": 2,
+    "explanation": "A breakpoint's ignore count lets you specify how many times it should be hit and silently skipped before it actually stops execution, which is exactly suited to reaching a specific late iteration without manually continuing through every earlier hit."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Breakpoints",
+    "topicId": "breakpoints",
+    "difficulty": "advanced",
+    "question": "You want to inspect a variable's value at a specific line hundreds of times during a test run, without recompiling the app or leaving `print` statements in the shipped code. What is the best tool for this?",
+    "options": [
+      "A watchpoint on the variable's memory address",
+      "An exception breakpoint set to 'All Exceptions'",
+      "The Memory Graph Debugger",
+      "A log message breakpoint (a breakpoint configured to print a message and automatically continue, instead of stopping execution)"
+    ],
+    "answer": 3,
+    "explanation": "A log message breakpoint prints a formatted message to the console (optionally including variable values) and then automatically continues, giving you `print`-like visibility without modifying source code or requiring a rebuild, and it can be easily disabled or removed afterward."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Threading",
+    "topicId": "threading",
+    "difficulty": "advanced",
+    "question": "Two threads append to the same shared array concurrently without any lock or synchronization, causing rare, hard-to-reproduce crashes. Which diagnostic tool is specifically designed to catch this class of bug, and how does it differ from Address Sanitizer?",
+    "options": [
+      "Thread Sanitizer detects data races between threads (unsynchronized concurrent access to shared memory); Address Sanitizer instead detects memory-safety errors like buffer overflows and use-after-free",
+      "Address Sanitizer detects data races; Thread Sanitizer detects buffer overflows",
+      "They are two names for the same diagnostic tool with no functional difference",
+      "Neither tool can detect this kind of bug; only manual code review can"
+    ],
+    "answer": 0,
+    "explanation": "Thread Sanitizer (TSan) instruments memory accesses across threads specifically to flag data races — exactly the scenario of two threads mutating shared state without synchronization. Address Sanitizer (ASan) targets a different class of bugs: out-of-bounds accesses, use-after-free, and similar memory-corruption issues."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Threading",
+    "topicId": "threading",
+    "difficulty": "advanced",
+    "question": "A view's UI fails to update after a property is mutated inside a `DispatchQueue.global().async { }` block. What is the correct fix?",
+    "options": [
+      "Nothing is wrong; UI updates work correctly from any thread as long as the property is `@Published`",
+      "Dispatch the property mutation (or at least the UI-driving part of it) back onto the main thread, e.g. wrapping it in `DispatchQueue.main.async { }`, since UI updates must happen on the main thread",
+      "Add a `sleep()` call after the mutation to give the UI time to catch up",
+      "Switch the property's type from `var` to `let`"
+    ],
+    "answer": 1,
+    "explanation": "UIKit and SwiftUI both require that UI-affecting state changes and rendering happen on the main thread. Mutating from a background queue can silently fail to trigger a UI refresh (or, worse, cause undefined behavior), so the fix is to hop back to the main thread before making the change that drives the UI."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Memory & ARC",
+    "topicId": "memory-arc",
+    "difficulty": "advanced",
+    "question": "What is the purpose of enabling 'Zombie Objects' and 'Malloc Scribble' in a scheme's diagnostics, and how do they help debug memory issues?",
+    "options": [
+      "Zombie Objects prevents any object from ever being deallocated, eliminating use-after-free bugs entirely",
+      "Malloc Scribble encrypts memory to prevent security vulnerabilities",
+      "Zombie Objects keeps deallocated objects around as 'zombies' that log a clear error when messaged instead of crashing ambiguously, and Malloc Scribble fills freed memory with a recognizable pattern so reads of freed memory are easier to spot",
+      "They both automatically fix retain cycles at runtime"
+    ],
+    "answer": 2,
+    "explanation": "Zombie Objects intercepts messages sent to deallocated instances and reports a specific, actionable error ('message sent to deallocated instance') instead of an ambiguous crash. Malloc Scribble overwrites freed memory with a known byte pattern, making it much easier to recognize when code accidentally reads from memory that has already been freed."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Crashes",
+    "topicId": "crashes",
+    "difficulty": "advanced",
+    "question": "When reading a crash's backtrace, the first several frames are all inside system frameworks (like `libswiftCore.dylib` or `libobjc.A.dylib`). What is the right approach to find the actual cause in your own code?",
+    "options": [
+      "Ignore the backtrace entirely and rely only on which file was open in the editor when the crash occurred",
+      "Assume the crash is unfixable because it originates in a system framework",
+      "Only look at the very last frame in the backtrace, since that's always where the bug is",
+      "Scan down the backtrace for the first frame that references a symbol from your app's own module — that's typically the code responsible for triggering the crash"
+    ],
+    "answer": 3,
+    "explanation": "Crashes often surface a stack of internal runtime/framework frames on top of (or below, depending on read direction) the actual application code that triggered them. Reading through the backtrace to find the first frame belonging to your own module identifies the call site responsible, even when several system frames sit above it."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Debugger Console",
+    "topicId": "debugger-console",
+    "difficulty": "advanced",
+    "question": "In the LLDB variables view, you pause execution inside a closure. How can you inspect the values it captured from its enclosing scope, such as a captured local variable or `self`?",
+    "options": [
+      "Captured variables (including `self`, if captured) appear as entries you can expand directly in the variables view while paused inside the closure's body",
+      "Captured variables are never visible in the debugger; you must add explicit `print` statements for each one",
+      "You must first convert the closure to a named function before its captures become inspectable",
+      "Captured variables can only be inspected using Instruments, not LLDB"
+    ],
+    "answer": 0,
+    "explanation": "While stopped inside a closure, LLDB's variables view shows the closure's captured state alongside its local variables — including any captured `self` or outer local variables — letting you inspect their current values directly, the same as with a function's locals."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Memory & ARC",
+    "topicId": "memory-arc",
+    "difficulty": "advanced",
+    "question": "You want to find retain cycles that are keeping several view controllers alive after they should have been deallocated. Which built-in Xcode tool is designed specifically for this?",
+    "options": [
+      "The Version Editor's blame view",
+      "The Memory Graph Debugger (Debug Memory Graph), which visualizes live object references and flags objects that appear to be leaked with a purple exclamation mark",
+      "The Issue Navigator's warnings list",
+      "The Test Navigator's coverage report"
+    ],
+    "answer": 1,
+    "explanation": "The Memory Graph Debugger renders a live graph of object references in the running app and specifically highlights objects it suspects are leaked (e.g. due to a retain cycle) with a purple exclamation icon, making it purpose-built for diagnosing cycles like this."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Breakpoints",
+    "topicId": "breakpoints",
+    "difficulty": "advanced",
+    "question": "A bug only happens when a loop variable equals a very specific value (e.g. `index == 4137`) buried deep in a large dataset. What is a more efficient debugging approach than manually continuing past thousands of earlier iterations?",
+    "options": [
+      "Enable Thread Sanitizer, since data-dependent bugs are always race conditions",
+      "Use the Report navigator to search build logs for the value 4137",
+      "Add a conditional breakpoint on that line with the condition `index == 4137`, so execution only stops when the condition is true",
+      "Set a symbolic breakpoint on `main`"
+    ],
+    "answer": 2,
+    "explanation": "A conditional breakpoint lets you specify a boolean expression (like `index == 4137`) that is evaluated every time the breakpoint location is hit; execution only actually stops when the condition evaluates true, avoiding the need to manually step through every prior iteration."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Breakpoints",
+    "topicId": "breakpoints",
+    "difficulty": "advanced",
+    "question": "You suspect an unexpected piece of code somewhere in a large codebase is mutating a specific property at a moment it shouldn't. You don't know which call site is responsible. What LLDB feature directly helps here?",
+    "options": [
+      "A log message breakpoint placed on every function in the codebase",
+      "The Report navigator's build timing analysis",
+      "Increasing the breakpoint's ignore count to a very large number",
+      "A watchpoint on that property's memory/storage, which pauses execution automatically whenever its value changes, regardless of which code performs the write"
+    ],
+    "answer": 3,
+    "explanation": "A watchpoint monitors a specific piece of memory (such as a property's backing storage) and halts execution the instant its value changes, no matter where in the code that write originates — which is exactly suited to tracking down an unknown mutator."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Crashes",
+    "topicId": "crashes",
+    "difficulty": "advanced",
+    "question": "A crash log shows `EXC_BAD_ACCESS` triggered by accessing a property through an `unowned` reference to an object that had already been deallocated. What is generally the safer fix, if the reference's lifetime relative to its owner isn't fully guaranteed?",
+    "options": [
+      "Change the reference to `weak` (making it optional) and handle the `nil` case explicitly, since `weak` safely becomes `nil` instead of dangling when the referenced object is deallocated",
+      "Change the reference to a strong reference to eliminate the crash entirely, regardless of retain cycle risk",
+      "Leave it as `unowned`, since `unowned` references are always guaranteed to be safe in Swift",
+      "Force-unwrap the property access with `!` so the crash message is clearer"
+    ],
+    "answer": 0,
+    "explanation": "`unowned` assumes the referenced object will always outlive the reference and does not become `nil` — accessing it after deallocation causes an immediate crash. `weak` instead becomes `nil` automatically upon deallocation, which is safer whenever the referenced object's lifetime isn't strictly guaranteed to exceed the reference's."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Threading",
+    "topicId": "threading",
+    "difficulty": "advanced",
+    "question": "Xcode logs a purple runtime warning: 'Publishing changes from background threads is not allowed.' What does this indicate, and what's the fix?",
+    "options": [
+      "The warning is purely cosmetic and never indicates an actual bug",
+      "An `@Published` property on an `ObservableObject` is being mutated from a background thread instead of the main thread; the fix is to perform the mutation on the main thread, e.g. via `DispatchQueue.main.async` or by isolating the type to `@MainActor`",
+      "The app is using too many `@Published` properties in a single `ObservableObject` and needs to reduce the count",
+      "SwiftUI previews are running in a different process than the simulator"
+    ],
+    "answer": 1,
+    "explanation": "This runtime warning fires specifically when a `@Published` property's `objectWillChange` notification (which SwiftUI relies on to schedule view updates) is sent from a thread other than the main thread. The correct fix is ensuring the mutation itself happens on the main thread."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Breakpoints",
+    "topicId": "breakpoints",
+    "difficulty": "advanced",
+    "question": "You want to pause execution the moment any subclass of `UIViewController` calls `viewDidLoad`, without adding a breakpoint to every individual override in the codebase. Which Xcode feature enables this?",
+    "options": [
+      "An exception breakpoint configured for Objective-C exceptions only",
+      "The Test Navigator's breakpoint list",
+      "A symbolic breakpoint set on the symbol `-[UIViewController viewDidLoad]`, which triggers for any object (including subclasses) that invokes that method",
+      "A conditional breakpoint placed inside `AppDelegate`"
+    ],
+    "answer": 2,
+    "explanation": "A symbolic breakpoint targets a method/function by its symbol name rather than a specific source line, so it fires whenever that symbol is invoked anywhere in the process — including through dynamic dispatch from any subclass override — without needing a breakpoint in every individual file."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Threading",
+    "topicId": "threading",
+    "difficulty": "advanced",
+    "question": "Unit tests pass reliably when run individually, but fail intermittently when the full test suite runs, and the failures depend on which order tests execute in. What is the most likely root cause, and what technique helps confirm it?",
+    "options": [
+      "The test runner itself is non-deterministic and cannot be trusted",
+      "This always indicates a Thread Sanitizer data race and nothing else",
+      "Xcode's test navigator caches stale results, so the fix is to clear derived data",
+      "Shared mutable state (such as a singleton) is leaking between tests; running the test suite with randomized execution order helps surface and confirm this kind of order-dependency"
+    ],
+    "answer": 3,
+    "explanation": "Order-dependent test failures are the classic symptom of tests unintentionally sharing mutable state (often via a singleton or other global) rather than each starting from a clean, isolated state. Running the suite with randomized test order is a standard technique to surface and confirm this kind of hidden coupling."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Crashes",
+    "topicId": "crashes",
+    "difficulty": "advanced",
+    "question": "A crash report shows the exception type `EXC_BREAKPOINT` (or `SIGTRAP`) rather than `EXC_BAD_ACCESS`. In Swift, what commonly triggers this, distinct from a dangling-pointer crash?",
+    "options": [
+      "Runtime-enforced traps such as force-unwrapping a `nil` optional, an integer overflow, or an explicit `fatalError()` call — these are intentional safety checks aborting the program, not memory corruption",
+      "It exclusively indicates a hardware failure on the physical device",
+      "It means the app exceeded its memory footprint limit",
+      "It only occurs when a breakpoint was accidentally left enabled in a shipped build"
+    ],
+    "answer": 0,
+    "explanation": "`EXC_BREAKPOINT`/`SIGTRAP` in a Swift crash typically comes from the language's own runtime safety traps — like unwrapping `nil`, arithmetic overflow with the non-overflow operators, or an explicit `fatalError`/`precondition` failure — which deliberately abort execution, as opposed to `EXC_BAD_ACCESS`, which indicates invalid memory access."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Memory & ARC",
+    "topicId": "memory-arc",
+    "difficulty": "advanced",
+    "question": "While debugging, you want to see the exact sequence and duration of every build, run, and test action from earlier in your session, including full compiler output for a build that already finished. Where do you find this?",
+    "options": [
+      "The Find navigator's search history",
+      "The Report navigator, which keeps a history of past build/run/test logs and lets you view their detailed transcripts",
+      "The Issue navigator, which only shows current, unresolved warnings and errors",
+      "The Debug navigator, which only shows live process/thread/memory info for the currently running app"
+    ],
+    "answer": 1,
+    "explanation": "The Report navigator (⌘9) retains a chronological history of build, run, test, and archive actions, and opening any entry reveals its full transcript/log — useful for reviewing something that already completed, unlike the Issue navigator, which reflects only the current state."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Memory & ARC",
+    "topicId": "memory-arc",
+    "difficulty": "advanced",
+    "question": "You add `[weak self]` to a closure to try to break what you believe is a retain cycle, but the owning object still never deallocates. What is a good next debugging step to find the real cause?",
+    "options": [
+      "Assume Swift's ARC has a bug and file a bug report with Apple",
+      "Restart the app, since the object will deallocate correctly on the next launch",
+      "Open the Memory Graph Debugger to inspect the actual live reference graph and identify which other strong reference is still keeping the object alive",
+      "Add more `[weak self]` captures to every other closure in the file, even ones unrelated to this object"
+    ],
+    "answer": 2,
+    "explanation": "Fixing one suspected capture doesn't guarantee it was the only strong reference involved. The Memory Graph Debugger shows the actual live object graph at runtime, letting you see every remaining strong reference path into the object and identify the one still keeping it alive."
+  }
+]

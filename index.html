@@ -16,16 +16,31 @@
             <div id="timer" class="hidden"></div>
         </header>
         <main>
-            <section id="start" class="card">
-                <h2>Choose an exam</h2>
-                <p id="introMeta">Loading exam data…</p>
-                <div id="buttons"></div>
-                <p class="note">
-                    Hard mode emphasizes tracing, optionals, state ownership,
-                    collections, type relationships and debugging. Practice
-                    mode gives instant feedback and has no timer; Timed Exam
-                    matches real test conditions.
-                </p>
+            <section id="start">
+                <div class="card">
+                    <h2>Choose how to practice</h2>
+                    <div id="modeToggle" class="modeToggle"></div>
+                    <p id="modeExplain" class="modeExplain"></p>
+                </div>
+                <div class="card">
+                    <h2>Full exam</h2>
+                    <p class="muted">
+                        A fresh mix of questions drawn across all five domains at
+                        real exam weighting — different every attempt.
+                    </p>
+                    <div id="fullExam"></div>
+                </div>
+                <div class="card">
+                    <h2>Practice by category</h2>
+                    <p class="muted">Drill one of the five exam domains.</p>
+                    <div id="byCategory" class="catGrid"></div>
+                </div>
+                <div class="card">
+                    <h2>Practice by topic</h2>
+                    <p class="muted">Zero in on a specific topic.</p>
+                    <div id="byTopic"></div>
+                </div>
+                <div id="startError"></div>
             </section>
             <section id="exam" class="hidden">
                 <div class="card bar">

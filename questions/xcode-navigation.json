@@ -1,0 +1,302 @@
+[
+  {
+    "category": "Xcode Navigation",
+    "topic": "Editors",
+    "topicId": "editors",
+    "difficulty": "core",
+    "question": "What does the jump bar at the top of the Xcode editor allow you to do?",
+    "options": [
+      "Quickly navigate between files, and jump to a specific symbol (type, method, or property) within the current file, via a breadcrumb-style path.",
+      "Switch between light and dark interface themes.",
+      "Jump directly to the last line where a build error occurred, and only that.",
+      "Toggle between the Standard editor and the Assistant editor exclusively."
+    ],
+    "answer": 0,
+    "explanation": "The jump bar shows a breadcrumb trail of the current file's location and lets you quickly switch files or jump to any symbol defined within the open file."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Keyboard Shortcuts",
+    "topicId": "keyboard-shortcuts",
+    "difficulty": "core",
+    "question": "What is the default keyboard shortcut in Xcode to build and run the current scheme?",
+    "options": [
+      "⌘B",
+      "⌘R",
+      "⌘U",
+      "⌘."
+    ],
+    "answer": 1,
+    "explanation": "⌘R is the standard shortcut for Run, which builds the current scheme (if needed) and launches it."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Keyboard Shortcuts",
+    "topicId": "keyboard-shortcuts",
+    "difficulty": "core",
+    "question": "Which keyboard shortcut builds the project without running it?",
+    "options": [
+      "⌘R",
+      "⌘⇧O",
+      "⌘B",
+      "⌘."
+    ],
+    "answer": 2,
+    "explanation": "⌘B triggers a build of the current scheme without launching the resulting app, unlike ⌘R which builds and then runs."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Keyboard Shortcuts",
+    "topicId": "keyboard-shortcuts",
+    "difficulty": "core",
+    "question": "Which keyboard shortcut runs the project's test suite in Xcode?",
+    "options": [
+      "⌘R",
+      "⌘B",
+      "⌘⇧K",
+      "⌘U"
+    ],
+    "answer": 3,
+    "explanation": "⌘U is the default shortcut for Test, running the project's configured unit and UI tests."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Keyboard Shortcuts",
+    "topicId": "keyboard-shortcuts",
+    "difficulty": "core",
+    "question": "Which keyboard shortcut stops the currently running app in Xcode?",
+    "options": [
+      "⌘.",
+      "⌘R",
+      "⌘⇧R",
+      "⌘Q"
+    ],
+    "answer": 0,
+    "explanation": "⌘. (Command-period) is the standard shortcut to stop the currently running or building scheme."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Keyboard Shortcuts",
+    "topicId": "keyboard-shortcuts",
+    "difficulty": "core",
+    "question": "Which Xcode feature, opened with ⌘⇧O, lets you quickly jump to any file, class, or method by typing its name?",
+    "options": [
+      "Quick Help",
+      "Open Quickly",
+      "Find Navigator",
+      "Source Control Navigator"
+    ],
+    "answer": 1,
+    "explanation": "Open Quickly (⌘⇧O) brings up a fuzzy-search field for jumping directly to any file or symbol in the project by name."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Navigators",
+    "topicId": "navigators",
+    "difficulty": "core",
+    "question": "Which navigator pane in Xcode's left sidebar lists all breakpoints in the project and lets you enable, disable, or edit them?",
+    "options": [
+      "The Issue Navigator",
+      "The Project Navigator",
+      "The Breakpoint Navigator",
+      "The Debug Navigator"
+    ],
+    "answer": 2,
+    "explanation": "The Breakpoint Navigator lists every breakpoint across the project in one place, letting you toggle, edit conditions on, or delete them."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Navigators",
+    "topicId": "navigators",
+    "difficulty": "core",
+    "question": "Where do compiler warnings and errors appear after a build, in Xcode's navigator sidebar?",
+    "options": [
+      "The Debug Navigator, which only shows live memory and CPU usage.",
+      "The Breakpoint Navigator.",
+      "The Report Navigator only, never in the sidebar.",
+      "The Issue Navigator"
+    ],
+    "answer": 3,
+    "explanation": "The Issue Navigator collects and organizes all compiler warnings and errors produced by the most recent build, letting you click through to each affected line."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Keyboard Shortcuts",
+    "topicId": "keyboard-shortcuts",
+    "difficulty": "core",
+    "question": "What is a common use of the Assistant Editor in Xcode (opened via the tuxedo/bowtie icon or ⌥⌘Return)?",
+    "options": [
+      "Viewing a related file side by side with the current one, such as a SwiftUI preview, a header, or a storyboard's connected code.",
+      "Running unit tests in a separate sandboxed window.",
+      "Automatically formatting code according to a style guide.",
+      "Comparing two branches in source control side by side."
+    ],
+    "answer": 0,
+    "explanation": "The Assistant Editor splits the editor to show a related file alongside the current one, commonly used for SwiftUI previews, a counterpart header file, or a storyboard's connected source."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Navigators",
+    "topicId": "navigators",
+    "difficulty": "core",
+    "question": "Which navigator would you open to view a live graph of the running app's CPU, memory, and energy usage during a debug session?",
+    "options": [
+      "The Project Navigator",
+      "The Debug Navigator",
+      "The Symbol Navigator",
+      "The Report Navigator"
+    ],
+    "answer": 1,
+    "explanation": "The Debug Navigator shows live performance gauges (CPU, memory, energy, disk, network) for the running app during a debug session, alongside the thread and variable views."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Keyboard Shortcuts",
+    "topicId": "keyboard-shortcuts",
+    "difficulty": "advanced",
+    "question": "While reading a function, you Command-click (⌘-click) a called function's name to jump to its definition in another file. After reviewing it, what is the fastest way to return to exactly where you were before the jump?",
+    "options": [
+      "Use Find in Project to search for a unique string from the original line",
+      "Close and reopen Xcode, which resets the editor to the last-saved cursor position",
+      "Use the Navigate Back command (the back arrow in the jump bar, or its keyboard shortcut) to return to the previous location in your navigation history",
+      "Manually reopen the original file from the Project navigator and scroll to find the same line again"
+    ],
+    "answer": 2,
+    "explanation": "⌘-click jumping and the Navigate Back/Forward commands work together as a history stack, similar to a web browser: jumping to a definition pushes your prior location onto that history, and Navigate Back pops you right back to it without manual searching."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Editors",
+    "topicId": "editors",
+    "difficulty": "advanced",
+    "question": "What does Xcode's 'Related Items' menu (the small icon in the jump bar at the top of the editor) let you quickly do for the file or symbol currently open?",
+    "options": [
+      "Rename the current symbol across the entire project",
+      "Compare the current file against a previous Git commit",
+      "Open the current file's build settings",
+      "Jump to related items like superclasses/subclasses, callers, callees, or associated tests for the current symbol, without manually searching the project"
+    ],
+    "answer": 3,
+    "explanation": "The Related Items menu surfaces contextually relevant navigation targets for the current file or symbol — such as its superclass, subclasses, counterpart tests, or callers/callees — as a quick jump-to menu, saving you from manually hunting for them."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Refactoring",
+    "topicId": "refactoring",
+    "difficulty": "advanced",
+    "question": "You need to rename a widely-used method across an entire Swift project, including every call site, safely. What is the correct Xcode feature to use instead of manually editing each file?",
+    "options": [
+      "The project-wide Rename refactor (via right-click > Refactor > Rename, or the Editor menu), which finds and updates all usages across the project and shows a preview before applying the changes",
+      "Xcode's Find and Replace with 'Replace All' scoped to the entire project text-wide",
+      "Renaming the symbol only in its declaration and relying on the compiler to report errors everywhere else, then fixing them one by one",
+      "Deleting the old method and creating an entirely new one with the desired name"
+    ],
+    "answer": 0,
+    "explanation": "Xcode's Rename refactor understands the code semantically (not just textually), so it can find every real usage of the specific symbol across the project, show you a preview of every proposed change, and apply them all consistently and safely, unlike a blind text-based find-and-replace."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Project Structure",
+    "topicId": "project-structure",
+    "difficulty": "advanced",
+    "question": "What is the correct distinction between a Target and a Scheme in an Xcode project?",
+    "options": [
+      "A project can only ever have one Target, but unlimited Schemes",
+      "A Target defines what gets built (an app, framework, or test bundle, with its own build settings and source membership), while a Scheme defines how and when to build and run it (which targets to use for actions like Run, Test, or Archive, and under which build configuration)",
+      "A Target and a Scheme are two different names for the exact same concept",
+      "A Scheme defines what gets built, while a Target defines which actions (Run, Test, Archive) are available"
+    ],
+    "answer": 1,
+    "explanation": "A Target is a buildable product definition — its sources, resources, dependencies, and build settings. A Scheme sits above targets and specifies how those targets are used for a given workflow: which target(s) to build, which build configuration to use, and what happens for each action like Run, Test, Profile, or Archive. A single target can be referenced by multiple schemes."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Keyboard Shortcuts",
+    "topicId": "keyboard-shortcuts",
+    "difficulty": "advanced",
+    "question": "What is the difference between Xcode's Issue navigator and Report navigator?",
+    "options": [
+      "The Report navigator only shows warnings, while the Issue navigator only shows errors",
+      "The Issue navigator shows historical logs, while the Report navigator shows only the current state",
+      "The Issue navigator (⌘5) shows current, real-time warnings and errors from the last build or live analysis; the Report navigator (⌘9) keeps a history of past build/run/test actions with their full logs, even after they've completed",
+      "They are identical, differing only in keyboard shortcut"
+    ],
+    "answer": 2,
+    "explanation": "The Issue navigator reflects the current set of unresolved warnings/errors for the project right now. The Report navigator instead retains a chronological history of every build, run, test, and archive action, letting you go back and inspect the full transcript of something that already finished, which the Issue navigator does not provide."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Project Structure",
+    "topicId": "project-structure",
+    "difficulty": "advanced",
+    "question": "A project has both a `.xcodeproj` file and a `.xcworkspace` file (for example, after adding dependencies with CocoaPods). Which one should you open, and why?",
+    "options": [
+      "The `.xcodeproj`, because `.xcworkspace` files are deprecated in modern Xcode",
+      "It doesn't matter; both open the identical set of files and targets",
+      "The `.xcworkspace`, but only when working with Swift Package Manager, never with CocoaPods",
+      "The `.xcworkspace`, because it can combine your project with additional dependent projects (like a Pods project), and opening only the `.xcodeproj` may fail to link or resolve those dependencies correctly"
+    ],
+    "answer": 3,
+    "explanation": "A workspace can contain multiple projects and is exactly what tools like CocoaPods generate to combine your app's project with a separate Pods project containing its dependencies. Opening only the `.xcodeproj` in that situation typically won't have those dependencies properly linked, so the `.xcworkspace` is the one to open."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Editors",
+    "topicId": "editors",
+    "difficulty": "advanced",
+    "question": "What does Xcode's Version editor (accessed via the comparison button in the editor's jump bar) let you do?",
+    "options": [
+      "View a side-by-side (or blame) comparison of the current file against a previous Git commit or branch, directly inside the source editor",
+      "Automatically resolve merge conflicts without any manual review",
+      "Roll back the entire project to a previous commit with one click, discarding all newer commits",
+      "View a list of every symbol defined in the current file"
+    ],
+    "answer": 0,
+    "explanation": "The Version editor provides an in-editor diff view (or blame annotations) comparing the currently open file against another point in its Git history, such as a previous commit or another branch, without needing to leave Xcode for a separate diff tool."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Navigators",
+    "topicId": "navigators",
+    "difficulty": "advanced",
+    "question": "Before removing a method that you believe is unused, you want to see every place in the codebase that actually calls it, including indirect callers. Which Xcode feature is designed for exactly this?",
+    "options": [
+      "The Test navigator's code coverage report",
+      "Find Call Hierarchy (right-click the method > Find Call Hierarchy), which builds a navigable tree of the method's callers and their own callers",
+      "Find in Project with a plain text search for the method's name",
+      "The Debug navigator's thread list"
+    ],
+    "answer": 1,
+    "explanation": "Find Call Hierarchy specifically builds a structured, navigable tree showing who calls the selected method, and who calls those callers in turn, giving a clearer picture of a method's actual usage across the codebase than a flat text search would."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Navigators",
+    "topicId": "navigators",
+    "difficulty": "advanced",
+    "question": "You know the name of a specific type or file you want to jump to, but not which folder or group it's in. What is the fastest way to open it directly?",
+    "options": [
+      "Use the Report navigator to search build logs for the file's name",
+      "Open the Version editor and search its history for the file name",
+      "Open Quickly (⇧⌘O), which lets you fuzzy-search for any file or symbol by name across the entire project and jump straight to it",
+      "Manually expand every group in the Project navigator until you find it"
+    ],
+    "answer": 2,
+    "explanation": "Open Quickly (Shift-Command-O) provides a fast, fuzzy-matching search across all files and symbols in the project, letting you jump directly to a known name without manually browsing the Project navigator's folder structure."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Navigators",
+    "topicId": "navigators",
+    "difficulty": "advanced",
+    "question": "What does the Test navigator (⌘6) let you do that the Issue navigator does not?",
+    "options": [
+      "View compiler warnings generated during the last build",
+      "Compare the current file against a previous Git commit",
+      "View memory usage graphs for the running app",
+      "Browse all unit and UI tests in the project as a tree, run individual tests or whole test classes directly, and see per-test pass/fail history"
+    ],
+    "answer": 3,
+    "explanation": "The Test navigator is specifically organized around the project's test targets: it lists individual tests and test classes in a browsable tree, lets you trigger any subset of them directly from that list, and tracks their pass/fail history, none of which the Issue navigator (focused on build warnings/errors) provides."
+  }
+]
