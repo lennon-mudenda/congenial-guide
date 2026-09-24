@@ -229,6 +229,14 @@ function renderRich(text) {
     )
     .join("");
 }
+function previewText(text) {
+  let firstText = splitQuestion(text).find((s) => s.type === "text");
+  let t = (firstText ? firstText.content : text)
+    .replace(/`/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  return t.length > 110 ? t.slice(0, 110) + "…" : t;
+}
 function palette() {
   $("palette").innerHTML = "";
   answers.forEach((a, i) => {
@@ -294,16 +302,20 @@ function finish(auto) {
   $("review").innerHTML = "<h3>Question review</h3>";
   exam.questions.forEach((x, i) => {
     let a = answers[i],
-      ok = a === x.answer;
+      ok = a === x.answer,
+      status = a === null ? "unanswered" : ok ? "pass" : "fail",
+      label = a === null ? "Unanswered" : ok ? "Correct" : "Incorrect";
     $("review").innerHTML +=
-      '<div class="revq ' +
-      (ok ? "pass" : "fail") +
-      '"><div class="revHead"><span>Question ' +
+      '<details class="revq ' +
+      status +
+      '"><summary><span class="revNum">Q' +
       (i + 1) +
-      "</span><strong>" +
-      (ok ? "Correct" : "Incorrect") +
-      "</strong></div>" +
-      '<div class="revQ">' +
+      '</span><span class="revPreview">' +
+      esc(previewText(x.question)) +
+      '</span><strong class="revBadge">' +
+      label +
+      "</strong></summary>" +
+      '<div class="revBody"><div class="revQ">' +
       renderRich(x.question) +
       "</div>" +
       '<p class="revA">Your answer: ' +
@@ -314,7 +326,7 @@ function finish(auto) {
         : '<p class="revC">Correct answer: ' + fmt(x.options[x.answer]) + "</p>") +
       '<p class="revE">' +
       fmt(x.explanation) +
-      "</p></div>";
+      "</p></div></details>";
   });
   $("exam").classList.add("hidden");
   $("result").classList.remove("hidden");
