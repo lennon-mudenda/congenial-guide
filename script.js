@@ -269,7 +269,7 @@ function donutSVG(correct, incorrect, unanswered, total) {
     cx = 64,
     cy = 64,
     c = 2 * Math.PI * r,
-    gap = 3;
+    gap = 2;
   let segs = [
     { v: correct, color: "#3d6b4f", label: "Correct" },
     { v: incorrect, color: "#8b2f2f", label: "Incorrect" },
@@ -282,7 +282,7 @@ function donutSVG(correct, incorrect, unanswered, total) {
       let el =
         '<circle cx="' + cx + '" cy="' + cy + '" r="' + r +
         '" fill="none" stroke="' + s.color + '" stroke-width="' + sw +
-        '" stroke-linecap="round" stroke-dasharray="' + dash + " " + (c - dash) +
+        '" stroke-dasharray="' + dash + " " + (c - dash) +
         '" stroke-dashoffset="' + -offset + '" transform="rotate(-90 ' + cx + " " + cy + ')"/>';
       offset += (s.v / total) * c;
       return el;
