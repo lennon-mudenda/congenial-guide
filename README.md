@@ -6,8 +6,10 @@ Planning and Design, and Xcode Navigation.
 
 Pick a mode, then choose how to practice:
 
-- **Full exam** — 100 questions drawn from the whole pool at real domain
-  weighting (35/20/20/15/10), a fresh mix every attempt.
+- **Full exams** — a fresh mix drawn from the whole pool at real domain
+  weighting (35/20/20/15/10) in three lengths: **Speed Blitz** (15
+  questions in 15 minutes, 60s each, language-heavy), **Standard** (45
+  questions), and **Marathon** (85 questions), the last two at 65s each.
 - **By category** — drill every question in one of the five domains.
 - **By topic** — zero in on a single topic (loops, closures, state
   management, breakpoints, …).
