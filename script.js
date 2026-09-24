@@ -103,7 +103,7 @@ function render() {
   let x = exam.questions[current];
   $("num").textContent = "Question " + (current + 1) + " of " + totalQuestions;
   $("topic").textContent = x.topic;
-  $("q").innerHTML = fmt(x.question);
+  $("q").innerHTML = renderRich(x.question);
   $("progress").style.width = ((current + 1) / totalQuestions) * 100 + "%";
   $("opts").innerHTML = "";
   let locked = mode === "practice" && revealed[current];
@@ -154,6 +154,43 @@ function fmt(s) {
   return esc(s)
     .split("`")
     .map((p, i) => (i % 2 ? "<code>" + p + "</code>" : p))
+    .join("");
+}
+function splitQuestion(text) {
+  if (text.includes("```")) {
+    let first = text.indexOf("```");
+    let second = text.indexOf("```", first + 3);
+    let before = text.slice(0, first).trim();
+    let code = text
+      .slice(first + 3, second)
+      .replace(/^\n/, "")
+      .replace(/\n$/, "");
+    let after = text.slice(second + 3).trim();
+    let segs = [];
+    if (before) segs.push({ type: "text", content: before });
+    segs.push({ type: "code", content: code });
+    if (after) segs.push({ type: "text", content: after });
+    return segs;
+  }
+  let paras = text.split("\n\n");
+  let segs = [{ type: "text", content: paras[0] }];
+  for (let i = 1; i < paras.length; i++) {
+    let p = paras[i];
+    let looksProse = p.trim().endsWith("?") && !p.includes("{") && !p.includes("}");
+    let type = looksProse ? "text" : "code";
+    let last = segs[segs.length - 1];
+    if (last.type === type) last.content += "\n\n" + p;
+    else segs.push({ type, content: p });
+  }
+  return segs;
+}
+function renderRich(text) {
+  return splitQuestion(text)
+    .map((seg) =>
+      seg.type === "code"
+        ? '<pre class="codeblock"><code>' + esc(seg.content) + "</code></pre>"
+        : '<div class="qtext">' + fmt(seg.content) + "</div>",
+    )
     .join("");
 }
 function palette() {
@@ -230,9 +267,9 @@ function finish(auto) {
       "</span><strong>" +
       (ok ? "Correct" : "Incorrect") +
       "</strong></div>" +
-      '<p class="revQ">' +
-      fmt(x.question) +
-      "</p>" +
+      '<div class="revQ">' +
+      renderRich(x.question) +
+      "</div>" +
       '<p class="revA">Your answer: ' +
       (a === null ? "<em>No answer</em>" : fmt(x.options[a])) +
       "</p>" +
