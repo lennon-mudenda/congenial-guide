@@ -156,6 +156,39 @@ function fmt(s) {
     .map((p, i) => (i % 2 ? "<code>" + p + "</code>" : p))
     .join("");
 }
+const SWIFT_KEYWORDS = new Set([
+  "func", "var", "let", "class", "struct", "enum", "protocol", "extension",
+  "if", "else", "guard", "switch", "case", "default", "for", "while", "repeat",
+  "return", "throw", "throws", "rethrows", "try", "catch", "do", "in", "break",
+  "continue", "defer", "mutating", "private", "public", "internal",
+  "fileprivate", "static", "final", "override", "init", "deinit", "self",
+  "Self", "nil", "true", "false", "import", "where", "is", "as", "some", "any",
+  "weak", "unowned", "lazy", "willSet", "didSet", "newValue", "oldValue",
+  "indirect", "associatedtype", "typealias", "subscript", "inout",
+  "convenience", "required", "optional", "get", "set", "open", "operator",
+  "precedencegroup", "dynamic", "associativity", "async", "await", "actor",
+]);
+function highlightSwift(code) {
+  let tokenRe = /(\/\/[^\n]*)|("(?:\\.|[^"\\])*")|(\b\d+(?:\.\d+)?\b)|(\b[A-Za-z_][A-Za-z0-9_]*\b)/g;
+  let out = "",
+    last = 0,
+    m;
+  while ((m = tokenRe.exec(code))) {
+    out += esc(code.slice(last, m.index));
+    let [, comment, str, num, word] = m;
+    if (comment) out += '<span class="tok-comment">' + esc(comment) + "</span>";
+    else if (str) out += '<span class="tok-string">' + esc(str) + "</span>";
+    else if (num) out += '<span class="tok-number">' + esc(num) + "</span>";
+    else if (SWIFT_KEYWORDS.has(word))
+      out += '<span class="tok-keyword">' + esc(word) + "</span>";
+    else if (/^[A-Z]/.test(word))
+      out += '<span class="tok-type">' + esc(word) + "</span>";
+    else out += esc(word);
+    last = tokenRe.lastIndex;
+  }
+  out += esc(code.slice(last));
+  return out;
+}
 function splitQuestion(text) {
   if (text.includes("```")) {
     let first = text.indexOf("```");
@@ -188,7 +221,7 @@ function renderRich(text) {
   return splitQuestion(text)
     .map((seg) =>
       seg.type === "code"
-        ? '<pre class="codeblock"><code>' + esc(seg.content) + "</code></pre>"
+        ? '<pre class="codeblock"><code>' + highlightSwift(seg.content) + "</code></pre>"
         : '<div class="qtext">' + fmt(seg.content) + "</div>",
     )
     .join("");
