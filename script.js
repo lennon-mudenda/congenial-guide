@@ -49,14 +49,20 @@ function buildLanding() {
     $("modeToggle").appendChild(b);
   });
   setMode(selectedMode);
-  // full exam
+  // full exams
   $("fullExam").innerHTML = "";
-  let fb = document.createElement("button");
-  fb.className = "launchBtn";
-  fb.textContent =
-    "Start full exam — " + manifest.settings.examQuestions + " questions";
-  fb.onclick = startFull;
-  $("fullExam").appendChild(fb);
+  EXAM_TYPES.forEach((t) => {
+    let size = examTypeSize(t),
+      mins = Math.round((size * t.spq) / 60);
+    let card = document.createElement("button");
+    card.className = "examTypeCard";
+    card.innerHTML =
+      "<strong>" + esc(t.name) + "</strong>" +
+      "<span class=\"examTypeMeta\">" + size + " questions · " + mins + " min</span>" +
+      "<span class=\"examTypeBlurb\">" + esc(t.blurb) + "</span>";
+    card.onclick = () => startExamType(t);
+    $("fullExam").appendChild(card);
+  });
   // by category
   $("byCategory").innerHTML = "";
   manifest.categories.forEach((c) => {
@@ -100,9 +106,40 @@ function loadCategory(id) {
 function loadAll() {
   return Promise.all(manifest.categories.map((c) => loadCategory(c.id)));
 }
-function assembleFullExam() {
-  let size = manifest.settings.examQuestions,
-    picks = [];
+const EXAM_TYPES = [
+  {
+    id: "blitz",
+    name: "Speed Blitz",
+    spq: 60,
+    composition: {
+      "swift-language": 8,
+      swiftui: 3,
+      debugging: 2,
+      "planning-design": 1,
+      "xcode-navigation": 1,
+    },
+    blurb: "Fast pace — 60s per question, language-heavy.",
+  },
+  {
+    id: "standard",
+    name: "Standard Exam",
+    spq: 65,
+    size: 45,
+    blurb: "Exam weighting across all five domains.",
+  },
+  {
+    id: "marathon",
+    name: "Marathon",
+    spq: 65,
+    size: 85,
+    blurb: "The full endurance run at exam weighting.",
+  },
+];
+function examTypeSize(t) {
+  return t.size || Object.values(t.composition).reduce((a, b) => a + b, 0);
+}
+function assembleWeighted(size) {
+  let picks = [];
   manifest.categories.forEach((c) => {
     let pool = categoryCache[c.id].slice();
     shuffle(pool);
@@ -120,8 +157,22 @@ function assembleFullExam() {
   }
   return shuffle(picks);
 }
-function startFull() {
-  loadAll().then(() => startExam(assembleFullExam(), "Full exam"));
+function assembleComposition(comp) {
+  let picks = [];
+  Object.entries(comp).forEach(([catId, n]) => {
+    let pool = (categoryCache[catId] || []).slice();
+    shuffle(pool);
+    picks.push(...pool.slice(0, n));
+  });
+  return shuffle(picks);
+}
+function startExamType(t) {
+  loadAll().then(() => {
+    let qs = t.composition
+      ? assembleComposition(t.composition)
+      : assembleWeighted(t.size);
+    startExam(qs, t.name, t.spq);
+  });
 }
 function startCategory(id, name) {
   loadCategory(id).then((qs) => startExam(qs.slice(), name));
@@ -147,12 +198,12 @@ function prepQuestions(src) {
   });
   return shuffle(qs);
 }
-function startExam(qs, title) {
+function startExam(qs, title, spq) {
   if (!qs.length) return;
   exam = { title: title, questions: prepQuestions(qs) };
   mode = selectedMode;
   totalQuestions = exam.questions.length;
-  totalSeconds = manifest.settings.secondsPerQuestion * totalQuestions;
+  totalSeconds = (spq || manifest.settings.secondsPerQuestion) * totalQuestions;
   answers = Array(totalQuestions).fill(null);
   revealed = Array(totalQuestions).fill(false);
   marked = Array(totalQuestions).fill(false);
