@@ -4,6 +4,8 @@ let data,
   current = 0,
   answers = [],
   revealed = [],
+  marked = [],
+  timedOut = false,
   totalQuestions = 0,
   totalSeconds = 0,
   left = 0,
@@ -70,12 +72,14 @@ function start(i, m) {
   totalSeconds = data.settings.totalSeconds;
   answers = Array(totalQuestions).fill(null);
   revealed = Array(totalQuestions).fill(false);
+  marked = Array(totalQuestions).fill(false);
+  timedOut = false;
   current = 0;
   $("start").classList.add("hidden");
+  $("reviewPage").classList.add("hidden");
   $("exam").classList.remove("hidden");
   $("title").textContent =
     exam.title + (mode === "practice" ? " — Practice" : " — Timed Exam");
-  $("submit").textContent = mode === "practice" ? "Finish" : "Submit Exam";
   clearInterval(timer);
   window.onbeforeunload = () => "";
   if (mode === "timed") {
@@ -91,7 +95,10 @@ function start(i, m) {
 function tick() {
   left = Math.max(0, Math.round((deadline - Date.now()) / 1000));
   clock();
-  if (left <= 0) finish(true);
+  if (left <= 0) {
+    clearInterval(timer);
+    openReview(true);
+  }
 }
 function clock() {
   let m = Math.floor(left / 60),
@@ -127,8 +134,6 @@ function render() {
       if (mode === "practice") {
         revealed[current] = true;
         render();
-      } else {
-        palette();
       }
     };
     $("opts").appendChild(l);
@@ -140,9 +145,12 @@ function render() {
     $("explain").innerHTML = "";
     $("explain").classList.add("hidden");
   }
+  $("markBtn").textContent = marked[current]
+    ? "★ Marked for review"
+    : "☆ Mark for review";
+  $("markBtn").classList.toggle("active", marked[current]);
   $("prev").disabled = current === 0;
-  $("next").disabled = current === totalQuestions - 1;
-  palette();
+  $("next").textContent = current === totalQuestions - 1 ? "Review →" : "Next";
 }
 function esc(s) {
   return s
@@ -237,18 +245,41 @@ function previewText(text) {
     .trim();
   return t.length > 110 ? t.slice(0, 110) + "…" : t;
 }
-function palette() {
-  $("palette").innerHTML = "";
-  answers.forEach((a, i) => {
+function goToQuestion(i) {
+  current = i;
+  $("reviewPage").classList.add("hidden");
+  $("exam").classList.remove("hidden");
+  render();
+}
+function openReview(fromTimeout) {
+  if (fromTimeout) timedOut = true;
+  $("reviewTitle").textContent = timedOut
+    ? "Time expired — review"
+    : "Review your answers";
+  $("reviewAll").disabled = timedOut;
+  $("reviewGrid").innerHTML = "";
+  exam.questions.forEach((x, i) => {
     let b = document.createElement("button");
-    b.className = "p " + (a !== null ? "a " : "") + (i === current ? "c" : "");
+    b.className =
+      "rq " + (answers[i] !== null ? "rq-ans" : "rq-un") + (marked[i] ? " rq-marked" : "");
     b.textContent = i + 1;
-    b.onclick = () => {
-      current = i;
-      render();
-    };
-    $("palette").appendChild(b);
+    b.disabled = timedOut;
+    b.onclick = () => goToQuestion(i);
+    $("reviewGrid").appendChild(b);
   });
+  $("exam").classList.add("hidden");
+  $("reviewPage").classList.remove("hidden");
+}
+function quitExam() {
+  if (
+    confirm(
+      "Quit this exam? Your progress will be lost and no results will be shown.",
+    )
+  ) {
+    clearInterval(timer);
+    window.onbeforeunload = null;
+    location.reload();
+  }
 }
 $("prev").onclick = () => {
   if (current) {
@@ -260,20 +291,21 @@ $("next").onclick = () => {
   if (current < totalQuestions - 1) {
     current++;
     render();
+  } else {
+    openReview(false);
   }
 };
-$("submit").onclick = () => finish(false);
-$("quit").onclick = () => {
-  if (
-    confirm(
-      "Quit this exam? Your progress will be lost and no results will be shown.",
-    )
-  ) {
-    clearInterval(timer);
-    window.onbeforeunload = null;
-    location.reload();
-  }
+$("review").onclick = () => openReview(false);
+$("markBtn").onclick = () => {
+  marked[current] = !marked[current];
+  render();
 };
+$("reviewAll").onclick = () => {
+  if (!timedOut) goToQuestion(0);
+};
+$("reviewSubmit").onclick = () => finish(timedOut);
+$("quit").onclick = quitExam;
+$("reviewQuit").onclick = quitExam;
 // --- Calculator ---
 let calcExpr = "";
 const CALC_KEYS = [
@@ -496,5 +528,6 @@ function finish(auto) {
       "</p></div></details>";
   });
   $("exam").classList.add("hidden");
+  $("reviewPage").classList.add("hidden");
   $("result").classList.remove("hidden");
 }
