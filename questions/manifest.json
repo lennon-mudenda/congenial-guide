@@ -1,86 +1,80 @@
 {
   "title": "Swift Certified User — Practice Exams",
   "settings": {
-    "secondsPerQuestion": 65,
-    "examQuestions": 100
+    "secondsPerQuestion": 65
   },
   "categories": [
     {
       "id": "swift-language",
       "name": "Swift Language Usage",
       "file": "swift-language.json",
-      "count": 70,
-      "weight": 35,
+      "count": 300,
+      "weight": 55,
       "topics": [
         {
-          "id": "closures",
-          "name": "Closures",
-          "count": 5
+          "id": "functions",
+          "name": "Functions",
+          "count": 35
         },
         {
-          "id": "optionals",
-          "name": "Optionals",
-          "count": 7
-        },
-        {
-          "id": "generics",
-          "name": "Generics",
-          "count": 2
-        },
-        {
-          "id": "protocols",
-          "name": "Protocols",
-          "count": 3
-        },
-        {
-          "id": "enums",
-          "name": "Enums",
-          "count": 6
-        },
-        {
-          "id": "error-handling",
-          "name": "Error Handling",
-          "count": 2
-        },
-        {
-          "id": "value-reference-semantics",
-          "name": "Value & Reference Semantics",
-          "count": 3
-        },
-        {
-          "id": "structs-classes",
-          "name": "Structs & Classes",
-          "count": 18
-        },
-        {
-          "id": "collections",
-          "name": "Collections",
-          "count": 7
-        },
-        {
-          "id": "loops-ranges",
-          "name": "Loops & Ranges",
-          "count": 1
-        },
-        {
-          "id": "properties",
-          "name": "Properties",
-          "count": 1
-        },
-        {
-          "id": "functions-parameters",
-          "name": "Functions & Parameters",
-          "count": 11
-        },
-        {
-          "id": "strings",
-          "name": "Strings",
-          "count": 2
+          "id": "control-flow",
+          "name": "Control Flow",
+          "count": 28
         },
         {
           "id": "operators",
           "name": "Operators",
-          "count": 2
+          "count": 10
+        },
+        {
+          "id": "structs",
+          "name": "Structs",
+          "count": 32
+        },
+        {
+          "id": "classes-inheritance",
+          "name": "Classes & Inheritance",
+          "count": 30
+        },
+        {
+          "id": "arrays-loops",
+          "name": "Arrays & Loops",
+          "count": 38
+        },
+        {
+          "id": "dictionaries",
+          "name": "Dictionaries",
+          "count": 20
+        },
+        {
+          "id": "enums-switches",
+          "name": "Enums & Switches",
+          "count": 25
+        },
+        {
+          "id": "optionals",
+          "name": "Optionals",
+          "count": 30
+        },
+        {
+          "id": "type-casting",
+          "name": "Type Casting",
+          "count": 20
+        },
+        {
+          "id": "guard",
+          "name": "Guard",
+          "count": 12
+        },
+        {
+          "id": "scope",
+          "name": "Scope",
+          "count": 10
+        },
+        {
+          "id": "security",
+          "name": "Security",
+          "count": 10
         }
       ]
     },
@@ -88,48 +82,58 @@
       "id": "swiftui",
       "name": "SwiftUI",
       "file": "swiftui.json",
-      "count": 40,
-      "weight": 20,
+      "count": 110,
+      "weight": 22,
       "topics": [
         {
-          "id": "state-management",
-          "name": "State Management",
-          "count": 13
+          "id": "state-bindings",
+          "name": "State & Bindings",
+          "count": 16
         },
         {
-          "id": "bindings",
-          "name": "Bindings",
-          "count": 1
+          "id": "views",
+          "name": "Views",
+          "count": 12
         },
         {
-          "id": "environment",
-          "name": "Environment",
-          "count": 5
+          "id": "foreach",
+          "name": "ForEach",
+          "count": 12
+        },
+        {
+          "id": "lists",
+          "name": "Lists",
+          "count": 10
+        },
+        {
+          "id": "stacks",
+          "name": "Stacks",
+          "count": 14
         },
         {
           "id": "navigation",
           "name": "Navigation",
-          "count": 1
+          "count": 14
         },
         {
-          "id": "lists-foreach",
-          "name": "Lists & ForEach",
-          "count": 7
+          "id": "buttons",
+          "name": "Buttons",
+          "count": 8
         },
         {
-          "id": "view-lifecycle",
-          "name": "View Lifecycle",
-          "count": 3
+          "id": "forms",
+          "name": "Forms",
+          "count": 8
         },
         {
-          "id": "modifiers-layout",
-          "name": "Modifiers & Layout",
-          "count": 4
+          "id": "sheets",
+          "name": "Sheets",
+          "count": 8
         },
         {
-          "id": "views-composition",
-          "name": "Views & Composition",
-          "count": 6
+          "id": "toolbars",
+          "name": "Toolbars",
+          "count": 8
         }
       ]
     },
@@ -137,43 +141,38 @@
       "id": "debugging",
       "name": "Debugging",
       "file": "debugging.json",
-      "count": 40,
-      "weight": 20,
+      "count": 60,
+      "weight": 13,
       "topics": [
         {
-          "id": "breakpoints",
-          "name": "Breakpoints",
+          "id": "finding-bugs",
+          "name": "Finding Bugs",
           "count": 12
         },
         {
-          "id": "watchpoints",
-          "name": "Watchpoints",
-          "count": 1
+          "id": "compile-runtime-errors",
+          "name": "Compile vs Runtime Errors",
+          "count": 12
         },
         {
-          "id": "stepping",
-          "name": "Stepping",
-          "count": 1
-        },
-        {
-          "id": "debugger-console",
-          "name": "Debugger Console",
-          "count": 3
-        },
-        {
-          "id": "crashes",
-          "name": "Crashes",
-          "count": 9
-        },
-        {
-          "id": "memory-arc",
-          "name": "Memory & ARC",
+          "id": "index-out-of-range",
+          "name": "Index Out of Range",
           "count": 8
         },
         {
-          "id": "threading",
-          "name": "Threading",
-          "count": 6
+          "id": "typos-unintended",
+          "name": "Typos & Unintended Behavior",
+          "count": 12
+        },
+        {
+          "id": "inefficient-code",
+          "name": "Improving Inefficient Code",
+          "count": 8
+        },
+        {
+          "id": "xcode-debugger",
+          "name": "Xcode Debugger",
+          "count": 8
         }
       ]
     },
@@ -181,48 +180,28 @@
       "id": "planning-design",
       "name": "Planning and Design",
       "file": "planning-design.json",
-      "count": 30,
-      "weight": 15,
+      "count": 15,
+      "weight": 5,
       "topics": [
-        {
-          "id": "data-structures",
-          "name": "Data Structures",
-          "count": 4
-        },
         {
           "id": "struct-vs-class",
           "name": "Struct vs Class",
-          "count": 2
-        },
-        {
-          "id": "protocols-abstraction",
-          "name": "Protocols & Abstraction",
           "count": 4
         },
         {
-          "id": "architecture-mvvm",
-          "name": "Architecture (MVVM)",
-          "count": 6
+          "id": "data-structures",
+          "name": "Choosing Data Structures",
+          "count": 4
         },
         {
-          "id": "error-modeling",
-          "name": "Error Modeling",
-          "count": 8
-        },
-        {
-          "id": "testability",
-          "name": "Testability",
-          "count": 2
-        },
-        {
-          "id": "access-control",
-          "name": "Access Control",
-          "count": 1
-        },
-        {
-          "id": "core-concepts",
-          "name": "Core Concepts",
+          "id": "enum-modeling",
+          "name": "Modeling with Enums",
           "count": 3
+        },
+        {
+          "id": "architecture",
+          "name": "App Architecture",
+          "count": 4
         }
       ]
     },
@@ -230,33 +209,28 @@
       "id": "xcode-navigation",
       "name": "Xcode Navigation",
       "file": "xcode-navigation.json",
-      "count": 20,
-      "weight": 10,
+      "count": 15,
+      "weight": 5,
       "topics": [
         {
           "id": "keyboard-shortcuts",
           "name": "Keyboard Shortcuts",
-          "count": 8
+          "count": 5
         },
         {
           "id": "navigators",
           "name": "Navigators",
-          "count": 6
+          "count": 4
         },
         {
           "id": "refactoring",
           "name": "Refactoring",
-          "count": 1
-        },
-        {
-          "id": "editors",
-          "name": "Editors",
           "count": 3
         },
         {
-          "id": "project-structure",
-          "name": "Project Structure",
-          "count": 2
+          "id": "editors",
+          "name": "Editors & Jump Bar",
+          "count": 3
         }
       ]
     }

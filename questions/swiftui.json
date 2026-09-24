@@ -1,602 +1,1652 @@
 [
   {
     "category": "SwiftUI",
-    "topic": "State Management",
-    "topicId": "state-management",
+    "topic": "ForEach",
+    "topicId": "foreach",
     "difficulty": "core",
-    "question": "What is the purpose of the `@State` property wrapper in SwiftUI?",
+    "question": "How many `Text` views does this produce?\n```\nVStack {\n    ForEach(0..<4) { i in\n        Text(\"Row \\(i)\")\n    }\n}\n```",
     "options": [
-      "It shares state across every view in the app automatically.",
-      "It marks a property as constant and immutable.",
-      "It lets a view own and manage small pieces of local, mutable state, causing the view to re-render when the value changes.",
-      "It is used only for reference types conforming to ObservableObject."
-    ],
-    "answer": 2,
-    "explanation": "@State is designed for simple, view-local mutable value-type state; SwiftUI watches it and re-renders the view whenever it changes."
-  },
-  {
-    "category": "SwiftUI",
-    "topic": "Bindings",
-    "topicId": "bindings",
-    "difficulty": "core",
-    "question": "A child view declares `@Binding var isOn: Bool`. What must the parent do to pass a value to it?",
-    "options": [
-      "Pass a binding using `$` syntax, e.g. `ChildView(isOn: $isOnState)`, where `isOnState` is a `@State` property in the parent.",
-      "Pass the raw Bool value directly, e.g. `ChildView(isOn: isOnState)`.",
-      "Wrap the value in an `ObservableObject` before passing it.",
-      "Nothing; `@Binding` properties are set automatically by the environment."
-    ],
-    "answer": 0,
-    "explanation": "@Binding represents a two-way connection to a value owned elsewhere; the parent must project its @State property with `$` to create that binding."
-  },
-  {
-    "category": "SwiftUI",
-    "topic": "State Management",
-    "topicId": "state-management",
-    "difficulty": "core",
-    "question": "A SwiftUI view creates and owns an instance of a class conforming to `ObservableObject` that should persist across the view's re-renders (for example, when its parent redraws). Which property wrapper should it use to declare that instance?",
-    "options": [
-      "@EnvironmentObject",
-      "@Environment",
-      "@StateObject",
-      "@ObservedObject"
-    ],
-    "answer": 2,
-    "explanation": "@StateObject is designed for objects a view creates and owns; it ensures the same instance survives across re-renders instead of being recreated each time the view's body runs."
-  },
-  {
-    "category": "SwiftUI",
-    "topic": "Views & Composition",
-    "topicId": "views-composition",
-    "difficulty": "core",
-    "question": "What problem can occur with the following code?\n\nstruct DetailView: View {\n    @ObservedObject var viewModel = ViewModel()\n    var body: some View { Text(viewModel.title) }\n}",
-    "options": [
-      "The view will fail to compile because @ObservedObject requires an initializer parameter.",
-      "The view's Text will never update.",
-      "There is no problem; @ObservedObject and @StateObject behave identically when the object is created inline.",
-      "Whenever the parent view re-renders DetailView, a new ViewModel instance may be created, discarding the previous state."
-    ],
-    "answer": 3,
-    "explanation": "@ObservedObject does not take ownership of the instance's lifecycle; when DetailView's initializer reruns during a parent re-render, a fresh ViewModel() can be created, losing prior state. @StateObject exists to prevent this."
-  },
-  {
-    "category": "SwiftUI",
-    "topic": "Environment",
-    "topicId": "environment",
-    "difficulty": "core",
-    "question": "What happens at runtime if a view declares `@EnvironmentObject var settings: Settings` but no ancestor view has called `.environmentObject(Settings())`?",
-    "options": [
-      "The app crashes at runtime because the required environment object was never injected.",
-      "The property defaults to nil silently.",
-      "SwiftUI automatically creates a default Settings() instance.",
-      "A compile-time error is raised."
-    ],
-    "answer": 0,
-    "explanation": "@EnvironmentObject is a non-optional dependency that must be supplied by an ancestor view; if it is missing, SwiftUI triggers a runtime fatal error when the view is resolved."
-  },
-  {
-    "category": "SwiftUI",
-    "topic": "State Management",
-    "topicId": "state-management",
-    "difficulty": "core",
-    "question": "Which property wrapper is used to read a system-provided contextual value, such as `\\.colorScheme` or `\\.dismiss`, rather than a custom observable object?",
-    "options": [
-      "@EnvironmentObject",
-      "@Environment",
-      "@StateObject",
-      "@Published"
+      "3",
+      "4",
+      "5",
+      "Infinite loop"
     ],
     "answer": 1,
-    "explanation": "@Environment reads values from the environment's key-path-based value system, which includes system-provided values like color scheme, size class, and dismiss actions."
+    "explanation": "`0..<4` is a half-open range containing 0, 1, 2, 3 — four values, so four `Text` views."
   },
   {
     "category": "SwiftUI",
-    "topic": "Modifiers & Layout",
-    "topicId": "modifiers-layout",
+    "topic": "ForEach",
+    "topicId": "foreach",
     "difficulty": "core",
-    "question": "What is the visible effect of the modifier order in the following code?\n\nText(\"Hi\")\n    .padding()\n    .background(Color.yellow)",
+    "question": "A `ForEach` iterates an array of a custom `struct Person` that does NOT conform to `Identifiable`. What makes it compile and behave correctly?",
     "options": [
-      "The yellow background only fills the original text bounds, excluding the padding.",
-      "Modifier order has no visual effect in SwiftUI.",
-      "The yellow background fills the area including the padding, because padding is applied before background.",
-      "This code fails to compile because `.background` must come before `.padding`."
+      "Nothing extra — `ForEach` works on any array",
+      "Provide a key path to a unique, stable property via `id:`, e.g. `ForEach(people, id: \\.id)`",
+      "Wrap the array in a `List`",
+      "Make `Person` conform to `Equatable`"
     ],
-    "answer": 2,
-    "explanation": "Each modifier wraps the view in a new layer; because `.padding()` is applied first, `.background` sees the already-padded view and fills that larger area with yellow."
+    "answer": 1,
+    "explanation": "`ForEach` needs a stable identity for each element; without `Identifiable` you must supply an `id:` key path to a unique property."
   },
   {
     "category": "SwiftUI",
-    "topic": "Lists & ForEach",
-    "topicId": "lists-foreach",
+    "topic": "ForEach",
+    "topicId": "foreach",
     "difficulty": "core",
-    "question": "Why does the following code fail to compile?\n\nstruct Fruit {\n    var name: String\n}\nlet fruits = [Fruit(name: \"Apple\"), Fruit(name: \"Pear\")]\n\nList(fruits) { fruit in\n    Text(fruit.name)\n}",
+    "question": "What values are shown?\n```\nHStack {\n    ForEach(1...3, id: \\.self) { n in\n        Text(\"\\(n)\")\n    }\n}\n```",
     "options": [
-      "List cannot display structs, only classes.",
-      "Text cannot accept a String argument.",
-      "List requires the array to be wrapped in a `ForEach` before being used.",
-      "Fruit does not conform to Identifiable (and no `id:` parameter was supplied to List), so SwiftUI cannot uniquely identify each row."
+      "0 1 2",
+      "1 2 3",
+      "1 2",
+      "1 2 3 4"
     ],
-    "answer": 3,
-    "explanation": "List's data-driven initializer needs a stable identity for each row, either via Identifiable conformance or an explicit `id:` key path; Fruit has neither."
+    "answer": 1,
+    "explanation": "`1...3` is a closed range including both ends: 1, 2, 3."
   },
   {
     "category": "SwiftUI",
-    "topic": "State Management",
-    "topicId": "state-management",
-    "difficulty": "core",
-    "question": "Given `struct Fruit { var name: String }`, which change lets `List(fruits) { fruit in Text(fruit.name) }` compile without making Fruit conform to Identifiable?",
+    "topic": "ForEach",
+    "topicId": "foreach",
+    "difficulty": "advanced",
+    "question": "You write `ForEach(0..<items.count) { i in RowView(items[i]) }` and `items` changes at runtime as the user adds rows. What is the problem?",
     "options": [
-      "Use `List(fruits, id: \\.name) { fruit in Text(fruit.name) }` to tell SwiftUI which property uniquely identifies each row.",
-      "Add `@State` to the `fruits` array declaration.",
-      "Replace `List` with `VStack`.",
-      "Wrap `Fruit` in an `ObservableObject`."
+      "It won't compile",
+      "Using a range built from a changing count can crash or mis-render; iterate the data with `ForEach(items, id:)` instead",
+      "Ranges are not allowed in `ForEach`",
+      "It always shows one extra empty row"
+    ],
+    "answer": 1,
+    "explanation": "The `ForEach(0..<n)` range initializer is meant for a constant count; when the count changes SwiftUI can behave incorrectly. Iterate the collection itself with an `id:` instead."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "ForEach",
+    "topicId": "foreach",
+    "difficulty": "core",
+    "question": "Why does `ForEach(names, id: \\.self)` compile when `names` is `[String]`?",
+    "options": [
+      "Because `String` conforms to `Hashable`, so each value can serve as its own identity",
+      "Because arrays are always `Identifiable`",
+      "Because `\\.self` disables identity checking",
+      "It doesn't compile"
     ],
     "answer": 0,
-    "explanation": "Supplying an explicit `id:` key path gives List a way to identify each row without requiring Identifiable conformance, as long as the chosen property is unique and Hashable."
+    "explanation": "`id: \\.self` requires the element type to be `Hashable`; `String` is, so each string value acts as its own identifier."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "ForEach",
+    "topicId": "foreach",
+    "difficulty": "advanced",
+    "question": "An array passed to `ForEach(items, id: \\.self)` contains duplicate values. What is the consequence?",
+    "options": [
+      "A compile error",
+      "The duplicates are automatically removed",
+      "Identities are no longer unique, so SwiftUI may update, animate, or reuse the wrong rows",
+      "Nothing — duplicates are fine"
+    ],
+    "answer": 2,
+    "explanation": "`ForEach` relies on unique ids; duplicate `\\.self` ids break the diffing SwiftUI uses to track rows, causing incorrect updates and animations."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "ForEach",
+    "topicId": "foreach",
+    "difficulty": "core",
+    "question": "What is the cleanest way to loop over an array while also having the index available?",
+    "options": [
+      "`ForEach(array)` and read a global counter",
+      "`ForEach(array.indices, id: \\.self) { i in ... array[i] ... }`",
+      "`for i in array` inside `body`",
+      "You cannot access the index in `ForEach`"
+    ],
+    "answer": 1,
+    "explanation": "Iterating `array.indices` (with `id: \\.self`) gives each index, which you can use to subscript the array."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "ForEach",
+    "topicId": "foreach",
+    "difficulty": "core",
+    "question": "Why can't you reliably `ForEach` directly over a `Dictionary` and expect a fixed on-screen order?",
+    "options": [
+      "Dictionaries can't be used in SwiftUI at all",
+      "A dictionary is unordered, so the row order isn't guaranteed; sort or map it to an array first",
+      "`ForEach` only accepts ranges",
+      "Dictionaries need `@State`"
+    ],
+    "answer": 1,
+    "explanation": "Dictionaries have no defined order, so you typically iterate `dictionary.sorted(by:)` or an array of its keys to get a stable order."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "ForEach",
+    "topicId": "foreach",
+    "difficulty": "core",
+    "question": "When the loop index isn't needed, which is the idiomatic closure?",
+    "options": [
+      "`ForEach(0..<3) { }` with no parameter",
+      "`ForEach(0..<3) { _ in Text(\"•\") }`",
+      "`ForEach(0..<3) { index in Text(\"•\") }` — the index must be named",
+      "`ForEach() { }`"
+    ],
+    "answer": 1,
+    "explanation": "Use `_` to ignore the loop value when you don't need it, e.g. drawing three identical dots."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "ForEach",
+    "topicId": "foreach",
+    "difficulty": "advanced",
+    "question": "You want each row to edit its own element of a `@State var items: [Task]` (where `Task` is `Identifiable`). Which `ForEach` form gives each row a binding to its element?",
+    "options": [
+      "`ForEach(items) { item in Toggle(item.name, isOn: item.done) }`",
+      "`ForEach($items) { $item in Toggle(item.name, isOn: $item.done) }`",
+      "`ForEach(items.indices) { Toggle(...) }` with no binding",
+      "Bindings can't be used with `ForEach`"
+    ],
+    "answer": 1,
+    "explanation": "Passing `$items` and destructuring `$item` yields a `Binding` to each element, so a control like `Toggle` can write back into the array."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "ForEach",
+    "topicId": "foreach",
+    "difficulty": "core",
+    "question": "What does `ForEach` fundamentally do in SwiftUI?",
+    "options": [
+      "Runs a background loop once when the view loads",
+      "Computes a view for each element of a collection, on demand",
+      "Replaces `for` loops everywhere in Swift",
+      "Sorts the collection before displaying it"
+    ],
+    "answer": 1,
+    "explanation": "`ForEach` is a structure that produces one view per element of its data, identified by each element's id."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "ForEach",
+    "topicId": "foreach",
+    "difficulty": "advanced",
+    "question": "A `VStack` places a `ForEach` alongside a fixed header:\n```\nVStack {\n    Text(\"Menu\")\n    ForEach(items) { Text($0.name) }\n}\n```\nWhat is required for this to compile, assuming `items` is `[MenuItem]`?",
+    "options": [
+      "`MenuItem` must be `Identifiable` (or a `ForEach(... id:)` must be given)",
+      "Nothing — any type works",
+      "The header must be inside the `ForEach`",
+      "`items` must be `@State`"
+    ],
+    "answer": 0,
+    "explanation": "`ForEach(items)` (without an `id:`) requires the element type to be `Identifiable`; the surrounding header is unrelated."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Lists",
+    "topicId": "lists",
+    "difficulty": "core",
+    "question": "What is the main thing a `List` gives you over a plain `VStack` of the same rows?",
+    "options": [
+      "It centers its content",
+      "It is scrollable and provides standard row styling",
+      "It runs faster on the main thread",
+      "It automatically sorts rows"
+    ],
+    "answer": 1,
+    "explanation": "`List` presents rows in a scrollable, platform-styled container (with separators, selection, swipe actions, etc.)."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Lists",
+    "topicId": "lists",
+    "difficulty": "core",
+    "question": "How many rows does this render?\n```\nList {\n    Text(\"One\")\n    Text(\"Two\")\n    Text(\"Three\")\n}\n```",
+    "options": [
+      "1",
+      "3",
+      "0",
+      "It doesn't compile without data"
+    ],
+    "answer": 1,
+    "explanation": "A `List` can contain static content directly; here three `Text` views become three rows."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Lists",
+    "topicId": "lists",
+    "difficulty": "core",
+    "question": "Which compiles?\n```\nList(0..<3) { n in\n    Text(\"Row \\(n)\")\n}\n```",
+    "options": [
+      "It compiles as written",
+      "It needs `id:`, e.g. `List(0..<3, id: \\.self)`, because `Int` is not `Identifiable`",
+      "`List` cannot take a range",
+      "It needs `@State`"
+    ],
+    "answer": 1,
+    "explanation": "`List(_:)` requires elements to be `Identifiable`; `Int` isn't, so you must supply `id: \\.self`."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Lists",
+    "topicId": "lists",
+    "difficulty": "core",
+    "question": "What is a `Section` used for inside a `List`?",
+    "options": [
+      "To make the list scroll faster",
+      "To group related rows, optionally with a header and footer",
+      "To limit the list to one row",
+      "To store state"
+    ],
+    "answer": 1,
+    "explanation": "`Section` groups rows and can show a header/footer, giving a list visual and semantic structure."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Lists",
+    "topicId": "lists",
+    "difficulty": "advanced",
+    "question": "Why might you write `List { ForEach(items) { ... } .onDelete(perform: delete) }` instead of `List(items) { ... }`?",
+    "options": [
+      "`List(items)` is deprecated",
+      "The `ForEach` form lets you attach row operations like `.onDelete` and mix static and dynamic rows",
+      "They behave identically in every way",
+      "`onDelete` only works outside a `List`"
+    ],
+    "answer": 1,
+    "explanation": "Wrapping data in an explicit `ForEach` lets you attach modifiers such as `.onDelete`/`.onMove` and combine dynamic rows with static ones."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Lists",
+    "topicId": "lists",
+    "difficulty": "core",
+    "question": "For `List(people) { Text($0.name) }` to compile with `people: [Person]`, `Person` must…",
+    "options": [
+      "conform to `Identifiable` (or you pass an `id:`)",
+      "conform to `Comparable`",
+      "be a class",
+      "be marked `@State`"
+    ],
+    "answer": 0,
+    "explanation": "The trailing-closure `List(_:)` initializer requires elements to be `Identifiable`, or an explicit `id:` key path."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Lists",
+    "topicId": "lists",
+    "difficulty": "core",
+    "question": "What does `.listStyle(.plain)` do?",
+    "options": [
+      "Removes all rows",
+      "Changes the visual style of the list (e.g. edge-to-edge plain rows)",
+      "Disables scrolling",
+      "Makes the list read-only"
+    ],
+    "answer": 1,
+    "explanation": "`.listStyle` selects a list appearance; `.plain` gives simple full-width rows without the grouped/inset background."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Lists",
+    "topicId": "lists",
+    "difficulty": "advanced",
+    "question": "A developer writes `List(tasks) { task in Text(task.title) }` where `struct Task { let title: String }` (not `Identifiable`, no `id:`). What happens?",
+    "options": [
+      "It runs but shows blank rows",
+      "Compile error — the element type must be `Identifiable` or an `id:` is required",
+      "It shows only the first task",
+      "It crashes at runtime"
+    ],
+    "answer": 1,
+    "explanation": "Without `Identifiable` conformance or an `id:` argument, the `List(_:)` initializer doesn't type-check — it's a compile-time error, not a runtime one."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Lists",
+    "topicId": "lists",
+    "difficulty": "core",
+    "question": "Which correctly shows a dynamic list of `Identifiable` `notes` followed by a static \"Add\" row?",
+    "options": [
+      "`List { ForEach(notes) { Text($0.text) }; Text(\"Add\") }`",
+      "`List(notes) { Text($0.text) } ; Text(\"Add\")`",
+      "You cannot mix dynamic and static rows",
+      "`ForEach { List(notes) }`"
+    ],
+    "answer": 0,
+    "explanation": "Inside a `List` you can place a `ForEach` for the dynamic rows and additional static views (like an Add row) in the same container."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Lists",
+    "topicId": "lists",
+    "difficulty": "advanced",
+    "question": "What does attaching `.onDelete(perform:)` to a `ForEach` inside a `List` enable?",
+    "options": [
+      "Tapping a row to open it",
+      "Swipe-to-delete on rows, calling your handler with the offsets to remove",
+      "Deleting the whole list at once",
+      "Reordering rows"
+    ],
+    "answer": 1,
+    "explanation": "`.onDelete` adds swipe-to-delete; SwiftUI passes an `IndexSet` of the rows to remove to your closure."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Stacks",
+    "topicId": "stacks",
+    "difficulty": "core",
+    "question": "How does a `VStack` arrange its children?",
+    "options": [
+      "Horizontally, left to right",
+      "Vertically, top to bottom",
+      "Overlaid on top of each other",
+      "In a grid"
+    ],
+    "answer": 1,
+    "explanation": "`VStack` lays its children out vertically in a column."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Stacks",
+    "topicId": "stacks",
+    "difficulty": "core",
+    "question": "Which stack places its children side by side horizontally?",
+    "options": [
+      "`VStack`",
+      "`HStack`",
+      "`ZStack`",
+      "`List`"
+    ],
+    "answer": 1,
+    "explanation": "`HStack` arranges children in a horizontal row."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Stacks",
+    "topicId": "stacks",
+    "difficulty": "core",
+    "question": "In a `ZStack`, which child appears in front?",
+    "options": [
+      "The first one listed",
+      "The last one listed",
+      "The largest one",
+      "They alternate each frame"
+    ],
+    "answer": 1,
+    "explanation": "`ZStack` layers children back-to-front in source order, so the last child is drawn on top."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Stacks",
+    "topicId": "stacks",
+    "difficulty": "core",
+    "question": "What does the `spacing` parameter in `VStack(spacing: 20)` control?",
+    "options": [
+      "The padding around the whole stack",
+      "The gap between adjacent children",
+      "The corner radius",
+      "The animation duration"
+    ],
+    "answer": 1,
+    "explanation": "`spacing` sets the distance inserted between each pair of adjacent children."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Stacks",
+    "topicId": "stacks",
+    "difficulty": "advanced",
+    "question": "Two `Text` views of different widths are in a `VStack(alignment: .leading)`. How are they positioned?",
+    "options": [
+      "Both centered horizontally",
+      "Their leading (left) edges are aligned",
+      "Their trailing edges are aligned",
+      "Stacked on top of each other"
+    ],
+    "answer": 1,
+    "explanation": "A `VStack`'s `alignment` controls horizontal alignment of its children; `.leading` lines up their left edges."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Stacks",
+    "topicId": "stacks",
+    "difficulty": "advanced",
+    "question": "In `HStack(alignment: .top)` containing views of different heights, what does the alignment do?",
+    "options": [
+      "Aligns their top edges along the row",
+      "Aligns their horizontal centers",
+      "Makes them all the same height",
+      "Sorts them by height"
+    ],
+    "answer": 0,
+    "explanation": "An `HStack`'s `alignment` is vertical; `.top` lines the children up by their top edges."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Stacks",
+    "topicId": "stacks",
+    "difficulty": "core",
+    "question": "Which stack would you use to place a small badge on top of the corner of an image?",
+    "options": [
+      "`VStack`",
+      "`HStack`",
+      "`ZStack`",
+      "`List`"
+    ],
+    "answer": 2,
+    "explanation": "Overlapping/overlaying views (badge over image) is exactly what `ZStack` is for."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Stacks",
+    "topicId": "stacks",
+    "difficulty": "core",
+    "question": "What does `Spacer()` do inside an `HStack`?",
+    "options": [
+      "Adds a fixed 8-point gap",
+      "Expands to take all available space, pushing other views apart",
+      "Draws a divider line",
+      "Ends the stack"
+    ],
+    "answer": 1,
+    "explanation": "`Spacer` is a flexible view that grows to fill available space along the stack's axis, pushing siblings to the edges."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Stacks",
+    "topicId": "stacks",
+    "difficulty": "core",
+    "question": "What layout does this produce?\n```\nHStack {\n    Text(\"Left\")\n    Spacer()\n    Text(\"Right\")\n}\n```",
+    "options": [
+      "Both texts centered together",
+      "\"Left\" pinned to the leading edge, \"Right\" to the trailing edge",
+      "The texts stacked vertically",
+      "Only \"Left\" is visible"
+    ],
+    "answer": 1,
+    "explanation": "The `Spacer` expands between them, pushing \"Left\" to the far left and \"Right\" to the far right."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Stacks",
+    "topicId": "stacks",
+    "difficulty": "advanced",
+    "question": "What is drawn, and in what order, by this view?\n```\nZStack {\n    Color.red\n    Text(\"Hi\")\n}\n```",
+    "options": [
+      "Only the red color",
+      "\"Hi\" behind a red rectangle",
+      "A red rectangle filling the space, with \"Hi\" drawn on top",
+      "A compile error"
+    ],
+    "answer": 2,
+    "explanation": "`Color.red` (first) fills the ZStack and is drawn first; `Text(\"Hi\")` is listed last, so it appears on top."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Stacks",
+    "topicId": "stacks",
+    "difficulty": "advanced",
+    "question": "How would you build a simple two-column row of labels and values (each label above? no — beside its value), repeated down the screen?",
+    "options": [
+      "A single `ZStack`",
+      "A `VStack` of `HStack`s — each `HStack` a label and value, stacked vertically",
+      "An `HStack` of `HStack`s",
+      "A `List` cannot contain stacks"
+    ],
+    "answer": 1,
+    "explanation": "Rows that each hold side-by-side items are `HStack`s; stacking those rows vertically uses an outer `VStack`."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Stacks",
+    "topicId": "stacks",
+    "difficulty": "core",
+    "question": "If you write `VStack { Text(\"A\"); Text(\"B\") }` with no `spacing:` argument, what happens between the two texts?",
+    "options": [
+      "They overlap",
+      "A system-default amount of spacing is applied",
+      "Exactly 0 points of spacing",
+      "They are pushed to opposite ends"
+    ],
+    "answer": 1,
+    "explanation": "Omitting `spacing` uses SwiftUI's default spacing between children (not zero)."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Stacks",
+    "topicId": "stacks",
+    "difficulty": "core",
+    "question": "What does this render?\n```\nHStack {\n    Image(systemName: \"star\")\n    VStack(alignment: .leading) {\n        Text(\"Title\")\n        Text(\"Subtitle\")\n    }\n}\n```",
+    "options": [
+      "A star above a title and subtitle",
+      "A star to the left of a left-aligned two-line text column",
+      "Three items in a vertical column",
+      "Overlapping views"
+    ],
+    "answer": 1,
+    "explanation": "The outer `HStack` puts the image beside the `VStack`, which stacks the two `Text`s vertically and left-aligns them."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Stacks",
+    "topicId": "stacks",
+    "difficulty": "advanced",
+    "question": "You need a caption pinned to the bottom-trailing corner over a photo. Which is correct?",
+    "options": [
+      "`ZStack(alignment: .bottomTrailing) { Image(...); Text(caption) }`",
+      "`VStack { Image(...); Text(caption) }`",
+      "`HStack { Image(...); Text(caption) }`",
+      "`ZStack { Text(caption); Image(...) }`"
+    ],
+    "answer": 0,
+    "explanation": "A `ZStack` with `alignment: .bottomTrailing` overlays the caption on the image and positions it in the bottom-right corner; the image must be first so the caption is on top."
   },
   {
     "category": "SwiftUI",
     "topic": "Navigation",
     "topicId": "navigation",
     "difficulty": "core",
-    "question": "In current SwiftUI (iOS 16+), which container is recommended for building a push-based navigation flow with `NavigationLink`?",
+    "question": "Assuming this is the app's root view, what does the user see and what happens on tap?\n```\nNavigationStack {\n    NavigationLink(\"Go\") {\n        Text(\"Second screen\")\n    }\n    .navigationTitle(\"First\")\n}\n```",
     "options": [
-      "NavigationView",
+      "A screen titled \"First\" showing a tappable \"Go\" control; tapping it pushes a new screen containing \"Second screen\".",
+      "A screen showing \"Go\" and \"Second screen\" stacked vertically at the same time.",
+      "A screen titled \"Second screen\" with a back button labeled \"First\".",
+      "Nothing is shown until the user taps \"Go\"."
+    ],
+    "answer": 0,
+    "explanation": "The NavigationStack shows the link with the title \"First\"; tapping the NavigationLink pushes its destination view onto the stack."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Navigation",
+    "topicId": "navigation",
+    "difficulty": "core",
+    "question": "This link renders but tapping it does nothing:\n```\nstruct ContentView: View {\n    var body: some View {\n        NavigationLink(\"Open settings\") {\n            Text(\"Settings\")\n        }\n    }\n}\n```\nWhat is the fix?",
+    "options": [
+      "Replace the NavigationLink with a Button.",
+      "Add an @State property to ContentView.",
+      "Wrap the NavigationLink in a NavigationStack so it has a navigation container to push onto.",
+      "Move the destination Text before the NavigationLink."
+    ],
+    "answer": 2,
+    "explanation": "A NavigationLink only pushes when it lives inside a navigation container; without a NavigationStack there is nothing to push onto."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Navigation",
+    "topicId": "navigation",
+    "difficulty": "core",
+    "question": "What is the effect of `.navigationTitle(\"Library\")` applied to a view inside a NavigationStack?",
+    "options": [
+      "It renders \"Library\" as large centered body text in the middle of the screen.",
+      "It sets the title shown in the navigation bar for that view.",
+      "It names the Swift file the view is stored in.",
+      "It sets the app's launch-screen title."
+    ],
+    "answer": 1,
+    "explanation": "`.navigationTitle` sets the title displayed in the enclosing navigation container's bar for the current view."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Navigation",
+    "topicId": "navigation",
+    "difficulty": "core",
+    "question": "Which NavigationLink correctly pushes a destination view when tapped?",
+    "options": [
+      "`NavigationLink(\"More\")`",
+      "`NavigationLink { Text(\"More info\") }`",
+      "`NavigationLink(destination: \"More info\")`",
+      "`NavigationLink(\"More\") { Text(\"More info\") }`"
+    ],
+    "answer": 3,
+    "explanation": "The `NavigationLink(_:destination:)` trailing-closure form takes a title string and a view-builder closure that returns the destination view."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Navigation",
+    "topicId": "navigation",
+    "difficulty": "core",
+    "question": "A developer has several `NavigationLink`s inside a `VStack`. None of them navigate when tapped. What is the most likely reason?",
+    "options": [
+      "A VStack can only contain one NavigationLink.",
+      "The VStack is not embedded in a NavigationStack (or other navigation container).",
+      "NavigationLinks must be inside a List to function.",
+      "Each NavigationLink needs its own @State variable."
+    ],
+    "answer": 1,
+    "explanation": "NavigationLinks push only when an ancestor is a navigation container; a bare VStack provides no stack to navigate."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Navigation",
+    "topicId": "navigation",
+    "difficulty": "core",
+    "question": "What appears after the user taps \"Track 1\"?\n```\nNavigationStack {\n    NavigationLink(\"Track 1\", value: 1)\n        .navigationDestination(for: Int.self) { n in\n            Text(\"Playing track \\(n)\")\n        }\n}\n```",
+    "options": [
+      "\"Playing track 1\" appears inline below the link.",
+      "Nothing happens, because value-based links only work inside a List.",
+      "A pushed screen showing \"Playing track 1\".",
+      "A compile error: NavigationLink has no value parameter."
+    ],
+    "answer": 2,
+    "explanation": "The value-based link hands `1` to the matching `navigationDestination(for: Int.self)`, which builds and pushes the destination showing \"Playing track 1\"."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Navigation",
+    "topicId": "navigation",
+    "difficulty": "core",
+    "question": "After tapping \"Details\", what title appears in the navigation bar of the pushed screen?\n```\nNavigationStack {\n    NavigationLink(\"Details\") {\n        Text(\"Detail\")\n            .navigationTitle(\"Details Page\")\n    }\n    .navigationTitle(\"Home\")\n}\n```",
+    "options": [
+      "\"Home\"",
+      "\"Detail\"",
+      "No title appears, because only the root view can set one.",
+      "\"Details Page\""
+    ],
+    "answer": 3,
+    "explanation": "Each pushed view sets its own navigation title, so the destination's `.navigationTitle(\"Details Page\")` is what shows in its bar."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Navigation",
+    "topicId": "navigation",
+    "difficulty": "advanced",
+    "question": "What happens when the user taps \"Go deep\"?\n```\nstruct ContentView: View {\n    @State private var path: [String] = []\n    var body: some View {\n        NavigationStack(path: $path) {\n            Button(\"Go deep\") { path.append(\"A\") }\n                .navigationDestination(for: String.self) { s in\n                    Text(\"Screen \\(s)\")\n                }\n        }\n    }\n}\n```",
+    "options": [
+      "\"A\" is appended to the path, pushing a screen showing \"Screen A\".",
+      "Nothing, because Buttons cannot trigger navigation.",
+      "It replaces the root view with \"Screen A\" and removes the back button.",
+      "A compile error: NavigationStack has no path parameter."
+    ],
+    "answer": 0,
+    "explanation": "A NavigationStack bound to a path array navigates whenever the array changes, so appending \"A\" pushes the matching String destination."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Navigation",
+    "topicId": "navigation",
+    "difficulty": "advanced",
+    "question": "Tapping \"Open\" does not push anything. What is missing?\n```\nNavigationStack {\n    NavigationLink(\"Open\", value: \"x\")\n}\n```",
+    "options": [
+      "An @State property to hold the value.",
+      "A `.navigationDestination(for:)` modifier telling the stack what view to show for that value.",
+      "The value must be an Int, not a String.",
+      "The NavigationLink's label must match its value."
+    ],
+    "answer": 1,
+    "explanation": "A value-based NavigationLink needs a matching `navigationDestination(for:)` on the stack to know which view to present for that value type."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Navigation",
+    "topicId": "navigation",
+    "difficulty": "core",
+    "question": "What is the primary role of `NavigationStack` in SwiftUI?",
+    "options": [
+      "It arranges its children in a horizontal row.",
+      "It stores app data that survives app restarts.",
+      "It provides a container that manages a stack of views, enabling push/pop navigation for the links inside it.",
+      "It performs background network requests for its child views."
+    ],
+    "answer": 2,
+    "explanation": "NavigationStack maintains a stack of views and drives push/pop navigation for the NavigationLinks it contains."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Navigation",
+    "topicId": "navigation",
+    "difficulty": "core",
+    "question": "In current SwiftUI, which container should you use as the root for push-style navigation?",
+    "options": [
       "NavigationStack",
-      "TabView",
-      "List"
-    ],
-    "answer": 1,
-    "explanation": "NavigationStack replaced the now-deprecated NavigationView as the modern container for managing a push/pop navigation hierarchy in SwiftUI."
-  },
-  {
-    "category": "SwiftUI",
-    "topic": "State Management",
-    "topicId": "state-management",
-    "difficulty": "core",
-    "question": "A value needs to be displayed and modified by two sibling views that do not have a parent-child relationship allowing a direct binding. What is the SwiftUI-idiomatic way to share this mutable state?",
-    "options": [
-      "Give each sibling its own @State property and rely on SwiftUI to synchronize them automatically.",
-      "Use global variables outside of any view.",
-      "Lift the state up to a common ancestor view (or a shared ObservableObject) and pass bindings/references down to both siblings.",
-      "Mark the value @Published without placing it in any ObservableObject."
-    ],
-    "answer": 2,
-    "explanation": "SwiftUI's state ownership model expects a single source of truth; sharing state between unrelated siblings means hoisting it to a common ancestor or a shared observable object referenced by both."
-  },
-  {
-    "category": "SwiftUI",
-    "topic": "State Management",
-    "topicId": "state-management",
-    "difficulty": "core",
-    "question": "What is required for a SwiftUI view to automatically refresh when a property on a class instance changes?",
-    "options": [
-      "The class must be a struct, since only value types trigger view updates.",
-      "Any property change on any class automatically triggers a SwiftUI view refresh.",
-      "The property must be marked @State inside the class.",
-      "The class must conform to ObservableObject, the property must be marked @Published, and the view must observe the instance via @StateObject, @ObservedObject, or @EnvironmentObject."
-    ],
-    "answer": 3,
-    "explanation": "SwiftUI only knows to refresh a view when a @Published property on an observed ObservableObject changes; plain class properties are invisible to SwiftUI's dependency tracking."
-  },
-  {
-    "category": "SwiftUI",
-    "topic": "State Management",
-    "topicId": "state-management",
-    "difficulty": "core",
-    "question": "What is true about the following code?\n\nclass CounterModel: ObservableObject {\n    @Published var count = 0\n    func increment() {\n        count += 1\n    }\n}",
-    "options": [
-      "Every time increment() is called, `objectWillChange` is sent before `count` updates, causing any SwiftUI view observing this instance to re-render.",
-      "increment() must manually call objectWillChange.send() or the view will never update.",
-      "count changes are only visible after the app relaunches.",
-      "@Published only works on Int properties."
+      "NavigationController",
+      "UINavigationController",
+      "VStack"
     ],
     "answer": 0,
-    "explanation": "@Published automatically synthesizes the objectWillChange notification before the property's value changes, so observing views refresh without any manual notification code."
+    "explanation": "NavigationStack is the current SwiftUI container for stack-based navigation; the others are either UIKit types or non-navigation layout views."
   },
   {
     "category": "SwiftUI",
-    "topic": "Views & Composition",
-    "topicId": "views-composition",
-    "difficulty": "core",
-    "question": "Why are SwiftUI views typically declared as structs rather than classes?",
+    "topic": "Navigation",
+    "topicId": "navigation",
+    "difficulty": "advanced",
+    "question": "Which statement is true about this view?\n```\nNavigationStack {\n    VStack {\n        NavigationLink(\"Songs\") { Text(\"Songs list\") }\n        NavigationLink(\"Albums\") { Text(\"Albums list\") }\n    }\n    .navigationTitle(\"Music\")\n}\n```",
     "options": [
-      "Classes cannot conform to protocols in Swift.",
-      "Views are lightweight, cheap-to-recreate value types; SwiftUI recreates view structs frequently to reflect state changes, and value semantics avoid unintended shared mutable state.",
-      "Structs automatically get Identifiable conformance needed for View.",
-      "SwiftUI requires reference types internally, and struct is just an alias for class here."
-    ],
-    "answer": 1,
-    "explanation": "SwiftUI's rendering model relies on cheaply re-creating view values on every state change; struct value semantics make this efficient and prevent views from accidentally sharing mutable state."
-  },
-  {
-    "category": "SwiftUI",
-    "topic": "Modifiers & Layout",
-    "topicId": "modifiers-layout",
-    "difficulty": "core",
-    "question": "What does `.frame(maxWidth: .infinity)` do when applied to a view inside an HStack?",
-    "options": [
-      "It sets the view's width to exactly the width of the screen, ignoring its parent container.",
-      "It has no effect unless `.fixedSize()` is also applied.",
-      "It expands the view to take up all available horizontal space offered by its parent.",
-      "It crashes at runtime because `.infinity` is not a valid CGFloat."
-    ],
-    "answer": 2,
-    "explanation": "`.frame(maxWidth: .infinity)` tells the view to grow to fill whatever horizontal space its parent container makes available, rather than sizing to its own content."
-  },
-  {
-    "category": "SwiftUI",
-    "topic": "State Management",
-    "topicId": "state-management",
-    "difficulty": "core",
-    "question": "Inside a view presented via `.sheet`, which is the modern (iOS 15+) way to programmatically dismiss it?",
-    "options": [
-      "Call `self.presentationMode.dismiss()` directly without any property wrapper.",
-      "Set the `@State` boolean controlling the sheet to `true` from inside the sheet's own view.",
-      "Call `UIApplication.shared.dismissSheet()`.",
-      "Read `@Environment(\\.dismiss) private var dismiss` and call `dismiss()`."
+      "Only the first NavigationLink in a VStack is active.",
+      "The links conflict, so neither navigates.",
+      "The VStack must be a List for the links to work.",
+      "Both links work; tapping \"Songs\" pushes \"Songs list\" and tapping \"Albums\" pushes \"Albums list\"."
     ],
     "answer": 3,
-    "explanation": "The `\\.dismiss` environment action, introduced as the modern replacement for presentationMode, lets a presented view dismiss itself by calling the retrieved dismiss() closure."
+    "explanation": "Multiple NavigationLinks in the same container each push their own destination; a VStack is a valid place for them inside a NavigationStack."
   },
   {
     "category": "SwiftUI",
-    "topic": "Lists & ForEach",
-    "topicId": "lists-foreach",
+    "topic": "Navigation",
+    "topicId": "navigation",
     "difficulty": "core",
-    "question": "What problem can arise from the following code when items are removed from the list?\n\nForEach(items.indices, id: \\.self) { index in\n    Text(items[index].name)\n}",
+    "question": "A developer applies `.navigationTitle(\"Profile\")` to a plain `VStack` that is NOT inside any navigation container. What is the result?",
     "options": [
-      "Because identity is based on array index rather than a stable per-item id, SwiftUI can misattribute view state (like animations or focus) to the wrong item after a removal.",
-      "This code fails to compile because indices cannot be used as an id.",
-      "Nothing; using indices as id is always equivalent to using a stable Identifiable id.",
-      "ForEach cannot accept a range of indices as its data."
+      "\"Profile\" appears as large text at the top of the VStack.",
+      "No title bar appears, because there is no navigation container to display it.",
+      "The app crashes at launch.",
+      "It compiles but shows a red error box on screen."
+    ],
+    "answer": 1,
+    "explanation": "`.navigationTitle` only has an effect inside a navigation container; with no NavigationStack there is no bar to show the title."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Navigation",
+    "topicId": "navigation",
+    "difficulty": "advanced",
+    "question": "What does this produce?\n```\nNavigationStack {\n    NavigationLink {\n        Text(\"Profile screen\")\n    } label: {\n        Image(systemName: \"person\")\n        Text(\"Profile\")\n    }\n}\n```",
+    "options": [
+      "A compile error, because a NavigationLink label cannot contain two views.",
+      "Two separate links, one for the image and one for the text.",
+      "A tappable link whose label is an icon plus \"Profile\"; tapping it pushes \"Profile screen\".",
+      "An image only; the trailing label closure is ignored."
+    ],
+    "answer": 2,
+    "explanation": "The `NavigationLink(destination:label:)` form lets the label be any composed view, so the icon and text form one tappable link that pushes the destination."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Buttons",
+    "topicId": "buttons",
+    "difficulty": "core",
+    "question": "Which creates a button labeled \"Save\" that prints \"saved\" when tapped?",
+    "options": [
+      "`Button(\"Save\") { print(\"saved\") }`",
+      "`Button(\"Save\", print(\"saved\"))`",
+      "`Button(action: \"saved\") { Text(\"Save\") }`",
+      "`Button { print(\"saved\") }`"
     ],
     "answer": 0,
-    "explanation": "Using the index as identity means that after a removal, the same index now refers to a different underlying item, which can cause SwiftUI to reuse view state incorrectly across items."
+    "explanation": "The trailing-closure form `Button(_:action:)` takes a title string and a closure that runs on tap, so this prints \"saved\" each time it is pressed."
   },
   {
     "category": "SwiftUI",
-    "topic": "Environment",
-    "topicId": "environment",
+    "topic": "Buttons",
+    "topicId": "buttons",
     "difficulty": "core",
-    "question": "An `@EnvironmentObject` is injected at the app's root view. A view pushed several levels deep via NavigationLink also declares the same `@EnvironmentObject`. What happens?",
+    "question": "When does \"Button tapped\" get printed?\n```\nButton(\"Tap me\") {\n    print(\"Button tapped\")\n}\n```",
     "options": [
-      "The pushed view crashes because environment objects do not propagate across navigation boundaries.",
-      "The pushed view automatically receives the same environment object instance, since environment values propagate down the entire view hierarchy unless explicitly overridden.",
-      "The environment object must be re-injected with `.environmentObject()` at every navigation level.",
-      "The pushed view receives a new, separate instance of the object."
+      "Once, when the view first appears.",
+      "Continuously, while the button is on screen.",
+      "Never; print doesn't work inside a button.",
+      "Each time the user taps the button."
     ],
-    "answer": 1,
-    "explanation": "Environment values, including environment objects, flow implicitly down the entire view hierarchy, including through NavigationLink destinations, unless a descendant view explicitly overrides them."
+    "answer": 3,
+    "explanation": "The closure passed to a Button is its action, which runs once for every tap the user makes."
   },
   {
     "category": "SwiftUI",
-    "topic": "View Lifecycle",
-    "topicId": "view-lifecycle",
+    "topic": "Buttons",
+    "topicId": "buttons",
     "difficulty": "core",
-    "question": "Why is it discouraged to perform side effects (like network calls or mutating external state) directly inside a SwiftUI view's `body` property?",
+    "question": "What happens each time the button is tapped?\n```\nstruct ToggleView: View {\n    @State private var isOn = false\n    var body: some View {\n        Button(isOn ? \"ON\" : \"OFF\") {\n            isOn.toggle()\n        }\n    }\n}\n```",
     "options": [
-      "`body` is only called once per app launch, so side effects there would never update.",
-      "SwiftUI runs `body` on a background thread where UIKit calls are forbidden.",
-      "`body` can be called many times by the SwiftUI rendering system, so side effects there may run repeatedly and unpredictably instead of just once.",
-      "Side effects in `body` are automatically deferred using `.task` regardless of where they are written."
+      "The label stays \"OFF\", because @State cannot change in a closure.",
+      "`isOn` flips, and the button's label alternates between \"OFF\" and \"ON\".",
+      "The app crashes, because you cannot mutate state in a button action.",
+      "The label becomes \"ON\" once and never changes again."
     ],
-    "answer": 2,
-    "explanation": "SwiftUI may re-evaluate a view's body far more often than expected as part of its rendering pass, so placing side effects there causes them to fire repeatedly and unpredictably rather than at well-defined lifecycle points."
+    "answer": 1,
+    "explanation": "Mutating @State in the action re-renders the view, so the label recomputes and alternates between \"OFF\" and \"ON\"."
   },
   {
     "category": "SwiftUI",
-    "topic": "Lists & ForEach",
-    "topicId": "lists-foreach",
+    "topic": "Buttons",
+    "topicId": "buttons",
     "difficulty": "core",
-    "question": "What is the minimum requirement for a type to conform to `Identifiable`?",
+    "question": "What is the effect of `.disabled(true)` here?\n```\nButton(\"Submit\") { submit() }\n    .disabled(true)\n```",
     "options": [
-      "It must be a class, not a struct.",
-      "It must implement `Equatable` and `Comparable`.",
-      "It must override `hash(into:)` manually; synthesis is not supported.",
-      "It must have a property named `id` that conforms to `Hashable`."
-    ],
-    "answer": 3,
-    "explanation": "Identifiable's sole requirement is an `id` property whose type conforms to Hashable, which lets collections like List and ForEach uniquely identify each element."
-  },
-  {
-    "category": "SwiftUI",
-    "topic": "State Management",
-    "topicId": "state-management",
-    "difficulty": "advanced",
-    "question": "A row view is defined like this and used inside a `List`:\n```\nclass Fetcher: ObservableObject {\n    @Published var data = \"empty\"\n}\nstruct RowView: View {\n    @ObservedObject var fetcher = Fetcher()\n    var body: some View { Text(fetcher.data) }\n}\n```\nEvery time the parent view re-renders, `RowView`'s initializer runs again. What is the practical bug here, and how should it be fixed?",
-    "options": [
-      "There is no bug; `@ObservedObject` and `@StateObject` behave identically when the object is created inline",
-      "`Fetcher` will leak memory because `@ObservedObject` retains every instance ever created",
-      "The view will crash at runtime because `@ObservedObject` requires the object to be injected via `.environmentObject()`",
-      "A new `Fetcher` is created on every re-render because `@ObservedObject` doesn't own the object's lifecycle; declare it `@StateObject` instead so SwiftUI creates it once and preserves it across re-renders"
-    ],
-    "answer": 3,
-    "explanation": "`@ObservedObject` does not manage an object's lifetime — it just observes whatever instance it's given. When the initializer runs again on re-render, a brand-new `Fetcher` (and its `data`) is created, silently discarding prior state. `@StateObject` ties the object's lifetime to the view's identity so it is created only once."
-  },
-  {
-    "category": "SwiftUI",
-    "topic": "Views & Composition",
-    "topicId": "views-composition",
-    "difficulty": "advanced",
-    "question": "```\nstruct DetailView: View {\n    @EnvironmentObject var settings: Settings\n    var body: some View { Text(settings.name) }\n}\nstruct ContentView: View {\n    var body: some View {\n        NavigationLink(\"Go\", destination: DetailView())\n    }\n}\n```\n`Settings` is never provided via `.environmentObject(...)` anywhere in the view hierarchy. What happens when `DetailView` appears?",
-    "options": [
-      "The app crashes at runtime with a message that no `Settings` object was found in the environment",
-      "`settings.name` silently evaluates to an empty string",
-      "SwiftUI creates a default `Settings()` instance automatically",
-      "It fails to compile because `@EnvironmentObject` requires a default value"
-    ],
-    "answer": 0,
-    "explanation": "`@EnvironmentObject` does not create a fallback instance — it must be injected by an ancestor view via `.environmentObject(_:)`. If no matching object is found in the environment when the view appears, SwiftUI triggers a runtime crash."
-  },
-  {
-    "category": "SwiftUI",
-    "topic": "Lists & ForEach",
-    "topicId": "lists-foreach",
-    "difficulty": "advanced",
-    "question": "```\nstruct Item: Identifiable {\n    var id: UUID { UUID() }\n    var name: String\n}\n```\nThis `Item` is used as the data for a `ForEach` inside a `List`. What problem does this `id` implementation cause?",
-    "options": [
-      "It causes a retain cycle between the `List` and each `Item`",
-      "Every access to `id` returns a new UUID, so SwiftUI can't reliably track element identity across updates, breaking diffing and losing per-row state like selection or animations",
-      "It fails to compile, since `id` must be a stored property for `Identifiable`",
-      "It works correctly, since SwiftUI only reads `id` once per item for the lifetime of the app"
-    ],
-    "answer": 1,
-    "explanation": "`Identifiable`'s `id` is expected to be stable so SwiftUI can match old and new elements between updates. Computing a fresh `UUID()` on every access means the same logical item appears to have a different identity each time the view diffs, breaking animations, causing state to be reattached to the wrong row, or even causing the list to look like it 'reloads' constantly."
-  },
-  {
-    "category": "SwiftUI",
-    "topic": "View Lifecycle",
-    "topicId": "view-lifecycle",
-    "difficulty": "advanced",
-    "question": "What is the key behavioral difference between `.task { }` and `.onAppear { }` when running asynchronous work in SwiftUI?",
-    "options": [
-      "They are functionally identical; `.task` is only syntactic sugar for `.onAppear`",
-      "`.task` runs synchronously on the main thread while `.onAppear` always runs on a background thread",
-      "`.task` automatically cancels its async work when the view disappears, tying the task's lifetime to the view; `.onAppear` has no such automatic cancellation for work you start inside it",
-      "`.onAppear` automatically cancels its work when the view disappears, but `.task` does not"
+      "The button is hidden from the layout entirely.",
+      "The button runs its action twice as a safety check.",
+      "The button is greyed out and its action will not run when tapped.",
+      "It removes the button from the view hierarchy."
     ],
     "answer": 2,
-    "explanation": "`.task` creates a structured `Task` bound to the view's lifetime and automatically cancels it when the view disappears. `.onAppear` is just a synchronous callback; any async work you kick off inside it (e.g. wrapping it in `Task { }` yourself) keeps running unless you manually manage cancellation."
+    "explanation": "`.disabled(true)` keeps the button visible but non-interactive, so it appears dimmed and its action does not fire."
   },
   {
     "category": "SwiftUI",
-    "topic": "Modifiers & Layout",
-    "topicId": "modifiers-layout",
-    "difficulty": "advanced",
-    "question": "A `ScrollView` displays 10,000 rows. What is the practical difference between backing it with a `VStack` versus a `LazyVStack`?",
+    "topic": "Buttons",
+    "topicId": "buttons",
+    "difficulty": "core",
+    "question": "Which is a valid `Button(action:label:)` expression?",
     "options": [
-      "`LazyVStack` eagerly creates all views, while `VStack` creates views lazily on demand",
-      "There is no meaningful performance difference between them",
-      "`LazyVStack` can only be used with fewer than 100 items",
-      "`VStack` eagerly creates all 10,000 child views up front, causing major memory and performance problems, while `LazyVStack` only creates views as they're about to become visible"
+      "`Button(label: \"Increment\") { count += 1 }`",
+      "`Button(action: Text(\"Increment\")) { count += 1 }`",
+      "`Button(\"Increment\", action: Text(\"tap\"))`",
+      "`Button(action: { count += 1 }) { Text(\"Increment\") }`"
     ],
     "answer": 3,
-    "explanation": "`VStack` instantiates every one of its child views immediately regardless of whether they're on-screen, which is expensive for large lists. `LazyVStack` defers creation of off-screen rows until they're about to scroll into view, which is essential for large scrollable content."
+    "explanation": "`Button(action:label:)` takes an action closure and a label view builder; the label must be a view (Text) and the action must be a closure."
   },
   {
     "category": "SwiftUI",
-    "topic": "Views & Composition",
-    "topicId": "views-composition",
-    "difficulty": "advanced",
-    "question": "What does calling `.equatable()` on a view do, and when is it useful?",
+    "topic": "Buttons",
+    "topicId": "buttons",
+    "difficulty": "core",
+    "question": "A developer wants a button that shows text when tapped, but writes:\n```\nButton(\"Log\") {\n    Text(\"Logged\")\n}\n```\nWhy does \"Logged\" never appear anywhere?",
     "options": [
-      "It tells SwiftUI to skip re-rendering the view's body if its properties haven't changed according to `Equatable`, avoiding unnecessary work when a parent re-renders frequently",
-      "It makes the view's type conform to `Identifiable` automatically",
-      "It forces the view to re-render on every parent update, ensuring the layout stays in sync",
-      "It disables animations for that specific view"
+      "The trailing closure is the action, not a view builder, so the Text created there is unused and shows nothing.",
+      "Text must be wrapped in a VStack to show.",
+      "The button title \"Log\" overrides the Text.",
+      "print is required; Text is not allowed in Swift."
     ],
     "answer": 0,
-    "explanation": "`.equatable()` requires the view to conform to `Equatable` and lets SwiftUI compare the old and new view values; if they're equal, it skips re-evaluating that view's `body`, which is a targeted optimization for expensive views inside a frequently-updating parent."
+    "explanation": "In `Button(\"Log\") { ... }` the closure is the tap action; constructing a Text there produces an unused value, so nothing is displayed."
   },
   {
     "category": "SwiftUI",
-    "topic": "Modifiers & Layout",
-    "topicId": "modifiers-layout",
+    "topic": "Buttons",
+    "topicId": "buttons",
     "difficulty": "advanced",
-    "question": "A `GeometryReader` is placed as one child inside a `VStack` alongside other views. What layout behavior commonly surprises developers here?",
+    "question": "What is the behavior of the \"Continue\" button?\n```\nstruct FormView: View {\n    @State private var name = \"\"\n    var body: some View {\n        Button(\"Continue\") { print(name) }\n            .disabled(name.isEmpty)\n    }\n}\n```",
     "options": [
-      "`GeometryReader` has no effect on layout and only reports size information",
-      "`GeometryReader` expands to take up all the space offered to it by its parent, which can push or squeeze its siblings in the `VStack` in unexpected ways",
-      "`GeometryReader` always sizes itself to fit its content, like a `HStack`",
-      "`GeometryReader` ignores its parent's layout entirely and always fills the whole screen regardless of nesting"
+      "It is always disabled, because `name` starts empty and never changes.",
+      "It is disabled while `name` is empty and becomes tappable once the user enters text.",
+      "It is always enabled; `.disabled` only accepts constant values.",
+      "It toggles between enabled and disabled every second."
     ],
     "answer": 1,
-    "explanation": "Unlike most views that size themselves to their content, `GeometryReader` greedily accepts all the space its parent offers it. Inside a `VStack`, that often means it consumes far more space than intended, distorting the layout of sibling views."
+    "explanation": "`.disabled` re-evaluates on each state change, so the button is disabled while `name.isEmpty` is true and enables once text is entered."
   },
   {
     "category": "SwiftUI",
-    "topic": "Lists & ForEach",
-    "topicId": "lists-foreach",
+    "topic": "Buttons",
+    "topicId": "buttons",
     "difficulty": "advanced",
-    "question": "```\nstruct EditorView: View {\n    @State private var items = [\"A\", \"B\", \"C\"]\n    var body: some View {\n        List {\n            ForEach(items.indices, id: \\.self) { index in\n                TextField(\"Item\", text: $items[index])\n                    .swipeActions {\n                        Button(\"Delete\") { items.remove(at: index) }\n                    }\n            }\n        }\n    }\n}\n```\nSwiping to delete a row in the middle of the list can cause a crash. Why?",
+    "question": "The user taps \"Add\" three times. What does the Text show?\n```\nstruct Counter: View {\n    @State private var count = 0\n    var body: some View {\n        VStack {\n            Text(\"Count: \\(count)\")\n            Button(\"Add\") { count += 2 }\n        }\n    }\n}\n```",
     "options": [
-      "`swipeActions` is not compatible with `ForEach`",
-      "`@State` arrays cannot have elements removed at runtime",
-      "When an item is removed, `items.indices` shrinks, but a stale closure can still reference an `index` that is now out of range for `$items[index]`, crashing with an out-of-range error",
-      "`TextField` cannot be bound to an array element under any circumstances"
+      "Count: 3",
+      "Count: 2",
+      "Count: 6",
+      "Count: 0"
     ],
     "answer": 2,
-    "explanation": "Iterating and binding by integer index ties each row's identity to a position rather than the item itself. When an item is removed, the indices of subsequent rows shift, and any capture of an old index (such as in the delete closure for a row below the deleted one) can point past the new bounds, producing an index-out-of-range crash. Iterating over stable, `Identifiable` values avoids this."
+    "explanation": "Each tap adds 2 to `count` (0 -> 2 -> 4 -> 6), and the state change re-renders the Text to show \"Count: 6\"."
   },
   {
     "category": "SwiftUI",
-    "topic": "State Management",
-    "topicId": "state-management",
-    "difficulty": "advanced",
-    "question": "Which wiring correctly establishes a shared model as the single source of truth for a SwiftUI app?",
+    "topic": "Forms",
+    "topicId": "forms",
+    "difficulty": "core",
+    "question": "What is the purpose of `Form` in SwiftUI?",
     "options": [
-      "`@ObservedObject private var store = Store()` at the `App` level, injected via `.environmentObject(store)`",
-      "Creating a new `Store()` instance inside every view that needs it, and syncing them manually with `NotificationCenter`",
-      "`@EnvironmentObject var store = Store()` declared directly at the `App` level",
-      "`@StateObject private var store = Store()` at the `App` level, injected once via `.environmentObject(store)` on the root view"
+      "It validates user input automatically and rejects bad data.",
+      "It submits its data to a server when the view appears.",
+      "It arranges its children horizontally like an HStack.",
+      "It groups and styles controls (like text fields and toggles) into a platform-standard, settings-style layout."
     ],
     "answer": 3,
-    "explanation": "`@StateObject` at the app's root ensures the store is created exactly once and survives for the app's lifetime; `@ObservedObject` at that level would risk the object being recreated if the `App`'s body is re-evaluated. `.environmentObject(store)` then makes it available to any descendant that declares `@EnvironmentObject`."
+    "explanation": "Form is a container that lays out and styles its child controls in the standard grouped, settings-style appearance; it does not itself validate or submit data."
   },
   {
     "category": "SwiftUI",
-    "topic": "Views & Composition",
-    "topicId": "views-composition",
-    "difficulty": "advanced",
-    "question": "```\nstruct ProfileView: View {\n    @StateObject private var viewModel: ProfileViewModel\n    init(userID: String) {\n        _viewModel = StateObject(wrappedValue: ProfileViewModel(userID: userID))\n    }\n    var body: some View { Text(viewModel.userID) }\n}\n```\nA parent view recreates `ProfileView(userID:)` with a new `userID` in response to a state change, but the displayed `userID` never updates. Why?",
+    "topic": "Forms",
+    "topicId": "forms",
+    "difficulty": "core",
+    "question": "What does `$name` provide to the TextField?\n```\nstruct NameEntry: View {\n    @State private var name = \"\"\n    var body: some View {\n        Form {\n            TextField(\"Name\", text: $name)\n        }\n    }\n}\n```",
     "options": [
-      "`@StateObject` only runs its initial `wrappedValue` expression once per view identity; SwiftUI preserves the original `ProfileViewModel` instance across re-initializations unless the view's identity changes (e.g. via `.id(userID)`)",
-      "`@StateObject` re-runs the initializer on every re-render, so the bug must be elsewhere",
-      "`Text(viewModel.userID)` doesn't observe `@Published` changes",
-      "`init(userID:)` is never called again by SwiftUI once the view has appeared"
+      "A two-way binding, so edits in the field update the `name` state and vice versa.",
+      "A read-only copy of name's current value.",
+      "The type of name (String).",
+      "A new independent variable unrelated to name."
     ],
     "answer": 0,
-    "explanation": "SwiftUI treats `@StateObject`'s initial value as create-once-per-identity: even though `init(userID:)` runs again with the new argument, SwiftUI discards that new `StateObject` value and keeps the originally created instance as long as the view's identity is unchanged. Forcing a new identity (e.g. `.id(userID)`) is required to make SwiftUI create a fresh instance."
+    "explanation": "The `$` prefix on a @State property yields a Binding, giving the TextField two-way access to read and write `name`."
   },
   {
     "category": "SwiftUI",
-    "topic": "State Management",
-    "topicId": "state-management",
-    "difficulty": "advanced",
-    "question": "```\nclass ViewModel: ObservableObject {\n    @Published var count = 0\n    var cancellable: AnyCancellable?\n    init() {\n        cancellable = timerPublisher.sink { [self] _ in\n            self.count += 1\n        }\n    }\n    deinit { print(\"ViewModel deinit\") }\n}\n```\nThis view model's `deinit` never prints, even after every view referencing it disappears. What is the most likely cause?",
+    "topic": "Forms",
+    "topicId": "forms",
+    "difficulty": "core",
+    "question": "This line does not compile, where `email` is `@State private var email = \"\"`:\n```\nTextField(\"Email\", text: email)\n```\nWhat is wrong?",
     "options": [
-      "`deinit` is never called on `ObservableObject` types by SwiftUI",
-      "`[self]` strongly captures `self` in the closure, and that closure is stored on `self.cancellable`, forming a retain cycle that prevents deallocation; it should capture `[weak self]` instead",
-      "`@Published` properties always prevent an `ObservableObject` from ever deallocating",
-      "`AnyCancellable` automatically keeps every subscriber alive forever regardless of capture semantics"
-    ],
-    "answer": 1,
-    "explanation": "Storing the closure in `cancellable`, a property of `self`, while the closure also strongly captures `self` (via `[self]`) creates a reference cycle: `self` keeps the cancellable alive, and the cancellable's closure keeps `self` alive. Using `[weak self]` breaks the cycle."
-  },
-  {
-    "category": "SwiftUI",
-    "topic": "Environment",
-    "topicId": "environment",
-    "difficulty": "advanced",
-    "question": "Several sibling views each need access to shared user preferences. Which approach best avoids tight coupling between the sibling views themselves?",
-    "options": [
-      "Have one sibling hold a direct reference to the other sibling's view struct and call its methods directly",
-      "Store the preferences in a global mutable variable outside of SwiftUI's property wrappers",
-      "Inject a single shared `ObservableObject` into the environment once (e.g. from a common ancestor), and have each sibling read it via `@EnvironmentObject`, rather than passing references or callbacks directly between siblings",
-      "Give each sibling view its own separate instance of the preferences object and reconcile changes with `NotificationCenter`"
+      "TextField's first argument must be a Text view.",
+      "`email` must be declared with `let`, not `var`.",
+      "The text parameter needs a binding: pass `$email`, not `email`.",
+      "TextField cannot be used for email addresses."
     ],
     "answer": 2,
-    "explanation": "Injecting one shared observable model via the environment lets any descendant read and write the same source of truth without needing direct knowledge of, or a reference to, its siblings, keeping the views decoupled from one another."
+    "explanation": "The `text:` parameter expects a `Binding<String>`; you must pass the projected value `$email` rather than the plain String value."
   },
   {
     "category": "SwiftUI",
-    "topic": "Lists & ForEach",
-    "topicId": "lists-foreach",
-    "difficulty": "advanced",
-    "question": "What is the risk of iterating like this when a list can be reordered or filtered?\n```\nForEach(items.indices, id: \\.self) { index in\n    RowView(item: items[index])\n}\n```\ncompared to `ForEach(items, id: \\.id) { item in RowView(item: item) }` where `Item` is `Identifiable`?",
+    "topic": "Forms",
+    "topicId": "forms",
+    "difficulty": "core",
+    "question": "What does this Toggle do?\n```\nstruct Settings: View {\n    @State private var notify = true\n    var body: some View {\n        Form {\n            Toggle(\"Notifications\", isOn: $notify)\n        }\n    }\n}\n```",
     "options": [
-      "There is no difference; both approaches behave identically for any array",
-      "Index-based `ForEach` cannot compile unless `Item` also conforms to `Identifiable`",
-      "Using `item.id` as identity is slower because it requires hashing every element on every render",
-      "Using the index as identity means SwiftUI tracks rows by position, not by the actual item; reordering or filtering makes SwiftUI think existing rows changed content instead of moved, breaking animations and potentially misattaching per-row view state"
+      "It shows static text \"Notifications\" with no interaction.",
+      "It shows a switch bound to `notify`; flipping it updates `notify` between true and false.",
+      "It runs a closure every second to check for notifications.",
+      "It requires an Int binding, so this won't compile."
+    ],
+    "answer": 1,
+    "explanation": "A Toggle takes an `isOn` Bool binding; interacting with the switch reads and writes `notify` through `$notify`."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Forms",
+    "topicId": "forms",
+    "difficulty": "core",
+    "question": "What happens when the user taps the stepper's plus control?\n```\nstruct Quantity: View {\n    @State private var qty = 1\n    var body: some View {\n        Form {\n            Stepper(\"Quantity: \\(qty)\", value: $qty)\n        }\n    }\n}\n```",
+    "options": [
+      "`qty` resets to 0.",
+      "Nothing happens, because a Stepper needs a range to work.",
+      "The label stays \"Quantity: 1\" permanently.",
+      "`qty` increases by 1 and the label updates to reflect the new value."
     ],
     "answer": 3,
-    "explanation": "SwiftUI's diffing relies on the `id` to determine whether a row is the same logical element across updates. With index-based identity, a reorder looks like every row's content changed in place rather than the rows moving, which produces incorrect transitions/animations and can cause view-local `@State` to appear attached to the wrong data."
+    "explanation": "A Stepper bound to `$qty` increments the value by one on the plus control, and the state change refreshes the label."
   },
   {
     "category": "SwiftUI",
-    "topic": "Environment",
-    "topicId": "environment",
+    "topic": "Forms",
+    "topicId": "forms",
     "difficulty": "advanced",
-    "question": "A SwiftUI preview crashes with a message about a missing environment object. What is the most likely cause and fix?",
+    "question": "What is the role of `$choice` in this Picker?\n```\nstruct ColorPick: View {\n    @State private var choice = \"Red\"\n    var body: some View {\n        Form {\n            Picker(\"Color\", selection: $choice) {\n                Text(\"Red\").tag(\"Red\")\n                Text(\"Green\").tag(\"Green\")\n                Text(\"Blue\").tag(\"Blue\")\n            }\n        }\n    }\n}\n```",
     "options": [
-      "The preview's view (or an ancestor in the preview hierarchy) declares `@EnvironmentObject` but the `PreviewProvider` never called `.environmentObject(...)` to supply one",
-      "Previews never support `@EnvironmentObject` under any circumstances",
-      "The view model class needs to be marked `@objc` to work in previews",
-      "Previews automatically inject a default instance, so this error indicates a corrupted Xcode installation"
+      "It binds the picker's selection to `choice`, so choosing an option stores that row's tag in `choice`.",
+      "It lists all colors regardless of the current selection.",
+      "It disables the picker until `choice` changes.",
+      "It sets the picker's title to the value of `choice`."
     ],
     "answer": 0,
-    "explanation": "`@EnvironmentObject` requires an object to be injected into the environment before the view reads it, and this requirement applies in previews just as it does at runtime. The fix is to chain `.environmentObject(SomeModel())` onto the preview's content."
+    "explanation": "A Picker's `selection` binding holds the tag of the chosen row, so selecting \"Green\" writes \"Green\" into `choice`."
   },
   {
     "category": "SwiftUI",
-    "topic": "View Lifecycle",
-    "topicId": "view-lifecycle",
+    "topic": "Forms",
+    "topicId": "forms",
     "difficulty": "advanced",
-    "question": "A view runs a long loop inside `.task { }`. The view disappears midway through, and the loop keeps running to completion anyway even though the task modifier is supposed to cancel it. Why?",
+    "question": "A developer writes the following, but it fails to compile:\n```\n@State private var dark = false\n// ...\nToggle(\"Dark mode\", isOn: dark)\n```\nWhat is the correct fix?",
     "options": [
-      "Cancellation only works if the loop uses `async let` bindings",
-      "Task cancellation in Swift is cooperative: the loop must periodically check `Task.isCancelled` (or call a throwing cancellation check) to actually stop; simply attaching `.task` sets the cancellation flag but doesn't preemptively halt running code",
-      "`.task` only cancels work that uses `URLSession`, not arbitrary loops",
-      "The view must be wrapped in a `NavigationStack` for cancellation to take effect"
-    ],
-    "answer": 1,
-    "explanation": "When a `.task`-attached `Task` is cancelled, Swift only marks it as cancelled — it does not forcibly stop arbitrary running code. Long-running work must explicitly check `Task.isCancelled` (or use a cancellation-aware API that throws `CancellationError`) at appropriate points to actually exit early."
-  },
-  {
-    "category": "SwiftUI",
-    "topic": "Views & Composition",
-    "topicId": "views-composition",
-    "difficulty": "advanced",
-    "question": "```\nText(item.name)\n    .id(UUID())\n```\nThis modifier is applied inside a view's `body`. What problem does it cause?",
-    "options": [
-      "It causes a compile error because `.id()` requires a `Hashable` type, and `UUID` doesn't conform",
-      "It permanently fixes the view's identity so it never updates again",
-      "A new UUID is generated every time `body` is evaluated, so SwiftUI treats the `Text` as a brand-new view identity on every render, discarding any transient view state or animation continuity it had",
-      "It has no effect because `.id()` only works on `List` rows"
+      "Change `dark` to a String.",
+      "Remove the @State attribute from `dark`.",
+      "Pass a binding: `Toggle(\"Dark mode\", isOn: $dark)`.",
+      "Wrap the Toggle in a Button."
     ],
     "answer": 2,
-    "explanation": "`.id(_:)` explicitly overrides a view's identity. Generating a fresh, unstable `UUID()` inside `body` means the identity changes on every single re-render, so SwiftUI never recognizes the view as 'the same' view across updates, defeating state preservation and animations for it."
+    "explanation": "`isOn` expects a `Binding<Bool>`, so you must pass the projected binding `$dark` instead of the plain Bool value."
   },
   {
     "category": "SwiftUI",
-    "topic": "State Management",
-    "topicId": "state-management",
+    "topic": "Forms",
+    "topicId": "forms",
     "difficulty": "advanced",
-    "question": "An `ObservableObject`'s `@Published` property is mutated from a background thread (e.g. inside a `URLSession` completion handler), and the UI intermittently fails to update or Xcode logs a purple runtime warning. What is the correct fix?",
+    "question": "Starting from the default, the user taps the plus control four times. What does the bottom Text show?\n```\nstruct Prefs: View {\n    @State private var volume = 5\n    var body: some View {\n        Form {\n            Stepper(\"Volume: \\(volume)\", value: $volume, in: 0...10)\n            Text(volume > 8 ? \"Loud\" : \"OK\")\n        }\n    }\n}\n```",
     "options": [
-      "Change `@Published` to `@State` so it can be safely mutated from any thread",
-      "Wrap the property in an `NSLock` and mutate it directly on the background thread; no dispatch is needed",
-      "Nothing needs to change, since `@Published` properties are always thread-safe for UI updates",
-      "Dispatch the mutation back to the main thread (e.g. `DispatchQueue.main.async` or marking the type `@MainActor`), since SwiftUI expects `@Published` changes that drive UI updates to happen on the main thread"
+      "OK",
+      "Loud",
+      "Volume: 9",
+      "The Text does not update until the view reappears."
+    ],
+    "answer": 1,
+    "explanation": "Four taps raise `volume` from 5 to 9; since 9 > 8, the conditional Text shows \"Loud\" and SwiftUI re-renders on the state change."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Sheets",
+    "topicId": "sheets",
+    "difficulty": "core",
+    "question": "What happens when the button is tapped?\n\n```\nstruct ContentView: View {\n    @State private var showing = false\n\n    var body: some View {\n        Button(\"Open\") { showing = true }\n            .sheet(isPresented: $showing) {\n                Text(\"Hello\")\n            }\n    }\n}\n```",
+    "options": [
+      "The view navigates (pushes) to a new screen showing 'Hello'.",
+      "Nothing happens, because a sheet also requires a NavigationStack.",
+      "A modal sheet slides up from the bottom presenting the Text 'Hello'.",
+      "The 'Hello' text appears inline directly below the button."
+    ],
+    "answer": 2,
+    "explanation": "Setting the `@State` Bool to true through the `$showing` binding tells the `.sheet(isPresented:)` modifier to present its content modally."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Sheets",
+    "topicId": "sheets",
+    "difficulty": "core",
+    "question": "The sheet appears, but tapping 'Close' does nothing. Why?\n\n```\nstruct ContentView: View {\n    @State private var showDetail = false\n\n    var body: some View {\n        Button(\"Show\") { showDetail = true }\n            .sheet(isPresented: $showDetail) {\n                Button(\"Close\") {\n                    print(\"closing\")\n                }\n            }\n    }\n}\n```",
+    "options": [
+      "The button's action only prints; it never sets `showDetail` back to `false` (nor calls `dismiss`), so the sheet stays up.",
+      "A sheet can only be dismissed by swiping down; it cannot be dismissed in code.",
+      "`print` inside a Button action is not allowed and silently cancels the tap.",
+      "The sheet must be inside a `NavigationStack` before any of its buttons work."
+    ],
+    "answer": 0,
+    "explanation": "A `.sheet(isPresented:)` stays visible until its bound Bool becomes `false` (or `dismiss()` is called); the Close action changes neither."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Sheets",
+    "topicId": "sheets",
+    "difficulty": "core",
+    "question": "Given `@State private var isOn = false`, which line correctly presents a sheet from that state?",
+    "options": [
+      ".sheet(isPresented: isOn) { DetailView() }",
+      ".sheet(presented: $isOn) { DetailView() }",
+      ".sheet(isShowing: $isOn) { DetailView() }",
+      ".sheet(isPresented: $isOn) { DetailView() }"
     ],
     "answer": 3,
-    "explanation": "SwiftUI's rendering and `@Published`'s `objectWillChange` notifications are expected to happen on the main thread. Mutating from a background thread can cause missed or delayed UI updates and triggers Xcode's 'Publishing changes from background threads is not allowed' warning; the fix is to hop back to the main thread (or isolate the type to `@MainActor`) before mutating."
+    "explanation": "The parameter is named `isPresented:` and it takes a `Binding<Bool>`, so the state must be passed with the `$` prefix."
   },
   {
     "category": "SwiftUI",
-    "topic": "Environment",
-    "topicId": "environment",
-    "difficulty": "advanced",
-    "question": "What is the main functional difference between `@Environment` and `@EnvironmentObject` in SwiftUI?",
+    "topic": "Sheets",
+    "topicId": "sheets",
+    "difficulty": "core",
+    "question": "A sheet contains this view. What does tapping 'Close' do?\n\n```\nstruct SheetView: View {\n    @Environment(\\.dismiss) private var dismiss\n\n    var body: some View {\n        Button(\"Close\") { dismiss() }\n    }\n}\n```",
     "options": [
-      "`@Environment` reads individual values (often system-provided, like `colorScheme` or `dismiss`) from the environment's keyed value table, while `@EnvironmentObject` reads a whole custom `ObservableObject` instance that was explicitly injected",
-      "They are two names for the exact same mechanism with no functional difference",
-      "`@EnvironmentObject` is only for system values, while `@Environment` is for custom observable classes",
-      "`@Environment` requires the value to conform to `ObservableObject`, but `@EnvironmentObject` does not"
-    ],
-    "answer": 0,
-    "explanation": "`@Environment(\\.someKey)` looks up a specific value from SwiftUI's environment value table (many of which are system-provided). `@EnvironmentObject` instead looks for an object of a particular class that conforms to `ObservableObject` and was injected into the environment via `.environmentObject(_:)`."
-  },
-  {
-    "category": "SwiftUI",
-    "topic": "State Management",
-    "topicId": "state-management",
-    "difficulty": "advanced",
-    "question": "A single, large `AppViewModel: ObservableObject` currently backs every screen in an app, and unrelated screens keep re-rendering whenever any unrelated `@Published` property changes anywhere in it. What is the recommended design fix?",
-    "options": [
-      "Wrap every property access in `.equatable()` at the call site to prevent unrelated updates",
-      "Split the god object into smaller, screen-scoped view models (or `ObservableObject`s) that each own only the state their screen actually needs, sharing only what's genuinely global",
-      "Mark every `@Published` property as `@Published private`, which will stop unrelated views from re-rendering",
-      "Convert `AppViewModel` from a class to a struct so SwiftUI can diff it more efficiently"
+      "It quits the app.",
+      "It dismisses the currently presented sheet, returning to the presenting view.",
+      "Nothing, because `dismiss` requires the presenting Bool as an argument.",
+      "It only reloads the sheet's body without closing it."
     ],
     "answer": 1,
-    "explanation": "Any `@Published` change on an `ObservableObject` triggers `objectWillChange` for the whole object, causing every view observing it to re-evaluate its body regardless of which property actually changed. Splitting responsibilities into smaller, focused view models limits each view's dependency surface to only the state relevant to it."
+    "explanation": "`@Environment(\\.dismiss)` provides a dismiss action; calling it closes the current modal presentation (the sheet)."
   },
   {
     "category": "SwiftUI",
-    "topic": "Lists & ForEach",
-    "topicId": "lists-foreach",
-    "difficulty": "advanced",
-    "question": "A row view declares `@State private var isExpanded = false` to track whether it's expanded, and the parent list uses index-based `ForEach` identity as shown here:\n```\nForEach(items.indices, id: \\.self) { i in\n    RowView(item: items[i], isExpandedState: ...)\n}\n```\nAfter the underlying `items` array is filtered (removing some elements), users report that the wrong rows appear expanded. What's the underlying cause?",
+    "topic": "Sheets",
+    "topicId": "sheets",
+    "difficulty": "core",
+    "question": "Using this type with `.sheet(item: $selected)`, which statement is true?\n\n```\nstruct Item: Identifiable {\n    let id = UUID()\n    let name: String\n}\n\n@State private var selected: Item? = nil\n```",
     "options": [
-      "Filtering an array in SwiftUI automatically resets every row's `@State` to its default value",
-      "The bug is unrelated to identity and is instead caused by `RowView` not conforming to `Identifiable`",
-      "Because identity is tied to index rather than to the item itself, when the array is filtered the same index now maps to a different item, but SwiftUI reuses the row's existing `@State` (including `isExpanded`) as if it were the same logical row",
-      "`@State` cannot be used inside a `ForEach` row at all"
+      "`item:` must be a `Binding<Bool>`, exactly like `isPresented:`.",
+      "The sheet shows immediately at launch and can never be dismissed.",
+      "The sheet is presented whenever `selected` is non-nil, the unwrapped `Item` is passed into the closure, and setting `selected` to nil dismisses it.",
+      "The closure receives an optional `Item?` that you must unwrap yourself."
     ],
     "answer": 2,
-    "explanation": "SwiftUI preserves `@State` for a view based on that view's identity across updates. When identity is derived from index rather than the item's own stable id, a filtered array shifts which item sits at a given index, but the row's local `@State` (like `isExpanded`) stays attached to that index — visually 'sticking' to the wrong item."
+    "explanation": "`.sheet(item:)` presents whenever the optional is non-nil, hands the unwrapped value to the closure, and dismisses when the value returns to nil."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Sheets",
+    "topicId": "sheets",
+    "difficulty": "advanced",
+    "question": "In a `List`, each row represents a different `Item` and tapping a row should present a detail sheet for that specific item. Which approach passes the tapped item to the sheet most directly?",
+    "options": [
+      "Use `.sheet(item: $selectedItem)` where `selectedItem` is an `Item?`; set it to the tapped item, and the closure receives that item.",
+      "Use `.sheet(isPresented:)` and read a separate global variable inside the closure to know which row was tapped.",
+      "Use `.sheet(isPresented:)`; the tapped item is automatically injected into the sheet's closure.",
+      "You cannot show per-item data in a sheet; you must push a `NavigationStack` destination instead."
+    ],
+    "answer": 0,
+    "explanation": "`.sheet(item:)` is designed for exactly this: assigning the tapped `Item?` both triggers presentation and delivers that item to the closure."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Sheets",
+    "topicId": "sheets",
+    "difficulty": "advanced",
+    "question": "Does this compile, and if not, why?\n\n```\nstruct Book {\n    let title: String\n}\n\n@State private var book: Book? = nil\n\n// ...\n.sheet(item: $book) { b in\n    Text(b.title)\n}\n```",
+    "options": [
+      "It compiles and works; conformance to `Identifiable` is optional for `.sheet(item:)`.",
+      "It does not compile: `.sheet(item:)` requires the item type to conform to `Identifiable`, and `Book` does not.",
+      "It does not compile because `book` must be declared with `@Binding`, not `@State`.",
+      "It compiles but crashes at runtime because `Book` has no stored `id`."
+    ],
+    "answer": 1,
+    "explanation": "`.sheet(item:)` constrains its item to `Identifiable`; since `Book` does not conform, the code fails to compile."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Sheets",
+    "topicId": "sheets",
+    "difficulty": "core",
+    "question": "The parent uses `.sheet(isPresented: $showSheet) { SheetContent(isPresented: $showSheet) }`. What happens when 'Dismiss' is tapped?\n\n```\nstruct SheetContent: View {\n    @Binding var isPresented: Bool\n\n    var body: some View {\n        Button(\"Dismiss\") { isPresented = false }\n    }\n}\n```",
+    "options": [
+      "Nothing; a child view cannot change a parent's `@State`.",
+      "It compiles but the sheet reappears immediately after closing.",
+      "It crashes because two views share the same Bool.",
+      "The sheet dismisses, because the child's binding writes to the same state that presents it, setting it to `false`."
+    ],
+    "answer": 3,
+    "explanation": "The `@Binding` refers to the parent's `showSheet`; setting it to `false` flips the presenting state and the sheet is dismissed."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Toolbars",
+    "topicId": "toolbars",
+    "difficulty": "core",
+    "question": "What does this produce?\n\n```\nNavigationStack {\n    Text(\"Home\")\n        .toolbar {\n            ToolbarItem(placement: .navigationBarTrailing) {\n                Button(\"Add\") { }\n            }\n        }\n}\n```",
+    "options": [
+      "An 'Add' button in the trailing (top-right) area of the navigation bar.",
+      "An 'Add' button centered at the bottom of the screen.",
+      "Nothing, because `ToolbarItem` requires an explicit `id`.",
+      "An 'Add' button in the top-left of the navigation bar."
+    ],
+    "answer": 0,
+    "explanation": "`.navigationBarTrailing` places the toolbar item on the trailing side of the navigation bar provided by the `NavigationStack`."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Toolbars",
+    "topicId": "toolbars",
+    "difficulty": "core",
+    "question": "The 'Edit' button never appears on screen. What is the problem?\n\n```\nstruct ContentView: View {\n    var body: some View {\n        Text(\"Hello\")\n            .toolbar {\n                ToolbarItem(placement: .navigationBarTrailing) {\n                    Button(\"Edit\") { }\n                }\n            }\n    }\n}\n```",
+    "options": [
+      "`ToolbarItem` must be given an explicit `id` or it is skipped.",
+      "A `Button` in a toolbar must use an SF Symbol image, not a title string.",
+      "There is no navigation container (e.g. `NavigationStack`), so a `.navigationBarTrailing` item has no navigation bar to appear in.",
+      "`.toolbar` must be attached to a `VStack`, never to a `Text`."
+    ],
+    "answer": 2,
+    "explanation": "Navigation-bar toolbar placements need an enclosing navigation container; without a `NavigationStack` there is no bar to host the item."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Toolbars",
+    "topicId": "toolbars",
+    "difficulty": "core",
+    "question": "Which placement puts a toolbar item on the leading (left) side of the navigation bar?",
+    "options": [
+      ".navigationBarTrailing",
+      ".primaryAction",
+      ".bottomBar",
+      ".navigationBarLeading"
+    ],
+    "answer": 3,
+    "explanation": "`.navigationBarLeading` positions the item on the leading (left) side of the navigation bar."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Toolbars",
+    "topicId": "toolbars",
+    "difficulty": "core",
+    "question": "Which line correctly adds a single button to a view's toolbar?",
+    "options": [
+      ".toolbar(ToolbarItem: .navigationBarTrailing, Button(\"Save\"))",
+      ".toolbar { ToolbarItem(placement: .navigationBarTrailing) { Button(\"Save\") { } } }",
+      ".toolbarItem(placement: .navigationBarTrailing) { Button(\"Save\") { } }",
+      ".navigationBar { Button(\"Save\") { } }"
+    ],
+    "answer": 1,
+    "explanation": "`.toolbar { }` takes a content closure of `ToolbarItem`s, each wrapping a view such as a `Button`."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Toolbars",
+    "topicId": "toolbars",
+    "difficulty": "core",
+    "question": "What does the `.primaryAction` placement do for a toolbar item?",
+    "options": [
+      "It makes the button the default control triggered by the Return key.",
+      "It forces the item into the bottom toolbar on every platform.",
+      "It places the item in the view's conventional primary-action location (the trailing side of the navigation bar on iOS).",
+      "It marks the item so its action runs automatically when the view appears."
+    ],
+    "answer": 2,
+    "explanation": "`.primaryAction` is a semantic placement that puts the item where the platform expects the main action, which on iOS is the navigation bar's trailing edge."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Toolbars",
+    "topicId": "toolbars",
+    "difficulty": "advanced",
+    "question": "What is the result of this toolbar?\n\n```\nNavigationStack {\n    Text(\"Editor\")\n        .toolbar {\n            ToolbarItem(placement: .navigationBarLeading) {\n                Button(\"Cancel\") { }\n            }\n            ToolbarItem(placement: .navigationBarTrailing) {\n                Button(\"Save\") { }\n            }\n        }\n}\n```",
+    "options": [
+      "'Cancel' appears on the leading (left) side and 'Save' on the trailing (right) side of the navigation bar.",
+      "Both buttons stack on the right; placement is ignored when there are two items.",
+      "Only 'Save' shows, because a toolbar can contain only one `ToolbarItem`.",
+      "Both buttons move to the bottom bar because two items force `.bottomBar`."
+    ],
+    "answer": 0,
+    "explanation": "A `.toolbar` may hold multiple `ToolbarItem`s, each honoring its own placement, so Cancel goes leading and Save goes trailing."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Toolbars",
+    "topicId": "toolbars",
+    "difficulty": "advanced",
+    "question": "What happens when the 'Add' button is tapped?\n\n```\nNavigationStack {\n    List(items) { item in Text(item.name) }\n        .toolbar {\n            ToolbarItem(placement: .navigationBarTrailing) {\n                Button(\"Add\") { showAdd = true }\n            }\n        }\n        .sheet(isPresented: $showAdd) {\n            AddView()\n        }\n}\n```",
+    "options": [
+      "`AddView` is pushed onto the navigation stack as a new screen.",
+      "Nothing, because a toolbar button cannot change `@State`.",
+      "The sheet only appears the second time the button is tapped.",
+      "`showAdd` becomes `true`, which triggers the `.sheet` modifier to present `AddView` modally."
+    ],
+    "answer": 3,
+    "explanation": "The toolbar button sets the state that the `.sheet(isPresented:)` observes, so `AddView` is presented as a modal sheet."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Toolbars",
+    "topicId": "toolbars",
+    "difficulty": "advanced",
+    "question": "What does `ToolbarItemGroup` do here?\n\n```\n.toolbar {\n    ToolbarItemGroup(placement: .navigationBarTrailing) {\n        Button(\"Edit\") { }\n        Button(\"Add\") { }\n    }\n}\n```",
+    "options": [
+      "It groups the buttons into a submenu that opens on tap.",
+      "It places both buttons at the given placement, so a separate `ToolbarItem` per button is not needed.",
+      "It is invalid; a toolbar can only contain `ToolbarItem`, not `ToolbarItemGroup`.",
+      "It moves the buttons to the bottom bar regardless of the placement given."
+    ],
+    "answer": 1,
+    "explanation": "`ToolbarItemGroup` lets several controls share one placement, avoiding the need to wrap each control in its own `ToolbarItem`."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State & Bindings",
+    "topicId": "state-bindings",
+    "difficulty": "core",
+    "question": "In a SwiftUI view, why must a stored property that the view mutates in response to user interaction be marked `@State`?",
+    "options": [
+      "Because `@State` makes the property thread-safe.",
+      "Because `@State` converts the property into a computed property.",
+      "Because a `View` is a struct and its stored properties are otherwise immutable; `@State` stores the value outside the struct so it can change.",
+      "Because without `@State` the property would be shared across all instances of the view."
+    ],
+    "answer": 2,
+    "explanation": "A `View` is a value type whose stored properties can't be mutated by its non-mutating `body`; `@State` moves the storage outside the struct so SwiftUI can change it and re-render."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State & Bindings",
+    "topicId": "state-bindings",
+    "difficulty": "core",
+    "question": "You have `@State private var isOn = false` and want a `Toggle` to read and write it:\n\n```\nToggle(\"Enabled\", isOn: ___)\n```\n\nWhat goes in the blank?",
+    "options": [
+      "`$isOn`",
+      "`isOn`",
+      "`isOn.wrappedValue`",
+      "`State(isOn)`"
+    ],
+    "answer": 0,
+    "explanation": "`Toggle` needs a `Binding<Bool>`; the `$` prefix gives the projected value of `@State`, which is exactly that binding."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State & Bindings",
+    "topicId": "state-bindings",
+    "difficulty": "core",
+    "question": "What is `@Binding` used for?",
+    "options": [
+      "To create a new independent source of truth inside the child view.",
+      "To let a child view read and write a piece of state owned by a parent view.",
+      "To declare a constant that can never change.",
+      "To observe an external reference-type model object."
+    ],
+    "answer": 1,
+    "explanation": "`@Binding` is a two-way connection to state owned elsewhere (usually a parent's `@State`), so the child can both read and write it."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State & Bindings",
+    "topicId": "state-bindings",
+    "difficulty": "core",
+    "question": "What happens with this view?\n\n```\nstruct CounterView: View {\n    var count = 0\n    var body: some View {\n        Button(\"Add\") {\n            count += 1\n        }\n    }\n}\n```",
+    "options": [
+      "It compiles and the count increases and the UI updates.",
+      "It compiles but the UI never updates even though `count` changes.",
+      "It crashes at runtime when the button is tapped.",
+      "Compile error: `count` is a stored property of an immutable struct value, so the closure cannot mutate it (it needs `@State`)."
+    ],
+    "answer": 3,
+    "explanation": "`body` is non-mutating and `self` is a value type, so `count += 1` on a plain stored property won't compile; marking it `@State` fixes this."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State & Bindings",
+    "topicId": "state-bindings",
+    "difficulty": "core",
+    "question": "Which line correctly declares view-local mutable state holding an integer that starts at 0?",
+    "options": [
+      "`@State private var count = 0`",
+      "`@Binding var count = 0`",
+      "`@State let count = 0`",
+      "`let count = State(0)`"
+    ],
+    "answer": 0,
+    "explanation": "`@State` must be a `var` with an initial value; `@Binding` gets its value from a parent, and `@State let` / `State(0)` are not valid ways to declare local state."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State & Bindings",
+    "topicId": "state-bindings",
+    "difficulty": "core",
+    "question": "A view displays a title that is set once when the view is created and never changes afterward. How should it be declared?",
+    "options": [
+      "`@State var title: String`, because every view property needs `@State`.",
+      "A plain `let title: String` — it never changes, so it needs no `@State`.",
+      "`@Binding var title: String`, so the parent can change it later.",
+      "`@State private let title: String`."
+    ],
+    "answer": 1,
+    "explanation": "`@State` is only needed for values the view itself mutates over time; a value that is fixed at init is just a plain `let`."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State & Bindings",
+    "topicId": "state-bindings",
+    "difficulty": "advanced",
+    "question": "What goes in the blank so the child can edit the parent's `name`?\n\n```\nstruct ParentView: View {\n    @State private var name = \"Sam\"\n    var body: some View {\n        ChildView(name: ___)\n    }\n}\n\nstruct ChildView: View {\n    @Binding var name: String\n    var body: some View { TextField(\"Name\", text: $name) }\n}\n```",
+    "options": [
+      "`name`",
+      "`name.wrappedValue`",
+      "`$name`",
+      "`Binding(name)`"
+    ],
+    "answer": 2,
+    "explanation": "The child's `@Binding` needs a `Binding<String>`; `$name` is the projected binding for the parent's `@State`."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State & Bindings",
+    "topicId": "state-bindings",
+    "difficulty": "advanced",
+    "question": "A child view declares a plain `var name: String` (not `@Binding`), and the parent creates it with `ChildView(name: name)`, passing its `@State` value directly. Which statement is true?",
+    "options": [
+      "The child gets a snapshot copy; when the parent's `name` changes the child is rebuilt with the new value, but the child cannot write back to the parent.",
+      "The child and parent share the same storage and either one can mutate it.",
+      "The parent's value can never change once it has been passed to the child.",
+      "It fails to compile because a child must always use `@Binding`."
+    ],
+    "answer": 0,
+    "explanation": "Passing a plain value gives the child a read-only copy; SwiftUI rebuilds the child when the parent's state changes, but only a `@Binding` would let the child write back."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State & Bindings",
+    "topicId": "state-bindings",
+    "difficulty": "core",
+    "question": "Given `@Binding var count: Int`, how do you read the current integer value to show it in a `Text` inside `body`?",
+    "options": [
+      "`Text(\"\\($count)\")`",
+      "`Text(\"\\(count.binding)\")`",
+      "`Text(\"\\(Binding(count))\")`",
+      "`Text(\"\\(count)\")` — the value is accessed directly through the wrapper."
+    ],
+    "answer": 3,
+    "explanation": "Reading `count` gives the wrapped value directly; `$count` would give the `Binding<Int>`, not the number."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State & Bindings",
+    "topicId": "state-bindings",
+    "difficulty": "advanced",
+    "question": "For `@State private var score = 0`, what is the type of `$score`?",
+    "options": [
+      "`Int`",
+      "`Binding<Int>` — the projected value of `@State`.",
+      "`State<Int>`",
+      "`Binding<State<Int>>`"
+    ],
+    "answer": 1,
+    "explanation": "The `$` prefix yields the property wrapper's projected value, and for `@State` that projected value is a `Binding` to the wrapped type."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State & Bindings",
+    "topicId": "state-bindings",
+    "difficulty": "core",
+    "question": "What is wrong here?\n\n```\nstruct ToggleRow: View {\n    @Binding var isOn: Bool\n    var body: some View { Toggle(\"On\", isOn: $isOn) }\n}\n\nstruct ContentView: View {\n    @State private var flag = false\n    var body: some View {\n        ToggleRow(isOn: flag)\n    }\n}\n```",
+    "options": [
+      "Nothing is wrong; `flag` is automatically converted to a binding.",
+      "`Toggle` accepts only a `String`, so the label is invalid.",
+      "`ToggleRow` expects a `Binding<Bool>`, but `flag` is a `Bool`; it must be passed as `$flag`.",
+      "`@State` cannot be declared `private`."
+    ],
+    "answer": 2,
+    "explanation": "`ToggleRow`'s `@Binding` parameter needs a `Binding<Bool>`; passing the plain `Bool` `flag` is a type mismatch, and `$flag` supplies the binding."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State & Bindings",
+    "topicId": "state-bindings",
+    "difficulty": "core",
+    "question": "Why is `@State` typically declared `private`?",
+    "options": [
+      "Because the state is the view's own local source of truth and should not be set from outside.",
+      "Because `@State` will not compile unless it is `private`.",
+      "Because `private` makes SwiftUI update the view faster.",
+      "Because `private` is required in order to use the `$` projected value."
+    ],
+    "answer": 0,
+    "explanation": "`@State` represents a view's private local state; marking it `private` documents that intent and prevents callers from setting it directly. It's a convention, not a compiler requirement."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State & Bindings",
+    "topicId": "state-bindings",
+    "difficulty": "advanced",
+    "question": "A parent owns a `Bool`. A child toggle must be able to change it, and the parent must display the current value. What is the correct setup?",
+    "options": [
+      "Both the parent and the child declare their own `@State var on` independently.",
+      "The parent holds `@Binding` and the child holds `@State`.",
+      "The parent passes `on` (not `$on`) into the child's `@Binding`.",
+      "The parent holds `@State private var on`; the child declares `@Binding var on`, and the parent passes `$on`."
+    ],
+    "answer": 3,
+    "explanation": "The single source of truth is the parent's `@State`; the child takes a `@Binding` and the parent hands it `$on` so both stay in sync."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State & Bindings",
+    "topicId": "state-bindings",
+    "difficulty": "core",
+    "question": "What happens when the button is tapped?\n\n```\nstruct CounterView: View {\n    @State private var count = 0\n    var body: some View {\n        Button(\"Count: \\(count)\") {\n            count += 1\n        }\n    }\n}\n```",
+    "options": [
+      "Compile error: `count` cannot be mutated.",
+      "`count` increments and the button re-renders with the new value.",
+      "The value changes but the label never updates.",
+      "It crashes at runtime."
+    ],
+    "answer": 1,
+    "explanation": "Because `count` is `@State`, mutating it is allowed and triggers a re-render of `body`, so the label reflects the new value."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State & Bindings",
+    "topicId": "state-bindings",
+    "difficulty": "core",
+    "question": "Which statement about `@State` initialization is correct?",
+    "options": [
+      "`@State` properties must be left uninitialized and set inside `body`.",
+      "`@State` values are reset to their initial value every time `body` is re-evaluated.",
+      "You give it an initial value at the declaration and SwiftUI then manages and persists the storage.",
+      "`@State` cannot be given an initial value."
+    ],
+    "answer": 2,
+    "explanation": "You provide the starting value once at the declaration; SwiftUI keeps that storage alive across re-renders, so it is not reset each time `body` runs."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "State & Bindings",
+    "topicId": "state-bindings",
+    "difficulty": "advanced",
+    "question": "Which statement is true of a `@Binding` property?",
+    "options": [
+      "It does not store the value itself; it is a two-way reference to state owned elsewhere.",
+      "It keeps its own persistent copy of the value.",
+      "It is read-only.",
+      "It requires the value to be a class type."
+    ],
+    "answer": 0,
+    "explanation": "A `@Binding` holds no storage of its own; it reads and writes through to the source of truth (such as a parent's `@State`)."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Views",
+    "topicId": "views",
+    "difficulty": "core",
+    "question": "What must every type conforming to `View` provide?",
+    "options": [
+      "A `main()` function.",
+      "An `init()` that returns a `UIView`.",
+      "A stored property named `content`.",
+      "A `body` computed property that returns `some View`."
+    ],
+    "answer": 3,
+    "explanation": "The `View` protocol's single requirement is a `body` computed property describing the view's content, typed as `some View`."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Views",
+    "topicId": "views",
+    "difficulty": "core",
+    "question": "What does the return type `some View` in `var body: some View` express?",
+    "options": [
+      "`body` may return a different view type on each call at runtime.",
+      "`body` returns one specific concrete view type, hidden behind an opaque return type.",
+      "`body` returns an array of views.",
+      "`body` returns an optional view."
+    ],
+    "answer": 1,
+    "explanation": "`some View` is an opaque return type: the concrete type is fixed and known to the compiler, just not spelled out or exposed to callers."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Views",
+    "topicId": "views",
+    "difficulty": "advanced",
+    "question": "How do these two snippets differ?\n\n```\nText(\"Hi\")\n    .padding()\n    .background(Color.yellow)\n```\n\n```\nText(\"Hi\")\n    .background(Color.yellow)\n    .padding()\n```",
+    "options": [
+      "They render identically; modifier order never matters.",
+      "The second snippet fails to compile.",
+      "In the first, the yellow background also covers the padding; in the second, only the text is yellow and the padding sits outside the color.",
+      "The first makes the text itself yellow and leaves the background clear."
+    ],
+    "answer": 2,
+    "explanation": "Each modifier wraps the view produced so far: padding-then-background colors the padded area, while background-then-padding colors only the text and adds space around that colored region."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Views",
+    "topicId": "views",
+    "difficulty": "core",
+    "question": "Which modifier sets the color of a `Text` view's text?",
+    "options": [
+      "`.foregroundColor(.red)`",
+      "`.color(.red)`",
+      "`.textColor(.red)`",
+      "`.fontColor(.red)`"
+    ],
+    "answer": 0,
+    "explanation": "`.foregroundColor(_:)` sets the text (foreground) color; the other names are not SwiftUI modifiers."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Views",
+    "topicId": "views",
+    "difficulty": "core",
+    "question": "What does this `body` produce?\n\n```\nvar body: some View {\n    VStack {\n        Text(\"A\")\n        Text(\"B\")\n    }\n}\n```",
+    "options": [
+      "A compile error, because `body` can return only one view.",
+      "\"A\" and \"B\" placed side by side horizontally.",
+      "Only \"B\", because `body` returns the last view.",
+      "Two text views stacked vertically, \"A\" above \"B\"."
+    ],
+    "answer": 3,
+    "explanation": "A `VStack` arranges its children top-to-bottom, and its view-builder body legally holds multiple child views, so \"A\" appears above \"B\"."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Views",
+    "topicId": "views",
+    "difficulty": "core",
+    "question": "Which expression applies a large-title font to a `Text`?",
+    "options": [
+      "`Text(\"Hello\").fontStyle(.largeTitle)`",
+      "`Text(\"Hello\").font(.largeTitle)`",
+      "`Text(\"Hello\").textStyle(.largeTitle)`",
+      "`Text(\"Hello\").setFont(.largeTitle)`"
+    ],
+    "answer": 1,
+    "explanation": "`.font(_:)` applies a font, and `.largeTitle` is a built-in text style; the other method names don't exist."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Views",
+    "topicId": "views",
+    "difficulty": "advanced",
+    "question": "For which pair does swapping the order of the two modifiers change the visual result?",
+    "options": [
+      "`.font(.title)` then `.foregroundColor(.red)` versus the reverse.",
+      "`.bold()` then `.italic()` versus the reverse.",
+      "`.padding()` then `.background(Color.blue)` versus the reverse.",
+      "`.accessibilityLabel(\"x\")` then `.font(.body)` versus the reverse."
+    ],
+    "answer": 2,
+    "explanation": "Layout-affecting modifiers wrap one another, so padding-then-background differs from the reverse; setting font and color (or independent traits) is order-independent."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Views",
+    "topicId": "views",
+    "difficulty": "core",
+    "question": "You want to reuse a styled greeting in several places in your app. What is the idiomatic SwiftUI approach?",
+    "options": [
+      "Define a new struct conforming to `View` with its own `body`, then use it as `GreetingView()`.",
+      "Copy and paste the `Text` and its modifiers everywhere it is needed.",
+      "Put the greeting in a global function that returns a `UIView`.",
+      "Subclass `Text` and override its drawing."
+    ],
+    "answer": 0,
+    "explanation": "SwiftUI composes UI from small reusable view structs; extracting the greeting into its own `View` type lets you reuse it as `GreetingView()`."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Views",
+    "topicId": "views",
+    "difficulty": "core",
+    "question": "What does `.padding()` with no arguments do?",
+    "options": [
+      "Adds padding only to the top edge.",
+      "Removes all spacing around the view.",
+      "Sets the view's corner radius.",
+      "Adds a default amount of space on all four sides of the view."
+    ],
+    "answer": 3,
+    "explanation": "Called with no arguments, `.padding()` insets the view by a system default amount on all edges."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Views",
+    "topicId": "views",
+    "difficulty": "advanced",
+    "question": "How are the texts arranged?\n\n```\nVStack {\n    HStack {\n        Text(\"1\")\n        Text(\"2\")\n    }\n    Text(\"3\")\n}\n```",
+    "options": [
+      "All three texts in a single horizontal row.",
+      "\"1\" and \"2\" side by side on the top row, with \"3\" below them.",
+      "All three texts stacked vertically in one column.",
+      "\"1\" on top, with \"2\" and \"3\" side by side beneath it."
+    ],
+    "answer": 1,
+    "explanation": "The `HStack` puts \"1\" and \"2\" in a row, and that row is the first element of the `VStack`, with \"3\" placed beneath it."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Views",
+    "topicId": "views",
+    "difficulty": "core",
+    "question": "What is true about applying a modifier like `.padding()` to a `Text`?",
+    "options": [
+      "It mutates the original `Text` in place.",
+      "It can be applied only once per view.",
+      "It returns a new, modified view instead of changing the original `Text` in place.",
+      "It converts the `Text` into a `String`."
+    ],
+    "answer": 2,
+    "explanation": "Modifiers are non-mutating: each returns a new view that wraps the previous one, which is why they can be chained."
+  },
+  {
+    "category": "SwiftUI",
+    "topic": "Views",
+    "topicId": "views",
+    "difficulty": "advanced",
+    "question": "What does the `.font(.title)` do here?\n\n```\nVStack {\n    Text(\"A\")\n    Text(\"B\")\n}\n.font(.title)\n```",
+    "options": [
+      "It sets the font as an environment value on the stack, so both \"A\" and \"B\" use it unless they override it.",
+      "It fails to compile, because `.font` cannot be applied to a `VStack`.",
+      "It applies only to \"A\".",
+      "It applies only to \"B\"."
+    ],
+    "answer": 0,
+    "explanation": "`.font` sets an environment value that flows down to the stack's children, so both texts inherit `.title` unless one sets its own font."
   }
 ]
