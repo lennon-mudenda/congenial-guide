@@ -169,16 +169,19 @@ const SWIFT_KEYWORDS = new Set([
   "precedencegroup", "dynamic", "associativity", "async", "await", "actor",
 ]);
 function highlightSwift(code) {
-  let tokenRe = /(\/\/[^\n]*)|("(?:\\.|[^"\\])*")|(\b\d+(?:\.\d+)?\b)|(\b[A-Za-z_][A-Za-z0-9_]*\b)/g;
+  let tokenRe =
+    /(\/\/[^\n]*)|("(?:\\.|[^"\\])*")|(\b\d+(?:\.\d+)?\b)|(@[A-Za-z_][A-Za-z0-9_]*)|(\$[A-Za-z0-9_]+)|(\b[A-Za-z_][A-Za-z0-9_]*\b)/g;
   let out = "",
     last = 0,
     m;
   while ((m = tokenRe.exec(code))) {
     out += esc(code.slice(last, m.index));
-    let [, comment, str, num, word] = m;
+    let [, comment, str, num, attr, closureArg, word] = m;
     if (comment) out += '<span class="tok-comment">' + esc(comment) + "</span>";
     else if (str) out += '<span class="tok-string">' + esc(str) + "</span>";
     else if (num) out += '<span class="tok-number">' + esc(num) + "</span>";
+    else if (attr) out += '<span class="tok-keyword">' + esc(attr) + "</span>";
+    else if (closureArg) out += '<span class="tok-type">' + esc(closureArg) + "</span>";
     else if (SWIFT_KEYWORDS.has(word))
       out += '<span class="tok-keyword">' + esc(word) + "</span>";
     else if (/^[A-Z]/.test(word))
