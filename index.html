@@ -29,7 +29,10 @@
             </section>
             <section id="exam" class="hidden">
                 <div class="card bar">
-                    <strong id="title"></strong><span id="num"></span>
+                    <div class="barTop">
+                        <div><strong id="title"></strong><span id="num"></span></div>
+                        <button id="quit" class="quitBtn">Quit Exam</button>
+                    </div>
                     <div class="progress"><i id="progress"></i></div>
                 </div>
                 <div class="layout">
@@ -39,9 +42,10 @@
                         <div id="opts"></div>
                         <div id="explain" class="hidden"></div>
                         <div class="nav">
-                            <button id="prev">Previous</button
-                            ><button id="next">Next</button
-                            ><button id="submit">Submit Exam</button>
+                            <button id="prev">Previous</button>
+                            <button id="next">Next</button>
+                            <button id="calc" class="calcBtn" title="Calculator">🧮 Calculator</button>
+                            <button id="submit">Submit Exam</button>
                         </div>
                     </article>
                     <aside class="card">
@@ -60,6 +64,16 @@
                 <div class="backRow"><button onclick="location.reload()">Back to Exams</button></div>
             </section>
         </main>
+        <div id="calcModal" class="calcModal hidden">
+            <div class="calcBox" role="dialog" aria-label="Calculator">
+                <div class="calcHead">
+                    <strong>Calculator</strong>
+                    <button id="calcClose" class="calcClose" aria-label="Close">✕</button>
+                </div>
+                <input id="calcDisplay" class="calcDisplay" type="text" readonly value="0" />
+                <div id="calcKeys" class="calcKeys"></div>
+            </div>
+        </div>
         <script src="script.js"></script>
     </body>
 </html>

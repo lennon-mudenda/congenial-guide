@@ -263,6 +263,123 @@ $("next").onclick = () => {
   }
 };
 $("submit").onclick = () => finish(false);
+$("quit").onclick = () => {
+  if (
+    confirm(
+      "Quit this exam? Your progress will be lost and no results will be shown.",
+    )
+  ) {
+    clearInterval(timer);
+    window.onbeforeunload = null;
+    location.reload();
+  }
+};
+// --- Calculator ---
+let calcExpr = "";
+const CALC_KEYS = [
+  "C", "←", "(", ")",
+  "7", "8", "9", "÷",
+  "4", "5", "6", "×",
+  "1", "2", "3", "-",
+  "0", ".", "%", "+",
+  "=",
+];
+const CALC_OPS = "+-×÷";
+function calcRender() {
+  $("calcDisplay").value = calcExpr === "" ? "0" : calcExpr;
+}
+function calcLastNumber(s) {
+  let parts = s.split(/[+\-×÷()]/);
+  return parts[parts.length - 1];
+}
+function calcOpenParens(s) {
+  return (s.match(/\(/g) || []).length - (s.match(/\)/g) || []).length;
+}
+function calcInput(k) {
+  let lastChar = calcExpr.slice(-1);
+  if (k === "C") calcExpr = "";
+  else if (k === "←") calcExpr = calcExpr === "Error" ? "" : calcExpr.slice(0, -1);
+  else if (k === "=") {
+    try {
+      let e = calcExpr.replace(/[+\-×÷]$/, "");
+      e += ")".repeat(Math.max(0, calcOpenParens(e))); // auto-close open brackets
+      e = e.replace(/×/g, "*").replace(/÷/g, "/");
+      if (e === "" || !/^[-0-9+\-*/.()]+$/.test(e)) throw 0;
+      let r = Function('"use strict";return (' + e + ")")();
+      calcExpr = !isFinite(r) ? "Error" : String(Math.round(r * 1e10) / 1e10);
+    } catch (_) {
+      calcExpr = "Error";
+    }
+  } else if (k === "(") {
+    if (calcExpr === "Error") calcExpr = "";
+    if (calcExpr === "" || CALC_OPS.includes(lastChar) || lastChar === "(")
+      calcExpr += "(";
+  } else if (k === ")") {
+    if (
+      calcOpenParens(calcExpr) > 0 &&
+      (lastChar === ")" || /[0-9.]/.test(lastChar))
+    )
+      calcExpr += ")";
+  } else if (k === "%") {
+    // apply immediately to the trailing number (postfix "/100"), guardrail against dangling ops
+    let seg = calcLastNumber(calcExpr);
+    if (seg !== "" && !CALC_OPS.includes(lastChar)) {
+      calcExpr =
+        calcExpr.slice(0, calcExpr.length - seg.length) +
+        String(parseFloat(seg) / 100);
+    }
+  } else if (k === ".") {
+    if (calcExpr === "Error") calcExpr = "";
+    if (calcExpr === "" || CALC_OPS.includes(lastChar) || lastChar === "(")
+      calcExpr += "0.";
+    else if (!calcLastNumber(calcExpr).includes(".")) calcExpr += ".";
+    // otherwise the current number already has a decimal — ignore
+  } else if (CALC_OPS.includes(k)) {
+    if (calcExpr === "Error") calcExpr = "";
+    if (calcExpr === "" || lastChar === "(") {
+      if (k === "-") calcExpr += "-"; // allow a leading negative only
+    } else if (CALC_OPS.includes(lastChar)) {
+      calcExpr = calcExpr.slice(0, -1) + k; // replace a trailing operator, never stack
+    } else {
+      calcExpr += k;
+    }
+  } else {
+    // digit
+    if (calcExpr === "Error") calcExpr = "";
+    calcExpr += k;
+  }
+  calcRender();
+}
+function buildCalc() {
+  $("calcKeys").innerHTML = "";
+  CALC_KEYS.forEach((k) => {
+    let b = document.createElement("button");
+    b.textContent = k;
+    b.className =
+      "calcKey" +
+      (k === "=" ? " calcEq" : "") +
+      ("÷×-+%".includes(k) ? " calcOp" : "") +
+      (k === "C" || k === "←" || k === "(" || k === ")" ? " calcFn" : "");
+    b.onclick = () => calcInput(k);
+    $("calcKeys").appendChild(b);
+  });
+}
+buildCalc();
+function openCalc() {
+  calcRender();
+  $("calcModal").classList.remove("hidden");
+}
+function closeCalc() {
+  $("calcModal").classList.add("hidden");
+}
+$("calc").onclick = openCalc;
+$("calcClose").onclick = closeCalc;
+$("calcModal").onclick = (e) => {
+  if (e.target === $("calcModal")) closeCalc();
+};
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !$("calcModal").classList.contains("hidden")) closeCalc();
+});
 function donutSVG(correct, incorrect, unanswered, total) {
   let r = 52,
     sw = 16,
@@ -270,11 +387,12 @@ function donutSVG(correct, incorrect, unanswered, total) {
     cy = 64,
     c = 2 * Math.PI * r,
     gap = 2;
-  let segs = [
+  let allSegs = [
     { v: correct, color: "#3d6b4f", label: "Correct" },
     { v: incorrect, color: "#8b2f2f", label: "Incorrect" },
     { v: unanswered, color: "#8a94a3", label: "Unanswered" },
-  ].filter((s) => s.v > 0);
+  ];
+  let segs = allSegs.filter((s) => s.v > 0);
   let offset = 0;
   let circles = segs
     .map((s) => {
@@ -289,7 +407,7 @@ function donutSVG(correct, incorrect, unanswered, total) {
     })
     .join("");
   let pct = Math.round((correct / total) * 100);
-  let legend = segs
+  let legend = allSegs
     .map(
       (s) =>
         '<div class="donutLegendRow"><i style="background:' + s.color + '"></i>' +
