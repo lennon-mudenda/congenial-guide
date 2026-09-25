@@ -4,6 +4,13 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>Swift Certified User — Practice Exams</title>
+        <script>
+            // Apply the saved theme before paint to avoid a flash.
+            try {
+                var t = localStorage.getItem("theme");
+                if (t) document.documentElement.setAttribute("data-theme", t);
+            } catch (e) {}
+        </script>
         <link rel="stylesheet" href="style.css" />
         <link rel="icon" href="swift.svg" />
     </head>
@@ -13,47 +20,105 @@
                 <h1>Swift Certified User</h1>
                 <p>Practice Exams</p>
             </div>
-            <div id="timer">65:00</div>
+            <div class="headerRight">
+                <button id="themeToggle" class="themeToggle" aria-label="Toggle dark mode">🌙</button>
+                <div id="timer" class="hidden"></div>
+            </div>
         </header>
         <main>
-            <section id="start" class="card">
-                <h2>Choose an exam</h2>
-                <p>60 questions • 65 seconds each • 65 minutes total</p>
-                <div id="buttons"></div>
-                <p class="note">
-                    Hard mode emphasizes tracing, optionals, state ownership,
-                    collections, type relationships and debugging.
-                </p>
+            <section id="start">
+                <div class="card">
+                    <h2>Choose how to practice</h2>
+                    <div id="modeToggle" class="seg modeToggle"></div>
+                    <p id="modeExplain" class="modeExplain"></p>
+                </div>
+                <div class="card">
+                    <h2>Full exams</h2>
+                    <p class="muted">
+                        A fresh mix drawn from the whole pool — different every
+                        attempt. Pick your length.
+                    </p>
+                    <div id="fullExam"></div>
+                </div>
+                <div class="card">
+                    <div class="sectionHead">
+                        <h2>Practice by category</h2>
+                        <div class="sizeSelector">
+                            <span class="sizeLabel">Max questions</span>
+                            <div id="catSizeToggle" class="seg"></div>
+                        </div>
+                    </div>
+                    <p class="muted">Drill one of the five exam domains.</p>
+                    <div id="byCategory" class="catGrid"></div>
+                </div>
+                <div class="card">
+                    <h2>Practice by topic</h2>
+                    <p class="muted">Zero in on a specific topic.</p>
+                    <div id="byTopic"></div>
+                </div>
+                <div id="startError"></div>
             </section>
             <section id="exam" class="hidden">
                 <div class="card bar">
-                    <strong id="title"></strong><span id="num"></span>
+                    <div class="barTop">
+                        <div><strong id="title"></strong><span id="num"></span></div>
+                        <button id="quit" class="quitBtn">Quit Exam</button>
+                    </div>
                     <div class="progress"><i id="progress"></i></div>
                 </div>
-                <div class="layout">
-                    <article class="card">
-                        <small id="topic"></small>
-                        <h2 id="q"></h2>
-                        <div id="opts"></div>
-                        <div class="nav">
-                            <button id="prev">Previous</button
-                            ><button id="next">Next</button
-                            ><button id="submit">Submit Exam</button>
-                        </div>
-                    </article>
-                    <aside class="card">
-                        <h3>Questions</h3>
-                        <div id="palette"></div>
-                    </aside>
+                <article class="card">
+                    <div class="qCardTop">
+                        <button id="markBtn" class="markBtn">☆ Mark for review</button>
+                    </div>
+                    <div id="q" class="qbox"></div>
+                    <div id="opts"></div>
+                    <div id="explain" class="hidden"></div>
+                    <div class="nav">
+                        <button id="prev">Previous</button>
+                        <button id="next">Next</button>
+                        <button id="calc" class="calcBtn" title="Calculator">🧮 Calculator</button>
+                        <button id="reviewBtn" class="reviewNavBtn">Review</button>
+                    </div>
+                </article>
+            </section>
+            <section id="reviewPage" class="card hidden">
+                <div class="barTop">
+                    <h2 id="reviewTitle">Review your answers</h2>
+                    <button id="reviewQuit" class="quitBtn">Quit Exam</button>
+                </div>
+                <p class="note">Click a question to jump back to it. Flagged questions are marked for review.</p>
+                <div class="reviewLegend">
+                    <span><i class="rl rl-ans"></i>Answered</span>
+                    <span><i class="rl rl-un"></i>Unanswered</span>
+                    <span><i class="rl rl-ans marked"></i>Answered · flagged</span>
+                    <span><i class="rl rl-un marked"></i>Unanswered · flagged</span>
+                </div>
+                <div id="reviewGrid" class="reviewGrid"></div>
+                <div class="reviewActions">
+                    <button id="reviewAll">Review all questions</button>
+                    <button id="reviewSubmit">Submit Exam</button>
                 </div>
             </section>
             <section id="result" class="card hidden">
                 <h2 id="resultTitle"></h2>
-                <div id="score"></div>
-                <div id="breakdown"></div>
-                <button onclick="location.reload()">Back to Exams</button>
+                <div class="resultsGrid">
+                    <div id="score"></div>
+                    <div id="breakdown"></div>
+                </div>
+                <div id="review"></div>
+                <div class="backRow"><button onclick="location.reload()">Back to Exams</button></div>
             </section>
         </main>
+        <div id="calcModal" class="calcModal hidden">
+            <div class="calcBox" role="dialog" aria-label="Calculator">
+                <div class="calcHead">
+                    <strong>Calculator</strong>
+                    <button id="calcClose" class="calcClose" aria-label="Close">✕</button>
+                </div>
+                <input id="calcDisplay" class="calcDisplay" type="text" readonly value="0" />
+                <div id="calcKeys" class="calcKeys"></div>
+            </div>
+        </div>
         <script src="script.js"></script>
     </body>
 </html>

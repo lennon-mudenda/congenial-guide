@@ -1,0 +1,227 @@
+[
+  {
+    "category": "Xcode Navigation",
+    "topic": "Keyboard Shortcuts",
+    "topicId": "keyboard-shortcuts",
+    "difficulty": "core",
+    "question": "Which keyboard shortcut builds and runs the current scheme in Xcode?",
+    "options": [
+      "⌘R",
+      "⌘B",
+      "⌘.",
+      "⌘U"
+    ],
+    "answer": 0,
+    "explanation": "⌘R runs the app (building first if needed); ⌘B only builds, ⌘. stops, and ⌘U runs tests."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Keyboard Shortcuts",
+    "topicId": "keyboard-shortcuts",
+    "difficulty": "core",
+    "question": "Which keyboard shortcut builds the project without running it?",
+    "options": [
+      "⌘R",
+      "⌘B",
+      "⌘K",
+      "⌘U"
+    ],
+    "answer": 1,
+    "explanation": "⌘B builds without launching; ⌘R would also run it, ⌘K clears the console (not a build shortcut), and ⌘U runs tests."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Keyboard Shortcuts",
+    "topicId": "keyboard-shortcuts",
+    "difficulty": "core",
+    "question": "The app is running in the Simulator and you want to stop the currently running scheme. Which shortcut does that?",
+    "options": [
+      "⌘Q",
+      "⌘W",
+      "⌘.",
+      "⌘⌫"
+    ],
+    "answer": 2,
+    "explanation": "⌘. stops the running app in Xcode; ⌘Q would quit Xcode itself and ⌘W closes a window/tab."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Keyboard Shortcuts",
+    "topicId": "keyboard-shortcuts",
+    "difficulty": "core",
+    "question": "Which keyboard shortcut runs the test suite?",
+    "options": [
+      "⌘R",
+      "⌘T",
+      "⌘B",
+      "⌘U"
+    ],
+    "answer": 3,
+    "explanation": "⌘U runs the tests; ⌘R runs the app, ⌘B builds, and ⌘T opens a new tab."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Keyboard Shortcuts",
+    "topicId": "keyboard-shortcuts",
+    "difficulty": "core",
+    "question": "You want to jump straight to a file or symbol by typing part of its name. Which shortcut opens the \"Open Quickly\" search?",
+    "options": [
+      "⌘⇧O",
+      "⌘O",
+      "⌘⇧F",
+      "⌘L"
+    ],
+    "answer": 0,
+    "explanation": "⌘⇧O opens \"Open Quickly\" for fuzzy file/symbol search; ⌘O opens a file from disk and ⌘⇧F is project-wide find."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Navigators",
+    "topicId": "navigators",
+    "difficulty": "core",
+    "question": "Which navigator shows the files and groups that make up your project?",
+    "options": [
+      "Debug navigator",
+      "Project navigator",
+      "Issue navigator",
+      "Breakpoint navigator"
+    ],
+    "answer": 1,
+    "explanation": "The Project navigator lists the project's files and groups; the others focus on debugging, issues, and breakpoints respectively."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Navigators",
+    "topicId": "navigators",
+    "difficulty": "advanced",
+    "question": "Your app is paused at a breakpoint and you want to inspect the call stack along with the live CPU and memory gauges. Which navigator do you use?",
+    "options": [
+      "Project navigator",
+      "Issue navigator",
+      "Debug navigator",
+      "Find navigator"
+    ],
+    "answer": 2,
+    "explanation": "The Debug navigator shows the thread/call-stack and the performance gauges while the app is running or paused."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Navigators",
+    "topicId": "navigators",
+    "difficulty": "advanced",
+    "question": "After a build fails, you want a single scrollable list of every compiler warning and error to click through. Which navigator gives you that?",
+    "options": [
+      "Project navigator",
+      "Debug navigator",
+      "Breakpoint navigator",
+      "Issue navigator"
+    ],
+    "answer": 3,
+    "explanation": "The Issue navigator collects all build warnings and errors in one place, and clicking one jumps to the offending line."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Navigators",
+    "topicId": "navigators",
+    "difficulty": "core",
+    "question": "Which navigator lets you see and manage all of the breakpoints across your project in one list?",
+    "options": [
+      "Breakpoint navigator",
+      "Debug navigator",
+      "Project navigator",
+      "Issue navigator"
+    ],
+    "answer": 0,
+    "explanation": "The Breakpoint navigator lists every breakpoint in the project and lets you enable, disable, edit, or delete them."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Refactoring",
+    "topicId": "refactoring",
+    "difficulty": "core",
+    "question": "You want to rename a type and have every reference to it updated safely throughout the project. What is the right approach?",
+    "options": [
+      "Manually find-and-replace the text in each file",
+      "Use Editor > Refactor > Rename",
+      "Delete the type and retype it everywhere",
+      "Rename only the file in Finder"
+    ],
+    "answer": 1,
+    "explanation": "The Rename refactoring understands the code and updates the declaration together with all references, unlike error-prone manual text replacement."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Refactoring",
+    "topicId": "refactoring",
+    "difficulty": "core",
+    "question": "When you apply Xcode's Rename refactoring to a method, what happens?",
+    "options": [
+      "Only the declaration is renamed",
+      "Nothing changes until you rebuild",
+      "The declaration and all of its call sites are updated together",
+      "The method is deleted"
+    ],
+    "answer": 2,
+    "explanation": "Rename is symbol-aware, so it changes the declaration and every place the method is called in one coordinated edit."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Refactoring",
+    "topicId": "refactoring",
+    "difficulty": "advanced",
+    "question": "You have selected a repeated block of code and want Xcode to pull it into its own method, replacing the selection with a call to that new method. Which refactoring action does this?",
+    "options": [
+      "Rename",
+      "Add Missing Protocol Requirements",
+      "Convert to Switch",
+      "Extract to Method"
+    ],
+    "answer": 3,
+    "explanation": "Extract to Method moves the selected code into a new function and replaces the selection with a call to it, reducing duplication."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Editors & Jump Bar",
+    "topicId": "editors",
+    "difficulty": "core",
+    "question": "You Command-click a function name in the source editor. What does Xcode do?",
+    "options": [
+      "Jumps to the definition of that symbol",
+      "Runs the function",
+      "Renames the function",
+      "Deletes the line"
+    ],
+    "answer": 0,
+    "explanation": "Command-clicking a symbol navigates directly to its definition (jump-to-definition)."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Editors & Jump Bar",
+    "topicId": "editors",
+    "difficulty": "core",
+    "question": "The horizontal bar at the top of the editor that shows the path (project > group > file > symbol) and lets you click any part to navigate is called the:",
+    "options": [
+      "tab bar",
+      "jump bar",
+      "toolbar",
+      "navigator"
+    ],
+    "answer": 1,
+    "explanation": "The jump bar sits atop the editor and lets you navigate by clicking any element of the path, including individual symbols in the current file."
+  },
+  {
+    "category": "Xcode Navigation",
+    "topic": "Editors & Jump Bar",
+    "topicId": "editors",
+    "difficulty": "core",
+    "question": "After Command-clicking to jump to a definition in another file, which action returns you to where you were before?",
+    "options": [
+      "Undo (⌘Z)",
+      "Close the current tab",
+      "Navigate Back (⌃⌘←)",
+      "Quit Xcode"
+    ],
+    "answer": 2,
+    "explanation": "Navigate Back (⌃⌘←) returns to your previous editing location; Undo would instead revert text edits, which is unrelated to navigation history."
+  }
+]

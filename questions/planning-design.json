@@ -1,0 +1,227 @@
+[
+  {
+    "category": "Planning and Design",
+    "topic": "Struct vs Class",
+    "topicId": "struct-vs-class",
+    "difficulty": "core",
+    "question": "What does this print?\n\n```\nstruct Counter { var count = 0 }\nvar a = Counter()\nvar b = a\nb.count = 5\nprint(a.count)\n```",
+    "options": [
+      "0",
+      "5",
+      "nil",
+      "Runtime error"
+    ],
+    "answer": 0,
+    "explanation": "A struct is a value type, so `var b = a` copies it; mutating `b.count` leaves the original `a` unchanged at 0."
+  },
+  {
+    "category": "Planning and Design",
+    "topic": "Struct vs Class",
+    "topicId": "struct-vs-class",
+    "difficulty": "core",
+    "question": "You are modeling a shared shopping cart that several screens must read and modify as the SAME underlying instance, so a change on one screen is immediately visible on another. Which type should the cart be?",
+    "options": [
+      "A struct, so each screen gets its own independent copy",
+      "An enum with associated values",
+      "A class, so every screen holds a reference to one shared instance",
+      "A tuple of the cart's fields"
+    ],
+    "answer": 2,
+    "explanation": "Shared, observable, mutable identity calls for reference semantics; a class means all screens point at one instance, while a struct would give each screen a separate copy."
+  },
+  {
+    "category": "Planning and Design",
+    "topic": "Struct vs Class",
+    "topicId": "struct-vs-class",
+    "difficulty": "advanced",
+    "question": "What does this print?\n\n```\nclass Box { var value = 1 }\nlet b = Box()\nb.value = 99\nprint(b.value)\n```",
+    "options": [
+      "Compile error: `b` is a `let` constant",
+      "99",
+      "1",
+      "Compile error: `value` cannot be changed"
+    ],
+    "answer": 1,
+    "explanation": "`b` is a constant reference, but the object it points to is a class (reference type), so its `var` property can still be mutated; it prints 99."
+  },
+  {
+    "category": "Planning and Design",
+    "topic": "Struct vs Class",
+    "topicId": "struct-vs-class",
+    "difficulty": "advanced",
+    "question": "What happens with this code?\n\n```\nstruct Point { var x = 0 }\nlet p = Point()\np.x = 10\n```",
+    "options": [
+      "It prints 10",
+      "`p.x` becomes 10",
+      "It compiles but crashes at run time",
+      "Compile error: cannot assign to property because `p` is a `let` constant"
+    ],
+    "answer": 3,
+    "explanation": "For a value type, a `let` binding makes the whole instance immutable, so mutating any stored property of `p` is a compile-time error."
+  },
+  {
+    "category": "Planning and Design",
+    "topic": "Choosing Data Structures",
+    "topicId": "data-structures",
+    "difficulty": "core",
+    "question": "You need to store the hashtags attached to a post. Duplicates should be ignored automatically, order does not matter, and you frequently need to check whether a given tag is present. Which collection fits best?",
+    "options": [
+      "Array",
+      "Set",
+      "Dictionary",
+      "Tuple"
+    ],
+    "answer": 1,
+    "explanation": "A Set holds unique, unordered elements and offers fast membership checks, exactly matching \"no duplicates, order irrelevant, quick contains\"."
+  },
+  {
+    "category": "Planning and Design",
+    "topic": "Choosing Data Structures",
+    "topicId": "data-structures",
+    "difficulty": "core",
+    "question": "Your app must look up a `User` by their unique username as quickly as possible. Which is the most appropriate data structure?",
+    "options": [
+      "A Dictionary keyed by username",
+      "An Array searched linearly each time",
+      "A Set of usernames",
+      "An enum of users"
+    ],
+    "answer": 0,
+    "explanation": "A Dictionary maps keys to values with fast key-based lookup, which is ideal for retrieving a user by username."
+  },
+  {
+    "category": "Planning and Design",
+    "topic": "Choosing Data Structures",
+    "topicId": "data-structures",
+    "difficulty": "core",
+    "question": "What does this print?\n\n```\nlet nums = [1, 2, 2, 3, 3, 3]\nprint(Set(nums).count)\n```",
+    "options": [
+      "6",
+      "1",
+      "3",
+      "Compile error"
+    ],
+    "answer": 2,
+    "explanation": "Building a Set from the array discards duplicates, leaving the unique values 1, 2, and 3, so the count is 3."
+  },
+  {
+    "category": "Planning and Design",
+    "topic": "Choosing Data Structures",
+    "topicId": "data-structures",
+    "difficulty": "advanced",
+    "question": "What does this print?\n\n```\nlet ages = [\"Ann\": 30]\nprint(ages[\"Bob\"] ?? -1)\n```",
+    "options": [
+      "30",
+      "0",
+      "Runtime crash: key not found",
+      "-1"
+    ],
+    "answer": 3,
+    "explanation": "Dictionary subscripting returns an optional; `ages[\"Bob\"]` is `nil`, so the nil-coalescing operator supplies the fallback -1."
+  },
+  {
+    "category": "Planning and Design",
+    "topic": "Modeling with Enums",
+    "topicId": "enum-modeling",
+    "difficulty": "core",
+    "question": "A screen is always in exactly one of three states: loading, showing loaded data, or showing an error — never two at once. Which design makes the invalid combinations impossible to represent?",
+    "options": [
+      "An enum with cases `loading`, `loaded`, and `failed`",
+      "Three separate `Bool` properties: `isLoading`, `isLoaded`, `hasError`",
+      "A dictionary of string flags",
+      "An `Int` status code checked with `if` statements"
+    ],
+    "answer": 0,
+    "explanation": "An enum can hold only one case at a time, so mutually exclusive states cannot be combined; separate Bools allow illegal states like loading and error being true together."
+  },
+  {
+    "category": "Planning and Design",
+    "topic": "Modeling with Enums",
+    "topicId": "enum-modeling",
+    "difficulty": "core",
+    "question": "Why does this code fail to compile?\n\n```\nenum Direction { case north, south, east, west }\nfunc describe(_ d: Direction) -> String {\n    switch d {\n    case .north: return \"N\"\n    case .south: return \"S\"\n    case .east: return \"E\"\n    }\n}\n```",
+    "options": [
+      "Enums cannot be used in a `switch`",
+      "The `switch` is not exhaustive — the `.west` case is not handled",
+      "`return` is not allowed inside a `switch`",
+      "It compiles fine"
+    ],
+    "answer": 1,
+    "explanation": "A `switch` over an enum must handle every case (or include a `default`); omitting `.west` makes it non-exhaustive, which is a compile-time error."
+  },
+  {
+    "category": "Planning and Design",
+    "topic": "Modeling with Enums",
+    "topicId": "enum-modeling",
+    "difficulty": "advanced",
+    "question": "What does this print?\n\n```\nenum Payment {\n    case cash\n    case card(last4: String)\n}\nlet p = Payment.card(last4: \"1234\")\nswitch p {\ncase .cash: print(\"cash\")\ncase .card(let n): print(\"card \\(n)\")\n}\n```",
+    "options": [
+      "cash",
+      "card",
+      "card 1234",
+      "Compile error"
+    ],
+    "answer": 2,
+    "explanation": "`p` is the `.card` case carrying the associated value \"1234\", which is bound to `n` and interpolated, printing \"card 1234\"."
+  },
+  {
+    "category": "Planning and Design",
+    "topic": "App Architecture",
+    "topicId": "architecture",
+    "difficulty": "core",
+    "question": "In a well-structured SwiftUI app, where should the code that validates whether an email string is well-formed live?",
+    "options": [
+      "Inside the view's `body` property",
+      "In the `App` struct's initializer",
+      "Copied into every view that needs it",
+      "In a separate model or helper type that the view calls"
+    ],
+    "answer": 3,
+    "explanation": "Validation is business logic and belongs in a reusable model or helper type; keeping it out of `body` keeps views focused on presentation and the logic testable."
+  },
+  {
+    "category": "Planning and Design",
+    "topic": "App Architecture",
+    "topicId": "architecture",
+    "difficulty": "core",
+    "question": "A teammate places a `URLSession` network request directly inside a SwiftUI `View`'s `body`. Why is this a design problem?",
+    "options": [
+      "`body` describes the UI from current state and may be re-evaluated many times, so data-fetching logic belongs outside the view",
+      "`URLSession` cannot be used anywhere in SwiftUI",
+      "`body` is only allowed to return exactly one view",
+      "Network calls must be placed in an `AppDelegate`"
+    ],
+    "answer": 0,
+    "explanation": "`body` is recomputed whenever state changes, so putting a network call there causes repeated, uncontrolled requests; fetching should live in a separate model that the view observes."
+  },
+  {
+    "category": "Planning and Design",
+    "topic": "App Architecture",
+    "topicId": "architecture",
+    "difficulty": "advanced",
+    "question": "A child view needs to both read and write a value that is owned by its parent view. What is the correct way to connect them?",
+    "options": [
+      "Give the child its own separate `@State` copy of the value",
+      "Pass the parent's `@State` value to the child as a `@Binding`",
+      "Store the value in a global variable both read",
+      "Recreate the value in the child's initializer"
+    ],
+    "answer": 1,
+    "explanation": "`@State` establishes the source of truth in the parent; passing it down as a `@Binding` lets the child read and mutate that same value rather than an independent copy."
+  },
+  {
+    "category": "Planning and Design",
+    "topic": "App Architecture",
+    "topicId": "architecture",
+    "difficulty": "advanced",
+    "question": "In SwiftUI, a `View`'s `body` is best understood as which of the following?",
+    "options": [
+      "A place to store the app's mutable data",
+      "A one-time setup function that runs only at launch",
+      "A description of the UI derived from the current state, re-evaluated when that state changes",
+      "A controller that owns the app's networking and database code"
+    ],
+    "answer": 2,
+    "explanation": "SwiftUI is declarative: `body` returns a description of the UI as a function of current state, and the framework re-evaluates it whenever that state changes."
+  }
+]

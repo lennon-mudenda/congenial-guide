@@ -1,0 +1,902 @@
+[
+  {
+    "category": "Debugging",
+    "topic": "Finding Bugs",
+    "topicId": "finding-bugs",
+    "difficulty": "core",
+    "question": "What does this print?\n```\nvar a = 1\nvar b = 2\na = b\nb = a\nprint(a, b)\n```",
+    "options": [
+      "2 2",
+      "1 2",
+      "2 1",
+      "1 1"
+    ],
+    "answer": 0,
+    "explanation": "Assigning `a = b` overwrites `a` before `b` reads it, so both variables become 2; a temporary variable is needed to swap correctly."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Finding Bugs",
+    "topicId": "finding-bugs",
+    "difficulty": "core",
+    "question": "The loop is meant to sum every score. What does it print?\n```\nlet scores = [10, 20, 30]\nvar total = 0\nfor i in 1..<scores.count {\n    total += scores[i]\n}\nprint(total)\n```",
+    "options": [
+      "60",
+      "50",
+      "30",
+      "10"
+    ],
+    "answer": 1,
+    "explanation": "Starting the index at 1 skips `scores[0]`, so only 20 + 30 = 50 is summed instead of 60."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Finding Bugs",
+    "topicId": "finding-bugs",
+    "difficulty": "core",
+    "question": "What does this print?\n```\nfunc isEven(_ n: Int) -> Bool {\n    return n % 2 == 1\n}\nprint(isEven(4))\n```",
+    "options": [
+      "true",
+      "false",
+      "1",
+      "0"
+    ],
+    "answer": 1,
+    "explanation": "The body tests for odd (`% 2 == 1`), so `isEven(4)` is `false` even though 4 is even — the condition should be `== 0`."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Finding Bugs",
+    "topicId": "finding-bugs",
+    "difficulty": "core",
+    "question": "What does this print?\n```\nlet nums = [-3, -7, -2, -9, -4]\nvar maxVal = 0\nfor n in nums {\n    if n > maxVal { maxVal = n }\n}\nprint(maxVal)\n```",
+    "options": [
+      "-2",
+      "-9",
+      "0",
+      "-3"
+    ],
+    "answer": 2,
+    "explanation": "Seeding `maxVal` with 0 is the bug: no negative number exceeds 0, so `maxVal` stays 0; it should start at `nums[0]`."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Finding Bugs",
+    "topicId": "finding-bugs",
+    "difficulty": "advanced",
+    "question": "This is meant to total every value. What does it print?\n```\nlet matrix = [[1, 2], [3, 4], [5, 6]]\nvar sum = 0\nfor row in matrix {\n    for value in row {\n        sum = value\n    }\n}\nprint(sum)\n```",
+    "options": [
+      "21",
+      "6",
+      "11",
+      "0"
+    ],
+    "answer": 1,
+    "explanation": "`sum = value` overwrites instead of accumulating, so it ends up holding only the last value visited, 6; it should be `sum += value`."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Finding Bugs",
+    "topicId": "finding-bugs",
+    "difficulty": "core",
+    "question": "What does this print?\n```\nstruct Counter { var count = 0 }\nlet a = Counter()\nvar b = a\nb.count = 5\nprint(a.count)\n```",
+    "options": [
+      "5",
+      "0",
+      "10",
+      "nil"
+    ],
+    "answer": 1,
+    "explanation": "`Counter` is a struct (value type), so `b` is an independent copy; mutating `b.count` leaves `a.count` at 0."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Finding Bugs",
+    "topicId": "finding-bugs",
+    "difficulty": "advanced",
+    "question": "What does this print?\n```\nclass Box { var value = 0 }\nlet x = Box()\nlet y = x\ny.value = 10\nprint(x.value)\n```",
+    "options": [
+      "0",
+      "10",
+      "nil",
+      "It fails to compile"
+    ],
+    "answer": 1,
+    "explanation": "`Box` is a class (reference type), so `x` and `y` point to the same instance; changing `y.value` also changes `x.value` to 10."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Finding Bugs",
+    "topicId": "finding-bugs",
+    "difficulty": "core",
+    "question": "What does this print?\n```\nlet input = \"42a\"\nlet number = Int(input) ?? 0\nprint(number)\n```",
+    "options": [
+      "42",
+      "0",
+      "4",
+      "nil"
+    ],
+    "answer": 1,
+    "explanation": "`Int(\"42a\")` returns `nil` because the whole string is not a valid integer, so the `?? 0` fallback makes `number` 0."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Finding Bugs",
+    "topicId": "finding-bugs",
+    "difficulty": "core",
+    "question": "A developer inserts a new top-of-stack value, then reads the top. What does it print?\n```\nvar stack = [1, 2, 3]\nstack.insert(4, at: 0)\nprint(stack.last!)\n```",
+    "options": [
+      "4",
+      "3",
+      "1",
+      "2"
+    ],
+    "answer": 1,
+    "explanation": "`insert(4, at: 0)` puts 4 at the front, giving `[4, 1, 2, 3]`, so `last` is 3, not the just-inserted 4."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Finding Bugs",
+    "topicId": "finding-bugs",
+    "difficulty": "advanced",
+    "question": "This is meant to count occurrences. What does it print?\n```\nlet letters = [\"a\", \"b\", \"a\", \"c\", \"b\", \"a\"]\nvar counts: [String: Int] = [:]\nfor letter in letters {\n    counts[letter] = 1\n}\nprint(counts[\"a\"]!)\n```",
+    "options": [
+      "3",
+      "1",
+      "6",
+      "nil"
+    ],
+    "answer": 1,
+    "explanation": "`counts[letter] = 1` resets the value each time instead of incrementing, so every key ends at 1; it should be `counts[letter, default: 0] += 1`."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Finding Bugs",
+    "topicId": "finding-bugs",
+    "difficulty": "core",
+    "question": "What does this print?\n```\nfunc grade(_ score: Int) -> String {\n    if score > 90 { return \"A\" }\n    if score > 80 { return \"B\" }\n    if score > 70 { return \"C\" }\n    return \"F\"\n}\nprint(grade(90))\n```",
+    "options": [
+      "\"A\"",
+      "\"B\"",
+      "\"C\"",
+      "\"F\""
+    ],
+    "answer": 1,
+    "explanation": "A score of exactly 90 fails `> 90` but passes `> 80`, so it returns \"B\"; the boundary bug is using `>` instead of `>=`."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Finding Bugs",
+    "topicId": "finding-bugs",
+    "difficulty": "advanced",
+    "question": "This should return true if any number is negative. What does it print?\n```\nfunc containsNegative(_ nums: [Int]) -> Bool {\n    for n in nums {\n        if n < 0 {\n            return true\n        } else {\n            return false\n        }\n    }\n    return false\n}\nprint(containsNegative([3, 5, -1]))\n```",
+    "options": [
+      "true",
+      "false",
+      "It crashes",
+      "It fails to compile"
+    ],
+    "answer": 1,
+    "explanation": "The `else { return false }` returns on the very first element (3), so the loop never reaches -1 and the result is `false`."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Compile vs Runtime Errors",
+    "topicId": "compile-runtime-errors",
+    "difficulty": "core",
+    "question": "What happens with this code?\n```\nlet x: Int = \"5\"\nprint(x)\n```",
+    "options": [
+      "It prints 5",
+      "It prints \"5\"",
+      "It fails to compile",
+      "It crashes at runtime"
+    ],
+    "answer": 2,
+    "explanation": "Assigning a `String` literal to an `Int` constant is a type mismatch caught by the compiler, so it never runs."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Compile vs Runtime Errors",
+    "topicId": "compile-runtime-errors",
+    "difficulty": "core",
+    "question": "What happens with this code?\n```\nlet dict = [\"a\": 1]\nlet value = dict[\"b\"]!\nprint(value)\n```",
+    "options": [
+      "It fails to compile",
+      "It crashes at runtime",
+      "It prints nil",
+      "It prints 0"
+    ],
+    "answer": 1,
+    "explanation": "Dictionary subscripting returns an optional; `dict[\"b\"]` is `nil`, and force-unwrapping `nil` with `!` crashes at runtime."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Compile vs Runtime Errors",
+    "topicId": "compile-runtime-errors",
+    "difficulty": "core",
+    "question": "What happens with this code?\n```\nlet a = 10\nlet b = 0\nprint(a / b)\n```",
+    "options": [
+      "It prints 0",
+      "It fails to compile",
+      "It crashes at runtime",
+      "It prints infinity"
+    ],
+    "answer": 2,
+    "explanation": "Integer division by zero is a runtime trap in Swift; the code compiles but crashes when it executes `a / b`."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Compile vs Runtime Errors",
+    "topicId": "compile-runtime-errors",
+    "difficulty": "core",
+    "question": "What happens with this code?\n```\nfunc square(_ n: Int) -> Int {\n    let result = n * n\n}\nprint(square(3))\n```",
+    "options": [
+      "It prints 9",
+      "It fails to compile",
+      "It crashes at runtime",
+      "It prints 0"
+    ],
+    "answer": 1,
+    "explanation": "A function declaring `-> Int` must return a value on every path; the missing `return result` is a compile-time error."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Compile vs Runtime Errors",
+    "topicId": "compile-runtime-errors",
+    "difficulty": "core",
+    "question": "What happens with this code?\n```\nfunc compute() {\n    let temp = 5\n}\nprint(temp)\n```",
+    "options": [
+      "It prints 5",
+      "It crashes at runtime",
+      "It fails to compile",
+      "It prints nil"
+    ],
+    "answer": 2,
+    "explanation": "`temp` is local to `compute()` and does not exist outside it, so referring to it in `print` is an out-of-scope compile error."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Compile vs Runtime Errors",
+    "topicId": "compile-runtime-errors",
+    "difficulty": "core",
+    "question": "What happens with this code?\n```\nlet n = 2\nswitch n {\ncase 1:\n    print(\"one\")\ncase 2:\n    print(\"two\")\n}\n```",
+    "options": [
+      "It prints two",
+      "It fails to compile",
+      "It crashes at runtime",
+      "It prints nothing"
+    ],
+    "answer": 1,
+    "explanation": "A `switch` over `Int` must be exhaustive; without a `default` (or full coverage) the compiler rejects it."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Compile vs Runtime Errors",
+    "topicId": "compile-runtime-errors",
+    "difficulty": "advanced",
+    "question": "What happens with this code?\n```\nlet names = [\"Ann\", \"Bob\"]\nfor name in names {\n    print(name.count)\n}\n```",
+    "options": [
+      "It fails to compile",
+      "It crashes at runtime",
+      "It runs and prints 3 then 3",
+      "It runs and prints Ann then Bob"
+    ],
+    "answer": 2,
+    "explanation": "The code is valid: `name.count` gives each string's length, so it prints 3 and 3 with no error."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Compile vs Runtime Errors",
+    "topicId": "compile-runtime-errors",
+    "difficulty": "advanced",
+    "question": "What happens with this code?\n```\nlet arr = [10, 20, 30]\nlet i = 3\nprint(arr[i])\n```",
+    "options": [
+      "It fails to compile",
+      "It prints 30",
+      "It crashes at runtime",
+      "It prints nil"
+    ],
+    "answer": 2,
+    "explanation": "Valid indices for a 3-element array are 0...2; `arr[3]` compiles but traps at runtime with an index-out-of-range error."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Compile vs Runtime Errors",
+    "topicId": "compile-runtime-errors",
+    "difficulty": "core",
+    "question": "What happens with this code?\n```\nlet count = 5\ncount = 6\nprint(count)\n```",
+    "options": [
+      "It prints 6",
+      "It fails to compile",
+      "It crashes at runtime",
+      "It prints 5"
+    ],
+    "answer": 1,
+    "explanation": "`count` is a `let` constant, so reassigning it is a compile-time error; use `var` to allow mutation."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Compile vs Runtime Errors",
+    "topicId": "compile-runtime-errors",
+    "difficulty": "advanced",
+    "question": "What happens with this code?\n```\nlet text: String? = \"hi\"\nprint(text.count)\n```",
+    "options": [
+      "It prints 2",
+      "It fails to compile",
+      "It crashes at runtime",
+      "It prints nil"
+    ],
+    "answer": 1,
+    "explanation": "`text` is an optional `String?`; you cannot call `.count` on it directly, so the compiler requires unwrapping first."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Compile vs Runtime Errors",
+    "topicId": "compile-runtime-errors",
+    "difficulty": "core",
+    "question": "What happens with this code?\n```\nfunc greet(name: String) {\n    print(\"Hi \\(name)\")\n}\ngreet(name: 42)\n```",
+    "options": [
+      "It prints Hi 42",
+      "It crashes at runtime",
+      "It fails to compile",
+      "It prints Hi"
+    ],
+    "answer": 2,
+    "explanation": "`greet` expects a `String`, but `42` is an `Int`; the type mismatch is caught at compile time."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Compile vs Runtime Errors",
+    "topicId": "compile-runtime-errors",
+    "difficulty": "advanced",
+    "question": "What happens with this code?\n```\nlet ages = [\"30\", \"twenty\", \"25\"]\nvar total = 0\nfor age in ages {\n    total += Int(age)!\n}\nprint(total)\n```",
+    "options": [
+      "It prints 55",
+      "It fails to compile",
+      "It crashes at runtime",
+      "It prints 30"
+    ],
+    "answer": 2,
+    "explanation": "It compiles and adds 30, but `Int(\"twenty\")` is `nil`; force-unwrapping that `nil` crashes at runtime before finishing."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Index Out of Range",
+    "topicId": "index-out-of-range",
+    "difficulty": "core",
+    "question": "What happens with this code?\n```\nlet nums = [1, 2, 3]\nfor i in 0...nums.count {\n    print(nums[i])\n}\n```",
+    "options": [
+      "It prints 1, 2, 3 with no error",
+      "It prints 1, 2, 3 and then crashes",
+      "It fails to compile",
+      "It prints 1, 2, 3, 4"
+    ],
+    "answer": 1,
+    "explanation": "`0...nums.count` includes 3, but valid indices stop at 2; it prints 1, 2, 3 then crashes on `nums[3]`. Use `0..<nums.count`."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Index Out of Range",
+    "topicId": "index-out-of-range",
+    "difficulty": "core",
+    "question": "What happens with this code?\n```\nlet letters = [\"a\", \"b\", \"c\"]\nprint(letters[letters.count])\n```",
+    "options": [
+      "It prints \"c\"",
+      "It crashes at runtime",
+      "It fails to compile",
+      "It prints nil"
+    ],
+    "answer": 1,
+    "explanation": "`letters.count` is 3, but the last valid index is 2, so `letters[3]` traps with an index-out-of-range error."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Index Out of Range",
+    "topicId": "index-out-of-range",
+    "difficulty": "core",
+    "question": "What happens with this code?\n```\nlet empty: [Int] = []\nprint(empty[0])\n```",
+    "options": [
+      "It prints 0",
+      "It prints nil",
+      "It crashes at runtime",
+      "It fails to compile"
+    ],
+    "answer": 2,
+    "explanation": "An empty array has no valid indices, so `empty[0]` crashes at runtime rather than returning a default or `nil`."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Index Out of Range",
+    "topicId": "index-out-of-range",
+    "difficulty": "core",
+    "question": "What happens with this code?\n```\nlet empty: [Int] = []\nprint(empty.first ?? -1)\n```",
+    "options": [
+      "It crashes at runtime",
+      "It prints -1",
+      "It prints 0",
+      "It fails to compile"
+    ],
+    "answer": 1,
+    "explanation": "`.first` safely returns `nil` for an empty array instead of trapping, so `?? -1` prints -1."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Index Out of Range",
+    "topicId": "index-out-of-range",
+    "difficulty": "advanced",
+    "question": "This code crashes. Which single change fixes it so it prints x, y, z?\n```\nlet items = [\"x\", \"y\", \"z\"]\nfor i in 0...items.count {\n    print(items[i])\n}\n```",
+    "options": [
+      "Replace `0...items.count` with `0..<items.count`",
+      "Replace `0...items.count` with `0...items.count + 1`",
+      "Replace `items[i]` with `items[i + 1]`",
+      "Nothing is wrong; it already prints x, y, z"
+    ],
+    "answer": 0,
+    "explanation": "The closed range `0...count` includes the invalid index 3; the half-open `0..<items.count` stops at the last valid index."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Index Out of Range",
+    "topicId": "index-out-of-range",
+    "difficulty": "core",
+    "question": "This should print the array from last to first. What happens?\n```\nlet arr = [10, 20, 30]\nvar i = 3\nwhile i >= 0 {\n    print(arr[i])\n    i -= 1\n}\n```",
+    "options": [
+      "It prints 30, 20, 10",
+      "It crashes immediately on the first access",
+      "It prints 30, 20, 10, and then crashes",
+      "It fails to compile"
+    ],
+    "answer": 1,
+    "explanation": "`i` starts at 3, but the last valid index is 2, so the very first `arr[3]` crashes; it should start at `arr.count - 1`."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Index Out of Range",
+    "topicId": "index-out-of-range",
+    "difficulty": "core",
+    "question": "What happens with this code?\n```\nlet stack: [Int] = []\nprint(stack.last!)\n```",
+    "options": [
+      "It prints 0",
+      "It prints nil",
+      "It fails to compile",
+      "It crashes at runtime"
+    ],
+    "answer": 3,
+    "explanation": "`.last` returns `nil` for an empty array, and force-unwrapping that `nil` with `!` crashes at runtime."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Index Out of Range",
+    "topicId": "index-out-of-range",
+    "difficulty": "advanced",
+    "question": "You want to read the element at index `i` from array `arr`, but get `nil` instead of crashing when `i` is out of bounds. Which expression is correct?",
+    "options": [
+      "`i < arr.count ? arr[i] : nil`",
+      "`arr[i] ?? nil`",
+      "`arr[i]!`",
+      "`arr.count > i ? arr[i + 1] : nil`"
+    ],
+    "answer": 0,
+    "explanation": "Guarding with `i < arr.count` before subscripting avoids the trap; `arr[i]` is evaluated eagerly, so both `arr[i] ?? nil` and `arr[i]!` still crash on an out-of-range index before any nil-handling can run."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Typos & Unintended Behavior",
+    "topicId": "typos-unintended",
+    "difficulty": "core",
+    "question": "What happens when this code is compiled?\n\n```\nvar count = 0\nif count = 1 {\n    print(\"one\")\n}\n```",
+    "options": [
+      "It prints \"one\".",
+      "It compiles and sets `count` to 1 without printing anything.",
+      "Compile error: `count = 1` is an assignment (which returns `Void`), not a comparison; `if` requires a `Bool`.",
+      "Runtime crash."
+    ],
+    "answer": 2,
+    "explanation": "Swift does not allow assignment as a condition; you need `==`. `count = 1` yields `Void`, so `if` has no `Bool` and the code fails to compile."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Typos & Unintended Behavior",
+    "topicId": "typos-unintended",
+    "difficulty": "core",
+    "question": "What is the result of running this code?\n\n```\nlet names = [\"Ana\", \"Ben\", \"Cy\"]\nfor i in 0...names.count {\n    print(names[i])\n}\n```",
+    "options": [
+      "Runtime crash: `0...names.count` reaches index 3, which is out of bounds.",
+      "Compile error.",
+      "It prints all three names correctly.",
+      "It prints the three names and then `nil`."
+    ],
+    "answer": 0,
+    "explanation": "`0...names.count` is 0,1,2,3, but valid indices are only 0–2, so accessing `names[3]` traps at runtime. The `...` should be `..<`."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Typos & Unintended Behavior",
+    "topicId": "typos-unintended",
+    "difficulty": "core",
+    "question": "This code was meant to sum the numbers 1 through 5. What does it actually print?\n\n```\nvar total = 0\nfor i in 1..<5 {\n    total += i\n}\nprint(total)\n```",
+    "options": [
+      "15",
+      "10",
+      "14",
+      "6"
+    ],
+    "answer": 1,
+    "explanation": "`1..<5` excludes 5, so it adds 1+2+3+4 = 10. Summing 1 through 5 would require `1...5`."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Typos & Unintended Behavior",
+    "topicId": "typos-unintended",
+    "difficulty": "core",
+    "question": "This function is intended to report whether someone is old enough to vote. What does `canVote(age: 20)` return?\n\n```\nfunc canVote(age: Int) -> Bool {\n    return age < 18\n}\n```",
+    "options": [
+      "It returns `true`.",
+      "Compile error.",
+      "It crashes.",
+      "It returns `false` — the condition is reversed (it should be `age >= 18`)."
+    ],
+    "answer": 3,
+    "explanation": "The comparison is backwards: `20 < 18` is `false`. The intended check is `age >= 18`."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Typos & Unintended Behavior",
+    "topicId": "typos-unintended",
+    "difficulty": "core",
+    "question": "What does this code print?\n\n```\nlet temperature = 100\nif true {\n    let temperature = 50\n    print(temperature)\n}\nprint(temperature)\n```",
+    "options": [
+      "50 then 100",
+      "100 then 100",
+      "50 then 50",
+      "100 then 50"
+    ],
+    "answer": 0,
+    "explanation": "The inner `temperature` shadows the outer one only inside the braces, so it prints 50 there; outside, the original 100 is still in scope."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Typos & Unintended Behavior",
+    "topicId": "typos-unintended",
+    "difficulty": "core",
+    "question": "This code was intended to swap the values of `a` and `b`. What does it print?\n\n```\nvar a = 1\nvar b = 2\na = b\nb = a\nprint(a, b)\n```",
+    "options": [
+      "2 1",
+      "1 2",
+      "2 2",
+      "1 1"
+    ],
+    "answer": 2,
+    "explanation": "Without a temporary variable, `a = b` makes `a` equal to 2, and then `b = a` copies that same 2 back, so both are 2."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Typos & Unintended Behavior",
+    "topicId": "typos-unintended",
+    "difficulty": "advanced",
+    "question": "What does this code print?\n\n```\nlet word = \"Swift\"\nvar result = \"\"\nfor i in 0..<word.count - 1 {\n    let idx = word.index(word.startIndex, offsetBy: i)\n    result.append(word[idx])\n}\nprint(result)\n```",
+    "options": [
+      "Swift",
+      "Swif",
+      "wift",
+      "Swi"
+    ],
+    "answer": 1,
+    "explanation": "`word.count - 1` is 4, so `0..<4` visits indices 0–3 and appends S, w, i, f — dropping the last character. The `- 1` is an off-by-one bug."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Typos & Unintended Behavior",
+    "topicId": "typos-unintended",
+    "difficulty": "advanced",
+    "question": "A developer wanted the numbers sorted in ascending order. What does this actually print?\n\n```\nlet nums = [3, 1, 2]\nlet sorted = nums.sorted { $0 > $1 }\nprint(sorted)\n```",
+    "options": [
+      "[1, 2, 3]",
+      "[3, 1, 2]",
+      "[2, 1, 3]",
+      "[3, 2, 1]"
+    ],
+    "answer": 3,
+    "explanation": "The closure returns `true` when the first element is greater, which sorts in descending order. Ascending would need `$0 < $1`."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Typos & Unintended Behavior",
+    "topicId": "typos-unintended",
+    "difficulty": "core",
+    "question": "This loop was meant to accumulate the total of all values. What does it print?\n\n```\nvar sum = 0\nlet values = [10, 20, 30]\nfor value in values {\n    sum = value\n}\nprint(sum)\n```",
+    "options": [
+      "30",
+      "60",
+      "10",
+      "0"
+    ],
+    "answer": 0,
+    "explanation": "`sum = value` overwrites `sum` each iteration instead of adding to it, so it ends holding the last value, 30. The bug is `=` where `+=` was intended."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Typos & Unintended Behavior",
+    "topicId": "typos-unintended",
+    "difficulty": "core",
+    "question": "This code is supposed to grant access only when the entered password matches. What does it print?\n\n```\nlet password = \"1234\"\nlet input = \"0000\"\nif password != input {\n    print(\"Access granted\")\n} else {\n    print(\"Access denied\")\n}\n```",
+    "options": [
+      "\"Access denied\"",
+      "\"Access granted\"",
+      "Compile error",
+      "Nothing is printed"
+    ],
+    "answer": 1,
+    "explanation": "The condition uses `!=`, so it grants access precisely when the passwords do NOT match — the opposite of what was intended. It should be `==`."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Typos & Unintended Behavior",
+    "topicId": "typos-unintended",
+    "difficulty": "advanced",
+    "question": "This code was meant to sum every number in the matrix (expecting 10). What does it actually print?\n\n```\nlet matrix = [[1, 2], [3, 4]]\nvar total = 0\nfor row in matrix {\n    for value in row {\n        total += row.count\n    }\n}\nprint(total)\n```",
+    "options": [
+      "10",
+      "4",
+      "8",
+      "6"
+    ],
+    "answer": 2,
+    "explanation": "It adds `row.count` (2) instead of `value`. The inner loop runs 4 times total, adding 2 each time, giving 8. The wrong variable was used."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Typos & Unintended Behavior",
+    "topicId": "typos-unintended",
+    "difficulty": "advanced",
+    "question": "What happens when this code runs?\n\n```\nfor i in 5..<1 {\n    print(i)\n}\n```",
+    "options": [
+      "It prints nothing (the loop is empty).",
+      "It prints 5 4 3 2.",
+      "Compile error.",
+      "Runtime crash: a range cannot have an upper bound below its lower bound."
+    ],
+    "answer": 3,
+    "explanation": "`5..<1` violates the requirement that `lowerBound <= upperBound`, so forming the range traps at runtime. `..<` never counts downward."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Improving Inefficient Code",
+    "topicId": "inefficient-code",
+    "difficulty": "core",
+    "question": "This code works but is inefficient. Which change improves it most?\n\n```\nlet items = [1, 2, 3, 4, 5]\nvar results: [Int] = []\nfor item in items {\n    let maxValue = items.max()!\n    results.append(item * maxValue)\n}\n```",
+    "options": [
+      "Compute `items.max()!` once before the loop and reuse the value.",
+      "Change the `for` loop to a `while` loop.",
+      "Declare `results` as a `let` constant.",
+      "Sort `items` before looping."
+    ],
+    "answer": 0,
+    "explanation": "`items` never changes, so `items.max()` is recomputed identically on every iteration. Hoisting it out of the loop computes it just once."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Improving Inefficient Code",
+    "topicId": "inefficient-code",
+    "difficulty": "core",
+    "question": "`allowed` is a large array checked on every incoming name. Which change improves performance most?\n\n```\nfor name in incoming {\n    if allowed.contains(name) {\n        approve(name)\n    }\n}\n```",
+    "options": [
+      "Sort `allowed` before the loop.",
+      "Convert `allowed` to a `Set` once before the loop for O(1) membership checks.",
+      "Replace `contains` with `firstIndex(of:)`.",
+      "Use a `while` loop instead of `for`."
+    ],
+    "answer": 1,
+    "explanation": "`Array.contains` is a linear scan, so repeating it in a loop is O(n*m). A `Set` gives near-constant-time lookups, cutting the overall cost dramatically."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Improving Inefficient Code",
+    "topicId": "inefficient-code",
+    "difficulty": "core",
+    "question": "Which rewrite produces the joined text more cleanly and efficiently?\n\n```\nlet words = [\"one\", \"two\", \"three\"]\nvar sentence = \"\"\nfor word in words {\n    sentence += word + \" \"\n}\n```",
+    "options": [
+      "Store the words in a `Set` first.",
+      "Precompute `words.count` before the loop.",
+      "Replace the loop with `words.joined(separator: \" \")`.",
+      "Use `reduce(1, *)` over the words."
+    ],
+    "answer": 2,
+    "explanation": "`joined(separator:)` is built for exactly this: it concatenates the elements in one call and avoids the manual loop (and its trailing-space quirk)."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Improving Inefficient Code",
+    "topicId": "inefficient-code",
+    "difficulty": "core",
+    "question": "This nested loop checks whether an array has any duplicates. What is the best efficiency improvement?\n\n```\nvar hasDuplicates = false\nfor i in 0..<nums.count {\n    for j in 0..<nums.count {\n        if i != j && nums[i] == nums[j] {\n            hasDuplicates = true\n        }\n    }\n}\n```",
+    "options": [
+      "Add a `break` to the inner loop.",
+      "Sort the array, then keep the nested loops.",
+      "Replace the outer loop with `map`.",
+      "Insert each element into a `Set`; a duplicate exists if an insert fails — O(n) instead of O(n^2)."
+    ],
+    "answer": 3,
+    "explanation": "The nested loops are O(n^2). Adding elements to a `Set` and detecting a failed insert (or comparing counts) finds duplicates in a single O(n) pass."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Improving Inefficient Code",
+    "topicId": "inefficient-code",
+    "difficulty": "advanced",
+    "question": "This loop prints each person alongside the number of adults. Which improvement applies?\n\n```\nfor person in people {\n    let adults = people.filter { $0.age >= 18 }\n    print(\"\\(person.name): \\(adults.count) adults\")\n}\n```",
+    "options": [
+      "Compute `adults` once before the loop, since `people` never changes inside it.",
+      "Change `filter` to `map`.",
+      "Make `person` a `var`.",
+      "Use a `while` loop instead."
+    ],
+    "answer": 0,
+    "explanation": "`adults` is identical on every iteration but is recomputed each time, making the loop O(n^2). Computing it once before the loop makes the filtering O(n)."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Improving Inefficient Code",
+    "topicId": "inefficient-code",
+    "difficulty": "advanced",
+    "question": "This code counts how many times each letter appears. Which rewrite is more efficient?\n\n```\nlet letters = [\"a\", \"b\", \"a\", \"c\", \"a\"]\nvar counts: [String: Int] = [:]\nfor letter in letters {\n    let count = letters.filter { $0 == letter }.count\n    counts[letter] = count\n}\n```",
+    "options": [
+      "Sort `letters` before counting.",
+      "Make a single pass using `counts[letter, default: 0] += 1`, avoiding the inner `filter`.",
+      "Convert `letters` to a `Set` first.",
+      "Use `reduce` to multiply the counts together."
+    ],
+    "answer": 1,
+    "explanation": "The `filter` inside the loop rescans the whole array each time, giving O(n^2). Incrementing a dictionary value with `default:` counts everything in one O(n) pass."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Improving Inefficient Code",
+    "topicId": "inefficient-code",
+    "difficulty": "advanced",
+    "question": "This builds a reversed list of 1000 numbers. What is the key efficiency problem and fix?\n\n```\nvar result: [Int] = []\nfor i in 1...1000 {\n    result.insert(i, at: 0)\n}\n```",
+    "options": [
+      "Call `reserveCapacity(1000)` and keep using `insert(at: 0)`.",
+      "Use a `Set` instead of an array.",
+      "Use `append` (O(1) amortized) and reverse once at the end if order matters, instead of `insert(at: 0)` (O(n) each).",
+      "Use a `while` loop instead of the range loop."
+    ],
+    "answer": 2,
+    "explanation": "Inserting at index 0 shifts every existing element, making each call O(n) and the loop O(n^2). Appending is amortized O(1); a single `reversed()` at the end restores order cheaply."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Improving Inefficient Code",
+    "topicId": "inefficient-code",
+    "difficulty": "core",
+    "question": "This nested loop collects values common to both arrays. Which improvement helps most?\n\n```\nvar common: [Int] = []\nfor a in listA {\n    for b in listB {\n        if a == b {\n            common.append(a)\n        }\n    }\n}\n```",
+    "options": [
+      "Sort both arrays before the loops.",
+      "Replace the outer loop with `map`.",
+      "Append with `insert(at: 0)` for speed.",
+      "Convert `listB` to a `Set` and check `setB.contains(a)` in a single loop over `listA`."
+    ],
+    "answer": 3,
+    "explanation": "The nested loops are O(n*m). Putting `listB` into a `Set` turns the inner search into a near-constant-time lookup, reducing the work to a single pass over `listA`."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Xcode Debugger",
+    "topicId": "xcode-debugger",
+    "difficulty": "core",
+    "question": "In Xcode you click the gutter to the left of a line and a blue indicator appears. What happens when you then run the app in the debugger?",
+    "options": [
+      "The line is permanently deleted from the source file.",
+      "Execution pauses at that line (before it runs) so you can inspect the current state.",
+      "That line is executed twice.",
+      "The app skips over that line entirely."
+    ],
+    "answer": 1,
+    "explanation": "The blue indicator is a breakpoint. When execution reaches it, the debugger pauses before running that line, letting you examine variables and step through code."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Xcode Debugger",
+    "topicId": "xcode-debugger",
+    "difficulty": "core",
+    "question": "You are paused on a line that calls `calculateTotal()`. You want that function to run fully and then pause on the next line of the current function, without stepping through the function's internals. Which control do you use?",
+    "options": [
+      "Step Over",
+      "Step Into",
+      "Continue",
+      "Step Out"
+    ],
+    "answer": 0,
+    "explanation": "Step Over executes the called function completely and stops on the next line of the current scope, without descending into the function's code."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Xcode Debugger",
+    "topicId": "xcode-debugger",
+    "difficulty": "core",
+    "question": "You are paused on a line that calls `helper()`, and you suspect the bug is inside `helper()`. You want to pause on the first line inside it. Which control do you use?",
+    "options": [
+      "Step Over",
+      "Step Into",
+      "Continue",
+      "Step Out"
+    ],
+    "answer": 1,
+    "explanation": "Step Into enters the called function and pauses on its first line, so you can debug the code inside it."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Xcode Debugger",
+    "topicId": "xcode-debugger",
+    "difficulty": "core",
+    "question": "You are paused at a breakpoint and are satisfied with what you have inspected. You want the program to resume running normally until it hits the next breakpoint or finishes. Which control do you use?",
+    "options": [
+      "Step Over",
+      "Step Into",
+      "Continue",
+      "Step Out"
+    ],
+    "answer": 2,
+    "explanation": "Continue resumes normal execution until the next breakpoint is reached or the program ends."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Xcode Debugger",
+    "topicId": "xcode-debugger",
+    "difficulty": "core",
+    "question": "The program is paused at a breakpoint and you want to see the current value of `score` in the debug console (LLDB). Which command does this?",
+    "options": [
+      "`read score`",
+      "`value score`",
+      "`show score`",
+      "`po score`"
+    ],
+    "answer": 3,
+    "explanation": "`po` (print object) evaluates the expression and prints the value of `score` in the LLDB console. The other commands are not valid LLDB commands."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Xcode Debugger",
+    "topicId": "xcode-debugger",
+    "difficulty": "core",
+    "question": "This code stops with the console message \"Fatal error: Index out of range\". What does that tell you?\n\n```\nlet items = [10, 20, 30]\nprint(items[5])\n```",
+    "options": [
+      "The code accessed an array index that doesn't exist — index 5 is past the last valid index (2).",
+      "The array contains a `nil` value.",
+      "The compiler could not infer the array's element type.",
+      "The array is too large to fit in memory."
+    ],
+    "answer": 0,
+    "explanation": "The array has indices 0–2, so `items[5]` is out of bounds and traps at runtime. The message points directly at an invalid index access."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Xcode Debugger",
+    "topicId": "xcode-debugger",
+    "difficulty": "advanced",
+    "question": "This code crashes with \"Fatal error: Unexpectedly found nil while unwrapping an Optional value\". What is the cause?\n\n```\nlet text = \"hello\"\nlet number = Int(text)\nprint(number!)\n```",
+    "options": [
+      "The string was too long to convert.",
+      "`Int(\"hello\")` returns `nil`, and force-unwrapping (`!`) a `nil` optional crashes.",
+      "`print` cannot display optional values.",
+      "The variable `number` was never declared."
+    ],
+    "answer": 1,
+    "explanation": "`Int(text)` is a failable initializer that returns `nil` when the string isn't a valid number. Force-unwrapping that `nil` with `!` triggers the crash."
+  },
+  {
+    "category": "Debugging",
+    "topic": "Xcode Debugger",
+    "topicId": "xcode-debugger",
+    "difficulty": "advanced",
+    "question": "A breakpoint inside a loop that runs 100 times pauses on every iteration, but you only care about the state when `i == 50`. What is the most efficient way to pause only then?",
+    "options": [
+      "Use Step Over 50 times to reach that iteration.",
+      "Add 50 separate breakpoints.",
+      "Add a condition (e.g. `i == 50`) to the breakpoint so it pauses only when that is true.",
+      "Delete and re-add the breakpoint on each iteration."
+    ],
+    "answer": 2,
+    "explanation": "Editing the breakpoint and giving it a condition makes the debugger evaluate the expression each time and pause only when it is true, skipping the other iterations."
+  }
+]
