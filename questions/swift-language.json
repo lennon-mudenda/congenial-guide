@@ -1294,7 +1294,7 @@
     "topic": "Control Flow",
     "topicId": "control-flow",
     "difficulty": "core",
-    "question": "Which condition is `true` exactly when `n` equals 100?",
+    "question": "Given `let n = 100`, which condition evaluates to `true`?",
     "options": [
       "n > 1 && n < 100",
       "n >= 1 && n <= 100",
@@ -1748,7 +1748,7 @@
     "options": [
       "A compile-time error, because `d` is a constant",
       "A runtime error",
-      "It adds \"b\" successfully",
+      "It adds `\"b\"` successfully",
       "It prints nil"
     ],
     "answer": 0,
@@ -2277,7 +2277,7 @@
       "true"
     ],
     "answer": 3,
-    "explanation": "Enums with no associated values are automatically `Equatable`, so `==` works and both are `.heads`, giving `true`."
+    "explanation": "Enums with no associated values are implicitly `Equatable`, so `==` works without any `: Equatable` declaration. Both values are `.heads`, so it prints `true`."
   },
   {
     "category": "Swift Language Usage",
@@ -3469,7 +3469,7 @@
     "topic": "Optionals",
     "topicId": "optionals",
     "difficulty": "advanced",
-    "question": "What is printed?\n\n```\nvar score: Int? = 10\nif let score = score, score > 5 {\n    print(\"high \\(score)\")\n} else {\n    print(\"low\")\n}\n```",
+    "question": "What is printed?\n\n```\nlet score: Int? = 10\nif let score = score, score > 5 {\n    print(\"high \\(score)\")\n} else {\n    print(\"low\")\n}\n```",
     "options": [
       "low",
       "high 10",
@@ -3589,7 +3589,7 @@
     "topic": "Structs",
     "topicId": "structs",
     "difficulty": "core",
-    "question": "What is printed?\n```\nstruct Box { var value: Int }\nvar a = Box(value: 1)\nvar b = a\nb.value = 99\nprint(a.value)\n```",
+    "question": "What is printed?\n```\nstruct Box { var value: Int }\nlet a = Box(value: 1)\nvar b = a\nb.value = 99\nprint(a.value)\n```",
     "options": [
       "1",
       "99",
@@ -3604,7 +3604,7 @@
     "topic": "Structs",
     "topicId": "structs",
     "difficulty": "core",
-    "question": "What happens with this code?\n```\nstruct Point { var x: Int; var y: Int }\nlet p = Point(x: 1, y: 2)\np.x = 5\n```",
+    "question": "What happens with this code?\n```\nstruct Point {\n    var x: Int\n    var y: Int\n}\nlet p = Point(x: 1, y: 2)\np.x = 5\n```",
     "options": [
       "It compiles; `p.x` becomes 5",
       "It compiles because `x` is declared with `var`",
@@ -3728,7 +3728,7 @@
     "options": [
       "didSet 0",
       "didSet 10",
-      "didSet 0\\ndidSet 10",
+      "didSet 0\ndidSet 10",
       "Nothing is printed"
     ],
     "answer": 3,
@@ -3829,7 +3829,7 @@
     "topic": "Structs",
     "topicId": "structs",
     "difficulty": "advanced",
-    "question": "What is printed?\n```\nstruct P { var n: Int }\nvar arr = [P(n: 1), P(n: 2)]\nvar first = arr[0]\nfirst.n = 100\nprint(arr[0].n)\n```",
+    "question": "What is printed?\n```\nstruct P { var n: Int }\nlet arr = [P(n: 1), P(n: 2)]\nvar first = arr[0]\nfirst.n = 100\nprint(arr[0].n)\n```",
     "options": [
       "100",
       "2",
@@ -3921,10 +3921,10 @@
     "difficulty": "advanced",
     "question": "What is printed?\n```\nstruct Tracker {\n    var step = 0 {\n        willSet { print(\"will \\(newValue)\") }\n        didSet { print(\"did \\(oldValue)\") }\n    }\n}\nvar t = Tracker()\nt.step = 1\n```",
     "options": [
-      "did 0\\nwill 1",
-      "will 1\\ndid 0",
-      "will 0\\ndid 1",
-      "did 1\\nwill 0"
+      "did 0\nwill 1",
+      "will 1\ndid 0",
+      "will 0\ndid 1",
+      "did 1\nwill 0"
     ],
     "answer": 1,
     "explanation": "`willSet` runs first (before storing) with `newValue` = 1, then `didSet` runs with `oldValue` = 0."
@@ -3934,7 +3934,7 @@
     "topic": "Structs",
     "topicId": "structs",
     "difficulty": "core",
-    "question": "Given `struct Item { var name: String; var price: Double }`, which call compiles?",
+    "question": "Given this struct, which call compiles?\n```\nstruct Item {\n    var name: String\n    var price: Double\n}\n```",
     "options": [
       "`Item(price: 1.5, name: \"Pen\")`",
       "`Item(\"Pen\", 1.5)`",
@@ -3964,7 +3964,7 @@
     "topic": "Structs",
     "topicId": "structs",
     "difficulty": "advanced",
-    "question": "What is printed?\n```\nstruct Engine { var horsepower: Int }\nstruct Car { var engine: Engine }\nvar c1 = Car(engine: Engine(horsepower: 100))\nvar c2 = c1\nc2.engine.horsepower = 200\nprint(c1.engine.horsepower)\n```",
+    "question": "What is printed?\n```\nstruct Engine { var horsepower: Int }\nstruct Car { var engine: Engine }\nlet c1 = Car(engine: Engine(horsepower: 100))\nvar c2 = c1\nc2.engine.horsepower = 200\nprint(c1.engine.horsepower)\n```",
     "options": [
       "200",
       "0",

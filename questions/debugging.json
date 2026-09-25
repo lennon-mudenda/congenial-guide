@@ -79,7 +79,7 @@
     "topic": "Finding Bugs",
     "topicId": "finding-bugs",
     "difficulty": "core",
-    "question": "What does this print?\n```\nstruct Counter { var count = 0 }\nvar a = Counter()\nvar b = a\nb.count = 5\nprint(a.count)\n```",
+    "question": "What does this print?\n```\nstruct Counter { var count = 0 }\nlet a = Counter()\nvar b = a\nb.count = 5\nprint(a.count)\n```",
     "options": [
       "5",
       "0",
@@ -454,7 +454,7 @@
     "topic": "Index Out of Range",
     "topicId": "index-out-of-range",
     "difficulty": "core",
-    "question": "What happens with this code?\n```\nvar stack: [Int] = []\nprint(stack.last!)\n```",
+    "question": "What happens with this code?\n```\nlet stack: [Int] = []\nprint(stack.last!)\n```",
     "options": [
       "It prints 0",
       "It prints nil",
@@ -477,7 +477,7 @@
       "`arr.count > i ? arr[i + 1] : nil`"
     ],
     "answer": 0,
-    "explanation": "Guarding with `i < arr.count` before subscripting avoids the trap; `arr[i]` itself is non-optional, so `?? nil` does not compile and `!` still crashes."
+    "explanation": "Guarding with `i < arr.count` before subscripting avoids the trap; `arr[i]` is evaluated eagerly, so both `arr[i] ?? nil` and `arr[i]!` still crash on an out-of-range index before any nil-handling can run."
   },
   {
     "category": "Debugging",
@@ -579,7 +579,7 @@
       "Swift",
       "Swif",
       "wift",
-      "Swift"
+      "Swi"
     ],
     "answer": 1,
     "explanation": "`word.count - 1` is 4, so `0..<4` visits indices 0–3 and appends S, w, i, f — dropping the last character. The `- 1` is an off-by-one bug."

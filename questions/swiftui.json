@@ -484,7 +484,7 @@
     "topic": "Stacks",
     "topicId": "stacks",
     "difficulty": "advanced",
-    "question": "How would you build a simple two-column row of labels and values (each label above? no — beside its value), repeated down the screen?",
+    "question": "How would you build a repeating list of rows, each showing a label beside its value, stacked down the screen?",
     "options": [
       "A single `ZStack`",
       "A `VStack` of `HStack`s — each `HStack` a label and value, stacked vertically",
@@ -1039,22 +1039,22 @@
     "topic": "Sheets",
     "topicId": "sheets",
     "difficulty": "core",
-    "question": "A sheet contains this view. What does tapping 'Close' do?\n\n```\nstruct SheetView: View {\n    @Environment(\\.dismiss) private var dismiss\n\n    var body: some View {\n        Button(\"Close\") { dismiss() }\n    }\n}\n```",
+    "question": "The sheet's content closure directly references the presenting view's own `@State` property, with no `@Binding` in sight. What happens when 'Done' is tapped?\n\n```\nstruct ContentView: View {\n    @State private var showInfo = false\n\n    var body: some View {\n        Button(\"Info\") { showInfo = true }\n            .sheet(isPresented: $showInfo) {\n                Button(\"Done\") {\n                    showInfo = false\n                }\n            }\n    }\n}\n```",
     "options": [
-      "It quits the app.",
-      "It dismisses the currently presented sheet, returning to the presenting view.",
-      "Nothing, because `dismiss` requires the presenting Bool as an argument.",
-      "It only reloads the sheet's body without closing it."
+      "It fails to compile, because a sheet's content closure cannot reference a `@State` property directly.",
+      "The sheet dismisses, because the closure captures `showInfo` from the enclosing view, and setting it to `false` flips the same state that presents the sheet.",
+      "Nothing happens; only a `Binding` passed explicitly into a child view can change presentation state.",
+      "It compiles, but tapping 'Done' presents a second sheet on top of the first."
     ],
     "answer": 1,
-    "explanation": "`@Environment(\\.dismiss)` provides a dismiss action; calling it closes the current modal presentation (the sheet)."
+    "explanation": "The `.sheet` content closure is defined inline inside `ContentView`, so it captures `showInfo` directly; setting it to `false` there dismisses the sheet just as it would from anywhere else in the view."
   },
   {
     "category": "SwiftUI",
     "topic": "Sheets",
     "topicId": "sheets",
     "difficulty": "core",
-    "question": "Using this type with `.sheet(item: $selected)`, which statement is true?\n\n```\nstruct Item: Identifiable {\n    let id = UUID()\n    let name: String\n}\n\n@State private var selected: Item? = nil\n```",
+    "question": "Using this type with `.sheet(item: $selected)`, which statement is true?\n\n```\nstruct Item: Identifiable {\n    let id = UUID()\n    let name: String\n}\n\nstruct ContentView: View {\n    @State private var selected: Item? = nil\n\n    var body: some View {\n        Text(\"Demo\")\n            .sheet(item: $selected) { item in\n                Text(item.name)\n            }\n    }\n}\n```",
     "options": [
       "`item:` must be a `Binding<Bool>`, exactly like `isPresented:`.",
       "The sheet shows immediately at launch and can never be dismissed.",
@@ -1084,7 +1084,7 @@
     "topic": "Sheets",
     "topicId": "sheets",
     "difficulty": "advanced",
-    "question": "Does this compile, and if not, why?\n\n```\nstruct Book {\n    let title: String\n}\n\n@State private var book: Book? = nil\n\n// ...\n.sheet(item: $book) { b in\n    Text(b.title)\n}\n```",
+    "question": "Does this compile, and if not, why?\n\n```\nstruct Book {\n    let title: String\n}\n\nstruct ContentView: View {\n    @State private var book: Book? = nil\n\n    var body: some View {\n        Text(\"Demo\")\n            .sheet(item: $book) { b in\n                Text(b.title)\n            }\n    }\n}\n```",
     "options": [
       "It compiles and works; conformance to `Identifiable` is optional for `.sheet(item:)`.",
       "It does not compile: `.sheet(item:)` requires the item type to conform to `Identifiable`, and `Book` does not.",
@@ -1114,7 +1114,7 @@
     "topic": "Toolbars",
     "topicId": "toolbars",
     "difficulty": "core",
-    "question": "What does this produce?\n\n```\nNavigationStack {\n    Text(\"Home\")\n        .toolbar {\n            ToolbarItem(placement: .navigationBarTrailing) {\n                Button(\"Add\") { }\n            }\n        }\n}\n```",
+    "question": "What does this produce?\n\n```\nstruct ContentView: View {\n    var body: some View {\n        NavigationStack {\n            Text(\"Home\")\n                .toolbar {\n                    ToolbarItem(placement: .navigationBarTrailing) {\n                        Button(\"Add\") { }\n                    }\n                }\n        }\n    }\n}\n```",
     "options": [
       "An 'Add' button in the trailing (top-right) area of the navigation bar.",
       "An 'Add' button centered at the bottom of the screen.",
@@ -1189,7 +1189,7 @@
     "topic": "Toolbars",
     "topicId": "toolbars",
     "difficulty": "advanced",
-    "question": "What is the result of this toolbar?\n\n```\nNavigationStack {\n    Text(\"Editor\")\n        .toolbar {\n            ToolbarItem(placement: .navigationBarLeading) {\n                Button(\"Cancel\") { }\n            }\n            ToolbarItem(placement: .navigationBarTrailing) {\n                Button(\"Save\") { }\n            }\n        }\n}\n```",
+    "question": "What is the result of this toolbar?\n\n```\nstruct ContentView: View {\n    var body: some View {\n        NavigationStack {\n            Text(\"Editor\")\n                .toolbar {\n                    ToolbarItem(placement: .navigationBarLeading) {\n                        Button(\"Cancel\") { }\n                    }\n                    ToolbarItem(placement: .navigationBarTrailing) {\n                        Button(\"Save\") { }\n                    }\n                }\n        }\n    }\n}\n```",
     "options": [
       "'Cancel' appears on the leading (left) side and 'Save' on the trailing (right) side of the navigation bar.",
       "Both buttons stack on the right; placement is ignored when there are two items.",
@@ -1204,7 +1204,7 @@
     "topic": "Toolbars",
     "topicId": "toolbars",
     "difficulty": "advanced",
-    "question": "What happens when the 'Add' button is tapped?\n\n```\nNavigationStack {\n    List(items) { item in Text(item.name) }\n        .toolbar {\n            ToolbarItem(placement: .navigationBarTrailing) {\n                Button(\"Add\") { showAdd = true }\n            }\n        }\n        .sheet(isPresented: $showAdd) {\n            AddView()\n        }\n}\n```",
+    "question": "What happens when the 'Add' button is tapped?\n\n```\nstruct Item: Identifiable {\n    let id = UUID()\n    let name: String\n}\n\nstruct AddView: View {\n    var body: some View {\n        Text(\"Add Item\")\n    }\n}\n\nstruct ContentView: View {\n    @State private var showAdd = false\n    let items: [Item] = []\n\n    var body: some View {\n        NavigationStack {\n            List(items) { item in\n                Text(item.name)\n            }\n            .toolbar {\n                ToolbarItem(placement: .navigationBarTrailing) {\n                    Button(\"Add\") { showAdd = true }\n                }\n            }\n            .sheet(isPresented: $showAdd) {\n                AddView()\n            }\n        }\n    }\n}\n```",
     "options": [
       "`AddView` is pushed onto the navigation stack as a new screen.",
       "Nothing, because a toolbar button cannot change `@State`.",
@@ -1219,7 +1219,7 @@
     "topic": "Toolbars",
     "topicId": "toolbars",
     "difficulty": "advanced",
-    "question": "What does `ToolbarItemGroup` do here?\n\n```\n.toolbar {\n    ToolbarItemGroup(placement: .navigationBarTrailing) {\n        Button(\"Edit\") { }\n        Button(\"Add\") { }\n    }\n}\n```",
+    "question": "What does `ToolbarItemGroup` do here?\n\n```\nstruct ContentView: View {\n    var body: some View {\n        NavigationStack {\n            Text(\"Items\")\n                .toolbar {\n                    ToolbarItemGroup(placement: .navigationBarTrailing) {\n                        Button(\"Edit\") { }\n                        Button(\"Add\") { }\n                    }\n                }\n        }\n    }\n}\n```",
     "options": [
       "It groups the buttons into a submenu that opens on tap.",
       "It places both buttons at the given placement, so a separate `ToolbarItem` per button is not needed.",
@@ -1521,13 +1521,13 @@
     "difficulty": "core",
     "question": "Which modifier sets the color of a `Text` view's text?",
     "options": [
-      "`.foregroundColor(.red)`",
+      "`.foregroundStyle(.red)`",
       "`.color(.red)`",
       "`.textColor(.red)`",
       "`.fontColor(.red)`"
     ],
     "answer": 0,
-    "explanation": "`.foregroundColor(_:)` sets the text (foreground) color; the other names are not SwiftUI modifiers."
+    "explanation": "`.foregroundStyle(_:)` sets the text (foreground) color/style; the other names are not SwiftUI modifiers."
   },
   {
     "category": "SwiftUI",
@@ -1566,7 +1566,7 @@
     "difficulty": "advanced",
     "question": "For which pair does swapping the order of the two modifiers change the visual result?",
     "options": [
-      "`.font(.title)` then `.foregroundColor(.red)` versus the reverse.",
+      "`.font(.title)` then `.foregroundStyle(.red)` versus the reverse.",
       "`.bold()` then `.italic()` versus the reverse.",
       "`.padding()` then `.background(Color.blue)` versus the reverse.",
       "`.accessibilityLabel(\"x\")` then `.font(.body)` versus the reverse."

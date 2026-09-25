@@ -27,7 +27,7 @@
       "⌘U"
     ],
     "answer": 1,
-    "explanation": "⌘B builds without launching; ⌘R would also run it, ⌘K cleans the build folder, and ⌘U runs tests."
+    "explanation": "⌘B builds without launching; ⌘R would also run it, ⌘K clears the console (not a build shortcut), and ⌘U runs tests."
   },
   {
     "category": "Xcode Navigation",
