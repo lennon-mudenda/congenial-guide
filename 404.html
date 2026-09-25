@@ -12,23 +12,79 @@
         </script>
         <link rel="stylesheet" href="style.css" />
         <link rel="icon" href="swift.svg" />
+        <style>
+            .notFound {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 32px;
+                box-sizing: border-box;
+            }
+            .notFoundArt {
+                width: min(420px, 82vw);
+                height: auto;
+                color: var(--neutral);
+                margin-bottom: 4px;
+            }
+            .notFound h1 {
+                font-size: 2.6rem;
+                font-weight: 800;
+                color: var(--ink-2);
+                margin: 8px 0 4px;
+            }
+            .notFound p {
+                color: var(--muted);
+                font-size: 1.15rem;
+                line-height: 1.6;
+                margin: 0 0 24px;
+                max-width: 520px;
+            }
+        </style>
     </head>
     <body>
-        <header>
-            <div>
-                <h1>Swift Certified User</h1>
-                <p>Practice Exams</p>
-            </div>
-        </header>
-        <main>
-            <section class="card" style="text-align:center">
-                <h2>404 — Page not found</h2>
-                <p class="note">
-                    That page doesn't exist. Head back to the practice exams
-                    to keep studying.
-                </p>
-                <p><a href="index.html"><button>Back to Exams</button></a></p>
-            </section>
+        <main class="notFound">
+            <svg
+                class="notFoundArt"
+                viewBox="0 0 460 320"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                role="img"
+                aria-label="A magnifying glass over crumpled paper"
+            >
+                <!-- ground shadows -->
+                <ellipse cx="205" cy="292" rx="130" ry="13" fill="currentColor" stroke="none" opacity="0.08" />
+                <ellipse cx="360" cy="286" rx="40" ry="7" fill="currentColor" stroke="none" opacity="0.08" />
+                <ellipse cx="120" cy="150" rx="52" ry="9" fill="currentColor" stroke="none" opacity="0.08" />
+                <!-- crumpled paper, top-left -->
+                <polygon points="104,74 132,64 152,80 155,104 140,126 112,130 96,110 99,88" />
+                <path d="M128 68 L125 102 M104 82 L148 108 M116 126 L136 84" stroke-width="3" />
+                <!-- scattered bits, top-right of the lens -->
+                <circle cx="322" cy="120" r="4" fill="currentColor" stroke="none" />
+                <circle cx="340" cy="108" r="5" fill="currentColor" stroke="none" />
+                <circle cx="356" cy="120" r="3.5" fill="currentColor" stroke="none" />
+                <circle cx="332" cy="136" r="3" fill="currentColor" stroke="none" />
+                <circle cx="354" cy="138" r="3.5" fill="currentColor" stroke="none" />
+                <!-- magnifying glass -->
+                <line x1="150" y1="248" x2="92" y2="304" stroke-width="24" />
+                <circle cx="212" cy="188" r="80" stroke-width="9" />
+                <circle cx="212" cy="188" r="64" stroke-width="4" />
+                <path d="M175 158 A64 64 0 0 1 220 130" stroke-width="6" />
+                <!-- crumpled paper, lower-right -->
+                <polygon points="340,238 362,231 380,244 381,266 364,278 344,270 334,252" />
+                <path d="M358 233 L356 262 M340 244 L376 262 M348 276 L366 240" stroke-width="3" />
+            </svg>
+            <h1>Oops,</h1>
+            <p>
+                The page you're looking for doesn't exist.<br />
+                Come on, head back and try again!
+            </p>
+            <a href="index.html"><button>Back to exams</button></a>
         </main>
     </body>
 </html>
