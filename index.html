@@ -4,6 +4,13 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>Swift Certified User — Practice Exams</title>
+        <script>
+            // Apply the saved theme before paint to avoid a flash.
+            try {
+                var t = localStorage.getItem("theme");
+                if (t) document.documentElement.setAttribute("data-theme", t);
+            } catch (e) {}
+        </script>
         <link rel="stylesheet" href="style.css" />
         <link rel="icon" href="swift.svg" />
     </head>
@@ -13,13 +20,16 @@
                 <h1>Swift Certified User</h1>
                 <p>Practice Exams</p>
             </div>
-            <div id="timer" class="hidden"></div>
+            <div class="headerRight">
+                <button id="themeToggle" class="themeToggle" aria-label="Toggle dark mode">🌙</button>
+                <div id="timer" class="hidden"></div>
+            </div>
         </header>
         <main>
             <section id="start">
                 <div class="card">
                     <h2>Choose how to practice</h2>
-                    <div id="modeToggle" class="modeToggle"></div>
+                    <div id="modeToggle" class="seg modeToggle"></div>
                     <p id="modeExplain" class="modeExplain"></p>
                 </div>
                 <div class="card">
@@ -31,7 +41,13 @@
                     <div id="fullExam"></div>
                 </div>
                 <div class="card">
-                    <h2>Practice by category</h2>
+                    <div class="sectionHead">
+                        <h2>Practice by category</h2>
+                        <div class="sizeSelector">
+                            <span class="sizeLabel">Max questions</span>
+                            <div id="catSizeToggle" class="seg"></div>
+                        </div>
+                    </div>
                     <p class="muted">Drill one of the five exam domains.</p>
                     <div id="byCategory" class="catGrid"></div>
                 </div>

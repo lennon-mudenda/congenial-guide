@@ -1,5 +1,6 @@
 let manifest,
   selectedMode = "timed",
+  catSize = "all",
   categoryCache = {},
   exam,
   mode,
@@ -24,11 +25,24 @@ fetch("questions/manifest.json")
     $("startError").innerHTML =
       '<p class="error">Couldn\'t load question data. If this file was opened directly (file://), serve it locally instead — e.g. run <code>python -m http.server</code> in this folder and open the printed address.</p>';
   });
+function buildSegToggle(container, options, current, onPick) {
+  container.innerHTML = "";
+  options.forEach(([value, label]) => {
+    let b = document.createElement("button");
+    b.className = "segOpt" + (value === current ? " active" : "");
+    b.dataset.value = value;
+    b.textContent = label;
+    b.onclick = () => {
+      container
+        .querySelectorAll(".segOpt")
+        .forEach((x) => x.classList.toggle("active", x === b));
+      onPick(value);
+    };
+    container.appendChild(b);
+  });
+}
 function setMode(m) {
   selectedMode = m;
-  document
-    .querySelectorAll("#modeToggle .modeOpt")
-    .forEach((b) => b.classList.toggle("active", b.dataset.mode === m));
   $("modeExplain").textContent =
     m === "practice"
       ? "Practice — untimed. You get instant right/wrong feedback and an explanation after every answer."
@@ -36,19 +50,20 @@ function setMode(m) {
 }
 function buildLanding() {
   // mode toggle
-  $("modeToggle").innerHTML = "";
-  [
-    ["practice", "Practice"],
-    ["timed", "Timed exam"],
-  ].forEach(([m, label]) => {
-    let b = document.createElement("button");
-    b.className = "modeOpt";
-    b.dataset.mode = m;
-    b.textContent = label;
-    b.onclick = () => setMode(m);
-    $("modeToggle").appendChild(b);
-  });
+  buildSegToggle(
+    $("modeToggle"),
+    [["practice", "Practice"], ["timed", "Timed exam"]],
+    selectedMode,
+    setMode,
+  );
   setMode(selectedMode);
+  // category size selector
+  buildSegToggle(
+    $("catSizeToggle"),
+    [["15", "15"], ["30", "30"], ["45", "45"], ["all", "All"]],
+    catSize,
+    (v) => (catSize = v),
+  );
   // full exams
   $("fullExam").innerHTML = "";
   EXAM_TYPES.forEach((t) => {
@@ -175,7 +190,15 @@ function startExamType(t) {
   });
 }
 function startCategory(id, name) {
-  loadCategory(id).then((qs) => startExam(qs.slice(), name));
+  loadCategory(id).then((qs) => {
+    let pool = qs.slice();
+    let cap = parseInt(catSize, 10);
+    if (!isNaN(cap) && pool.length > cap) {
+      shuffle(pool);
+      pool = pool.slice(0, cap);
+    }
+    startExam(pool, name);
+  });
 }
 function startTopic(catId, topicId, label) {
   loadCategory(catId).then((qs) =>
@@ -545,6 +568,23 @@ $("calcModal").onclick = (e) => {
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && !$("calcModal").classList.contains("hidden")) closeCalc();
 });
+// --- Dark mode ---
+function currentTheme() {
+  return (
+    document.documentElement.getAttribute("data-theme") ||
+    (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+  );
+}
+function setTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  try {
+    localStorage.setItem("theme", t);
+  } catch (e) {}
+  $("themeToggle").textContent = t === "dark" ? "☀️" : "🌙";
+}
+$("themeToggle").onclick = () =>
+  setTheme(currentTheme() === "dark" ? "light" : "dark");
+$("themeToggle").textContent = currentTheme() === "dark" ? "☀️" : "🌙";
 function donutSVG(correct, incorrect, unanswered, total) {
   let r = 52,
     sw = 16,
@@ -553,9 +593,9 @@ function donutSVG(correct, incorrect, unanswered, total) {
     c = 2 * Math.PI * r,
     gap = 2;
   let allSegs = [
-    { v: correct, color: "#3d6b4f", label: "Correct" },
-    { v: incorrect, color: "#8b2f2f", label: "Incorrect" },
-    { v: unanswered, color: "#8a94a3", label: "Unanswered" },
+    { v: correct, cls: "seg-correct", label: "Correct" },
+    { v: incorrect, cls: "seg-incorrect", label: "Incorrect" },
+    { v: unanswered, cls: "seg-unanswered", label: "Unanswered" },
   ];
   let segs = allSegs.filter((s) => s.v > 0);
   let offset = 0;
@@ -563,8 +603,8 @@ function donutSVG(correct, incorrect, unanswered, total) {
     .map((s) => {
       let dash = Math.max((s.v / total) * c - gap, 0);
       let el =
-        '<circle cx="' + cx + '" cy="' + cy + '" r="' + r +
-        '" fill="none" stroke="' + s.color + '" stroke-width="' + sw +
+        '<circle class="' + s.cls + '" cx="' + cx + '" cy="' + cy + '" r="' + r +
+        '" fill="none" stroke-width="' + sw +
         '" stroke-dasharray="' + dash + " " + (c - dash) +
         '" stroke-dashoffset="' + -offset + '" transform="rotate(-90 ' + cx + " " + cy + ')"/>';
       offset += (s.v / total) * c;
@@ -575,7 +615,7 @@ function donutSVG(correct, incorrect, unanswered, total) {
   let legend = allSegs
     .map(
       (s) =>
-        '<div class="donutLegendRow"><i style="background:' + s.color + '"></i>' +
+        '<div class="donutLegendRow"><i class="donutKey ' + s.cls + '"></i>' +
         s.label + " " + s.v + "</div>",
     )
     .join("");
@@ -583,13 +623,13 @@ function donutSVG(correct, incorrect, unanswered, total) {
     '<div class="donutWrap"><svg viewBox="0 0 128 128" width="150" height="150" role="img" aria-label="' +
     correct + " correct, " + incorrect + " incorrect, " + unanswered +
     " unanswered, out of " + total + '">' +
-    '<circle cx="' + cx + '" cy="' + cy + '" r="' + r +
-    '" fill="none" stroke="#e5e9ec" stroke-width="' + sw + '"/>' +
+    '<circle class="donutTrack" cx="' + cx + '" cy="' + cy + '" r="' + r +
+    '" fill="none" stroke-width="' + sw + '"/>' +
     circles +
-    '<text x="' + cx + '" y="' + (cy - 2) +
-    '" text-anchor="middle" font-size="24" font-weight="800" fill="#18212b">' + pct + "%</text>" +
-    '<text x="' + cx + '" y="' + (cy + 18) +
-    '" text-anchor="middle" font-size="11" fill="#65788a">' + correct + " / " + total + "</text>" +
+    '<text class="donutPct" x="' + cx + '" y="' + (cy - 2) +
+    '" text-anchor="middle" font-size="24" font-weight="800">' + pct + "%</text>" +
+    '<text class="donutSub" x="' + cx + '" y="' + (cy + 18) +
+    '" text-anchor="middle" font-size="11">' + correct + " / " + total + "</text>" +
     "</svg><div class=\"donutLegend\">" + legend + "</div></div>"
   );
 }
